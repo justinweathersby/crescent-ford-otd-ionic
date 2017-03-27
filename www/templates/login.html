@@ -1,0 +1,30 @@
+<ion-view hide-nav-bar="true">
+  <form name="loginForm" ng-controller="LoginCtrl">
+  <ion-content class="padding">
+     <img src="img/logo.jpeg" style="padding: 3rem 0; margin-left:auto; margin-right:auto; display:block;" alt="">
+      <div class="list list-inset">
+        <label class="form-box item item-input">
+          <i class="icon ion-ios-email-outline placeholder-icon"></i>
+          <input style="font-size:20px;padding-top:10px;font-family:Brandon;color:grey;"  type="email" placeholder="Email" ng-model="user.email" required>
+        </label>
+        <label class="form-box item item-input">
+          <i class="icon ion-ios-locked-outline placeholder-icon"></i>
+          <input style="font-size:20px;padding-top:10px;font-family:Brandon;color:grey" type="password" placeholder="Password" ng-model="user.password" required>
+        </label>
+      </div>
+    </form>
+
+    <button style="font-family:Brandon; background-color: #114926;" class="button button-block button-positive" ng-click="login(user)">
+      Login
+    </button>
+    <button  style="font-family:Brandon; background-color: #114926;" class="button button-block button-positive" ng-click="goToSignUp()">
+      Sign Up
+    </button>
+    <div class="text-center">
+
+    <button style="font-family:Brandon;color:grey;font-size:16px;" class="button button-clear button-positive " ng-click="goToForgotPassword()">
+      Forgot password
+    </button>
+    </div>
+  </ion-content>
+</ion-view>

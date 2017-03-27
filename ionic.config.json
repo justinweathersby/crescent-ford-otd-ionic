@@ -1,0 +1,12 @@
+{
+  "name": "crescent-ford-otd",
+  "app_id": "1911c9b4",
+  "gulpStartupTasks": [
+    "sass",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
+}

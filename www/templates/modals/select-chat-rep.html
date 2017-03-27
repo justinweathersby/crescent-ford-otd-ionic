@@ -1,0 +1,31 @@
+<ion-modal-view style="">
+  <ion-nav-bar class="bar-dark">
+    <ion-nav-title>
+        <img src="{{dealership.logo_url}}" style="margin-left:auto; margin-right:auto; display:block; padding-top: 8px;" height="40px" alt="">
+     </ion-nav-title>
+  </ion-nav-bar>
+<ion-content class="has-header" style="padding: 10px">
+  <h2 class="text-center" style="font-weight:200">
+    Please Choose a Representative
+  </h2>
+  <hr style="box-shadow: 0 0 5px #3f636f; border-top:0; border-color:white"/>
+  <div ng-hide="reps.length">
+    <div class="no-matches-container" style="margin-top: 15vh;">
+        <h4 style="text-align: center; color: white">Sorry</h4>
+        <hr style=" display: block; height: 0px; border: 0; border-top: 1px solid #fff; border-bottom: 1px solid #fff; border-radius:2px; margin: 1em auto; padding: 0; width: 90% "/>
+        <p style="color: white">This dealership currently has 0 active representatives.</p>
+    </div>
+  </div>
+  <div class="list">
+    <a ng-repeat="rep in reps" class="item item-thumbnail-left conversation-item" ng-click="showPopup(rep.id);" style="box-shadow: 0 0 5px black;">
+      <img ng-src="{{rep.image}}">
+      <h2 style="padding-top: 10px; font-size: 22px;">{{rep.name}}</h2>
+      <p>{{rep.role}}</p>
+    </a>
+  </div>
+
+  </ion-content>
+  <ion-footer-bar align-title="left" class="bar-assertive" style="background: #455A64">
+    <button class="button button-full" ng-click="closeModal()" style="margin: 0; font-variant: small-caps; font-size: 16px;font-family:'-apple-system', 'Helvetica Neue', 'Roboto', 'Segoe UI', sans-serif;">Back</button>
+  </ion-footer-bar>
+</ion-modal-view>

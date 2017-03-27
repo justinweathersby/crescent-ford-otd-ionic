@@ -1,0 +1,22 @@
+<ion-nav-bar class="bar-dark">
+  <ion-nav-title>
+      <img src="{{dealership.logo_url}}" style="margin-left:auto; margin-right:auto; display:block; padding-top: 8px;" height="40px" alt="">
+   </ion-nav-title>
+</ion-nav-bar>
+<ion-tabs class="tabs-icon-top tabs-background-dark tabs-color-light">
+  <ion-tab title="Home" icon-off="ion-ios-home-outline" icon-on="ion-ios-home" ng-click="openHomeModal()">
+    <ion-nav-view name="tab-dash"></ion-nav-view>
+  </ion-tab>
+  <ion-tab title="Inventory" icon-off="ion-model-s" icon-on="ion-model-s" ng-click="openInventoryModal()">
+    <ion-nav-view name="tab-inventory"></ion-nav-view>
+  </ion-tab>
+  <ion-tab title="Chat" icon-off="ion-chatbubbles" icon-on="ion-chatbubbles" ng-click="goToChat()" badge-style="badge-assertive" badge="message_badge_count">
+    <ion-nav-view name="tab-chat"></ion-nav-view>
+  </ion-tab>
+  <ion-tab title="Specials" icon-off="ion-ios-pricetag-outline" icon-on="ion-ios-pricetag" ng-click="openSpecialsModal()">
+    <ion-nav-view name="tab-specials"></ion-nav-view>
+  </ion-tab>
+  <ion-tab title="More" icon-off="ion-ios-more-outline" icon-on="ion-ios-more" ng-click="openMoreModal()">
+    <ion-nav-view name="tab-more"></ion-nav-view>
+  </ion-tab>
+</ion-tabs>
