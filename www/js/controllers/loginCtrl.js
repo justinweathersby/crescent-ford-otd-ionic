@@ -86,7 +86,50 @@ app.controller('LoginCtrl', function($scope, $http, $ionicLoading, $state, $ioni
   };//end of reset password function
 
   $scope.goToSignUp = function() {
-    $state.go('dealership-list');
+    $http({ method: 'GET',
+            url: DEALERSHIP_API.url + "/dealerships"
+          })
+          .success( function( data )
+          {
+            $scope.dealerships = data;
+
+            $ionicLoading.hide();
+            if ($scope.dealerships.length > 1){
+              $state.go('dealership-list');
+            }
+            else{
+              dealerService.resetCurrent();
+              currentUserService.dealership_id = $scope.dealerships[0].id
+
+              localforage.setItem('currentUser', currentUserService).then(function (value){
+                console.log("Value set in currentDealer:", JSON.stringify(value));
+
+                //--Try to preload the dealership after click
+                dealerService.getDealership().success(function(){
+                  $state.go('signup');
+
+                }).error(function(){
+                  $ionicLoading.hide();
+                  var alertPopup = $ionicPopup.alert({
+                    title: 'Could Not Get Dealership Profile',
+                    template: "Please Restart Your App. If This problem continues please contact us."
+                  });
+                  $state.go('login');
+                });
+
+
+              }).catch(function(err){
+                console.log("SET ITEM ERROR::loginCtrl::goToSignup::currentUser::", JSON.stringify(err));
+              });
+
+            }
+          }
+        )
+        .error( function(error)
+        {
+          $ionicLoading.hide();
+        }
+    );
   };
 
   $scope.goToLogin = function() {

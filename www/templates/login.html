@@ -1,30 +1,39 @@
 <ion-view hide-nav-bar="true">
   <form name="loginForm" ng-controller="LoginCtrl">
-  <ion-content class="padding">
-     <img src="img/logo.jpeg" style="padding: 3rem 0; margin-left:auto; margin-right:auto; display:block;" alt="">
-      <div class="list list-inset">
-        <label class="form-box item item-input">
-          <i class="icon ion-ios-email-outline placeholder-icon"></i>
-          <input style="font-size:20px;padding-top:10px;font-family:Brandon;color:grey;"  type="email" placeholder="Email" ng-model="user.email" required>
-        </label>
-        <label class="form-box item item-input">
-          <i class="icon ion-ios-locked-outline placeholder-icon"></i>
-          <input style="font-size:20px;padding-top:10px;font-family:Brandon;color:grey" type="password" placeholder="Password" ng-model="user.password" required>
-        </label>
+  <ion-content class="login-page">
+    <div class="row" style="height:30vh;">
+      <div class="col logo-col">
+        <img src="img/logo.jpeg" alt="" />
       </div>
+    </div>
+    <div class="row" style="height:10vh">
+      <div class="col">
+        <button class="button button-full login-btn" style="background-color: #f0aa5b; height:10vh" ng-click="login(user)">
+          LOGIN
+        </button>
+      </div>
+    </div>
+    <div class="row" style="height:50vh; background: #696969;" >
+      <div class="col">
+        <div class="list list-inset " style="background:transparent; width:85%; max-width: 500px; margin-left:auto; margin-right: auto;">
+          <label id = "rounded" class="item item-input">
+            <i class="icon ion-ios-email-outline placeholder-icon" style="padding-top: 3px;"></i>
+            <input type="text" placeholder="EMAIL"  type="email" ng-model="user.email" required>
+          </label>
+          <label id = "rounded" class="item item-input">
+            <i class="icon ion-ios-locked-outline placeholder-icon" style="padding-left: 13px; padding-top: 2px;"></i>
+            <input type="password" placeholder="PASSWORD" ng-model="user.password" required>
+          </label>
+          <div class="button button-full" style="background:transparent; color: rgba(256,256,256,.6); font-weight:600; font-size:16px; letter-spacing: 1px;" ng-click="goToForgotPassword()">
+            forgot password?
+          </div>
+        </div>
+      </div>
+    </div>
     </form>
 
-    <button style="font-family:Brandon; background-color: #114926;" class="button button-block button-positive" ng-click="login(user)">
-      Login
-    </button>
-    <button  style="font-family:Brandon; background-color: #114926;" class="button button-block button-positive" ng-click="goToSignUp()">
-      Sign Up
-    </button>
-    <div class="text-center">
-
-    <button style="font-family:Brandon;color:grey;font-size:16px;" class="button button-clear button-positive " ng-click="goToForgotPassword()">
-      Forgot password
-    </button>
-    </div>
   </ion-content>
+  <div class="bar bar-footer login-footer">
+    <div class="title" ng-click="goToSignUp()">Create an account</div>
+  </div>
 </ion-view>

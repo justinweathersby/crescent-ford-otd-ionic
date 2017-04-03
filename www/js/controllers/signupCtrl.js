@@ -103,11 +103,16 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
       {
         $ionicLoading.hide();
         var errorResponse = "";
-        if (angular.isDefined(error.errors.password)){
-          errorResponse = "Password: " + error.errors.password;
+        if (angular.isDefined(error.errors)){
+          if ( angular.isDefined(error.errors.password)){
+            errorResponse = "Password: " + error.errors.password;
+          }
+          if (angular.isDefined(error.errors.email)){
+            errorResponse += "<br>Email: " + error.errors.email;
+          }
         }
-        if (angular.isDefined(error.errors.email)){
-          errorResponse += "<br>Email: " + error.errors.email;
+        else{
+          errorResponse += "<br>Error: " + error;
         }
         var alertPopup = $ionicPopup.alert({
           title: 'Well, We Have A Problem...',
