@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="list">
-        <a ng-repeat="convo in conversations"class="item item-avatar conversation-item" ng-click="openConversation(convo)" style="box-shadow: 0 0 5px black;">
+        <a ng-repeat="convo in conversations"class="item item-avatar conversation-item" ng-click="openConversation(convo)" style="box-shadow: 0 0 5px #8b8b8b;">
           <img ng-src="{{convo.sender_image}}">
           <span ng-show="!convo.recipient_read" class="convoImageUnreadOverlay">
           </span>

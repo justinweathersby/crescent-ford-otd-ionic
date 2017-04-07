@@ -46,10 +46,5 @@ app.run(function($ionicPlatform, $ionicPush, currentUserService) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-    if (window.indexedDB) {
-       console.log("I'm in WKWebView!");
-    } else {
-       console.log("I'm in UIWebView");
-    }
   });
 });
