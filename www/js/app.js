@@ -14,13 +14,16 @@ app.config(function($ionicCloudProvider, $compileProvider, $ionicConfigProvider)
           "sound": true
         },
         "android": {
-          "iconColor": "#343434"
+          "iconColor": "#343434",
+          "sound": true
         }
       }
     }
   });
 
+  $ionicConfigProvider.navBar.alignTitle('center');
   $ionicConfigProvider.tabs.position('bottom');
+  $ionicConfigProvider.tabs.style('standard');
 
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|map|geo|skype):/);
 });
@@ -34,7 +37,15 @@ app.run(function($ionicPlatform, $ionicPush, currentUserService) {
       currentUserService.device_type = t.type;
 
       console.log("DEVICE TOKEN:::::::", t.token);
+
+      localforage.setItem('currentUser', currentUserService).then(function (value){
+        console.log("Value set in app.js:", JSON.stringify(value));
+
+      }).catch(function(err){
+        console.log("SET ITEM ERROR::app.js::currentUserService::", JSON.stringify(err));
+      });
     });
+
     TestFairy.begin("993218db594324f249e28bfa5a72f74f0d21732d");
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)

@@ -1,5 +1,5 @@
 app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
-                                      $ionicPopup, $ionicPopup, $ionicLoading, $ionicHistory,
+                                      $ionicPlatform, $ionicPush, $ionicPopup, $ionicPopup, $ionicLoading, $ionicHistory,
                                       authService, currentUserService, currentDealerService, dealerService,
                                       DEALERSHIP_API)
 {
@@ -73,50 +73,62 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
   $scope.createUser = function(user)
   {
     if ($scope.signupForm.$valid){
-      $ionicLoading.show({
-        template: '<p>Loading...</p><ion-spinner></ion-spinner>'
-      });
-    	$http.post(DEALERSHIP_API.url + "/users", {user: {email: user.email,
-                                                         password: user.password,
-                                                         name: user.name,
-                                                         device_token: currentUserService.device_token,
-                                                         device_type: currentUserService.device_type,
-                                                         dealership_id: currentUserService.dealership_id}})
-    	.success( function (data) {
-        $ionicLoading.hide();
-        currentUserService.token = data.user.auth_token;
-        currentUserService.id = data.user.id;
-        currentUserService.name = data.user.name;
-        currentUserService.email = data.user.email;
-        currentUserService.roles = data.roles;
-        currentUserService.isCustomer = data.isCustomer;
+      $ionicPlatform.ready(function() {
+        $ionicPush.register().then(function(t) {
+          return $ionicPush.saveToken(t);
+        }).then(function(t) {
+          currentUserService.device_token = t.token;
+          currentUserService.device_type = t.type;
 
-        localforage.setItem('currentUser', currentUserService).then(function (value){
-          console.log("Value set in currentDealer:", JSON.stringify(value));
-          $state.go('tab.dash');
-        }).catch(function(err){
-          console.log("SET ITEM ERROR::singupCtrl::dealershipSelected::currentUser::", JSON.stringify(err));
-        });
+          console.log("DEVICE TOKEN:::::::", t.token);
 
-    	})
-      .error( function(error)
-      {
-        $ionicLoading.hide();
-        var errorResponse = "";
-        if (angular.isDefined(error.errors)){
-          if ( angular.isDefined(error.errors.password)){
-            errorResponse = "Password: " + error.errors.password;
-          }
-          if (angular.isDefined(error.errors.email)){
-            errorResponse += "<br>Email: " + error.errors.email;
-          }
-        }
-        else{
-          errorResponse += "<br>Error: " + error;
-        }
-        var alertPopup = $ionicPopup.alert({
-          title: 'Well, We Have A Problem...',
-          template: errorResponse
+          $ionicLoading.show({
+            template: '<p>Loading...</p><ion-spinner></ion-spinner>'
+          });
+
+        	$http.post(DEALERSHIP_API.url + "/users", {user: {email: user.email,
+                                                             password: user.password,
+                                                             name: user.name,
+                                                             device_token: currentUserService.device_token,
+                                                             device_type: currentUserService.device_type,
+                                                             dealership_id: currentUserService.dealership_id}})
+        	.success( function (data) {
+            $ionicLoading.hide();
+            currentUserService.token = data.user.auth_token;
+            currentUserService.id = data.user.id;
+            currentUserService.name = data.user.name;
+            currentUserService.email = data.user.email;
+            currentUserService.roles = data.roles;
+            currentUserService.isCustomer = data.isCustomer;
+
+            localforage.setItem('currentUser', currentUserService).then(function (value){
+              console.log("Value set in currentDealer:", JSON.stringify(value));
+              $state.go('tab.dash');
+            }).catch(function(err){
+              console.log("SET ITEM ERROR::singupCtrl::dealershipSelected::currentUser::", JSON.stringify(err));
+            });
+
+        	})
+          .error( function(error)
+          {
+            $ionicLoading.hide();
+            var errorResponse = "";
+            if (angular.isDefined(error.errors)){
+              if ( angular.isDefined(error.errors.password)){
+                errorResponse = "Password: " + error.errors.password;
+              }
+              if (angular.isDefined(error.errors.email)){
+                errorResponse += "<br>Email: " + error.errors.email;
+              }
+            }
+            else{
+              errorResponse += "<br>Error: " + error;
+            }
+            var alertPopup = $ionicPopup.alert({
+              title: 'Well, We Have A Problem...',
+              template: errorResponse
+            });
+          });
         });
       });
     }

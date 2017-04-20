@@ -15,36 +15,36 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
         });
       }
     }
-    });
+  });
 
-    function keyboardShowHandler(e){
-        console.log('Keyboard height is: ' + e.keyboardHeight);
-        $ionicScrollDelegate.scrollBottom(true);
-    }
-    function keyboardHideHandler(e){
-        console.log('Goodnight, sweet prince');
-        $ionicScrollDelegate.scrollBottom(true);
-    }
+  var viewScroll = $ionicScrollDelegate.$getByHandle('userMessageScroll');
+  $scope.current_user = currentUserService;
+  
+  function keyboardShowHandler(e){
+      console.log('Keyboard height is: ' + e.keyboardHeight);
+      $ionicScrollDelegate.scrollBottom(true);
+  }
+  function keyboardHideHandler(e){
+      console.log('Goodnight, sweet prince');
+      $ionicScrollDelegate.scrollBottom(true);
+  }
 
-    $scope.$on('$ionicView.enter', function() {
+  $scope.$on('$ionicView.enter', function() {
 
-      var viewScroll = $ionicScrollDelegate.$getByHandle('userMessageScroll');
+    cordova.plugins.Keyboard.disableScroll(true);
+    window.addEventListener('native.keyboardshow', keyboardShowHandler);
+    window.addEventListener('native.keyboardhide', keyboardHideHandler);
 
-      cordova.plugins.Keyboard.disableScroll(true);
-      window.addEventListener('native.keyboardshow', keyboardShowHandler);
-      window.addEventListener('native.keyboardhide', keyboardHideHandler);
-
-      $rootScope.message_badge_count = 0;
-      $scope.current_user = currentUserService;
-    });
+    $rootScope.message_badge_count = 0;
+  });
 
 
-    $scope.$on('$ionicView.leave', function() {
-      window.removeEventListener('native.keyboardshow', keyboardShowHandler);
-      window.removeEventListener('native.keyboardhide', keyboardHideHandler);
+  $scope.$on('$ionicView.leave', function() {
+    window.removeEventListener('native.keyboardshow', keyboardShowHandler);
+    window.removeEventListener('native.keyboardhide', keyboardHideHandler);
 
-      cordova.plugins.Keyboard.disableScroll(false);
-    });
+    cordova.plugins.Keyboard.disableScroll(false);
+  });
 
   $scope.getMessages = function() {
     $ionicLoading.show({

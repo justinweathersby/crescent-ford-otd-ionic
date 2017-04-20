@@ -7,7 +7,7 @@
       <i class="icon ion-ios-arrow-back"> Back</i>
     </button>
   </ion-nav-buttons>
-  <ion-content class="padding" style="padding-top:20px;" delegate-handle="userMessageScroll">
+  <ion-content class="padding" style="padding-top:20px;" delegate-handle="userMessageScroll" style="overflow-y: auto;">
     <ion-refresher
       pulling-text="Pull to refresh..."
       on-refresh="getMessages()">

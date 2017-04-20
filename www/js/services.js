@@ -1,13 +1,13 @@
 //-- This service contains user information for authorization and authentication needs
 app.service('currentUserService', function(){
-  this.id =
-  this.token =
-  this.name =
-  this.email =
-  this.dealership_id =
-  this.device_token =
-  this.isCustomer =
-  this.device_type = null;
+  this.id;
+  this.token;
+  this.name;
+  this.email;
+  this.dealership_id;
+  this.device_token;
+  this.isCustomer;
+  this.device_type;
 
   this.roles = [];
   // check logs for blank
@@ -160,15 +160,8 @@ app.service('dealerService', function($http, $ionicLoading, currentUserService, 
 //-- This service handles all authentication between app and Chatter API
 app.service('authService', function($http, $ionicPlatform, $ionicPush, currentUserService, DEALERSHIP_API){
   this.login = function(user){
-
-    $ionicPlatform.ready(function() {
-      $ionicPush.register().then(function(t) {
-        return $ionicPush.saveToken(t);
-      }).then(function(t) {
-        currentUserService.device_token = t.token;
-        currentUserService.device_type = t.type;
-      });
-    });
+    // console.log("authService.login::CURRENT USER DEVICE TOKEN:::", device_token);
+    // console.log("authService.login::CURRENT USER DEVICE TOKEN:::", device_type);
 
     return  $http({method: 'POST',
                    url: DEALERSHIP_API.url + '/login',

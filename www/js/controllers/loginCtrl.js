@@ -1,14 +1,37 @@
-app.controller('LoginCtrl', function($scope, $http, $ionicLoading, $state, $ionicPopup, authService, currentUserService, currentDealerService, dealerService, DEALERSHIP_API) {
+app.controller('LoginCtrl', function($scope, $http, $state,
+                                     $ionicLoading, $ionicPopup, $ionicPlatform, $ionicPush,
+                                     authService, currentUserService, currentDealerService, dealerService,
+                                     DEALERSHIP_API) {
 
   //-- Get Current User Object
   localforage.getItem('currentUser').then(function(value){
-    angular.copy(value, currentUserService)
+    angular.copy(value, currentUserService);
 
     //-- Load Current Dealer
     localforage.getItem('currentDealer').then(function (value){
       angular.copy(value, currentDealerService);
       if(currentUserService.token){
         $state.go('tab.dash');
+      }
+      else{
+        console.log("Getting Device Token in Login Ctrl");
+        $ionicPlatform.ready(function() {
+          $ionicPush.register().then(function(t) {
+            return $ionicPush.saveToken(t);
+          }).then(function(t) {
+            currentUserService.device_token = t.token;
+            currentUserService.device_type = t.type;
+
+            console.log("loginCTRL::::DEVICE TOKEN:::::::", t.token);
+
+            localforage.setItem('currentUser', currentUserService).then(function (value){
+              console.log("Value set in loginctrl:", JSON.stringify(value));
+
+            }).catch(function(err){
+              console.log("SET ITEM ERROR::app.js::currentUserService::", JSON.stringify(err));
+            });
+          });
+        });
       }
     }).catch(function(err){
       console.log("GET ITEM ERROR::loginCtrl::currentDealer::", JSON.stringify(err));
@@ -19,33 +42,34 @@ app.controller('LoginCtrl', function($scope, $http, $ionicLoading, $state, $ioni
     $ionicLoading.show({
        template: '<p style="font-family:Brandon;color:grey;">Logging in</p><ion-spinner class="spinner-positive" icon="dots"></ion-spinner>',
        hideOnStateChange: true,
-       duration: 5000
+       duration: 8000
     });
 
     if ($scope.loginForm.$valid){
-      authService.login(user).success(function(){
+        console.log("loginCtrl::currentUserService:::", JSON.stringify(currentUserService));
 
-        //--Try to preload the dealership after click
-        dealerService.getDealership().success(function(){
-          $state.go('tab.dash');
-          $ionicLoading.hide();
+        authService.login(user).success(function(){
 
+          //--Try to preload the dealership after click
+          dealerService.getDealership().success(function(){
+            $state.go('tab.dash');
+            $ionicLoading.hide();
+
+          }).error(function(){
+            $ionicLoading.hide();
+            var alertPopup = $ionicPopup.alert({
+              title: 'Could Not Get Dealership Profile',
+              template: "Please Restart Your App. If This problem continues please contact us."
+            });
+            $state.go('login');
+          });
         }).error(function(){
           $ionicLoading.hide();
           var alertPopup = $ionicPopup.alert({
-            title: 'Could Not Get Dealership Profile',
-            template: "Please Restart Your App. If This problem continues please contact us."
+            title: 'Login Unsuccessful',
+            template: "Email and password did not match our records."
           });
-          $state.go('login');
         });
-      }).error(function()
-      {
-        $ionicLoading.hide();
-        var alertPopup = $ionicPopup.alert({
-          title: 'Login Unsuccessful',
-          template: "Email and password did not match our records."
-        });
-      });
     }
     else{
       $ionicLoading.hide();
@@ -86,6 +110,12 @@ app.controller('LoginCtrl', function($scope, $http, $ionicLoading, $state, $ioni
   };//end of reset password function
 
   $scope.goToSignUp = function() {
+    $ionicLoading.show({
+       template: '<p style="font-family:Brandon;color:grey;">Loading..</p><ion-spinner class="spinner-positive" icon="dots"></ion-spinner>',
+       hideOnStateChange: true,
+       duration: 5000
+    });
+
     $http({ method: 'GET',
             url: DEALERSHIP_API.url + "/dealerships"
           })
@@ -94,6 +124,7 @@ app.controller('LoginCtrl', function($scope, $http, $ionicLoading, $state, $ioni
             $scope.dealerships = data;
 
             $ionicLoading.hide();
+
             if ($scope.dealerships.length > 1){
               $state.go('dealership-list');
             }
@@ -116,12 +147,9 @@ app.controller('LoginCtrl', function($scope, $http, $ionicLoading, $state, $ioni
                   });
                   $state.go('login');
                 });
-
-
               }).catch(function(err){
                 console.log("SET ITEM ERROR::loginCtrl::goToSignup::currentUser::", JSON.stringify(err));
               });
-
             }
           }
         )
