@@ -1,5 +1,29 @@
 //-- This service contains user information for authorization and authentication needs
+app.factory('userSvc', function(store) {
+    var user = {};
+
+
+    function getUser() {
+      return user;
+    }
+
+    function setUser(currentUser) {
+      store.set('localUser', currentUser);
+      user = currentUser;
+    }
+
+
+    return {
+
+      getUser: getUser,
+      setUser: setUser
+
+    };
+
+  })
+
 app.service('currentUserService', function(){
+
   this.id;
   this.token;
   this.name;
@@ -11,8 +35,8 @@ app.service('currentUserService', function(){
 
   this.roles = [];
   // check logs for blank
-});
 
+})
 app.service('currentDealerService', function(){
   this.id =
   this.name =
@@ -38,7 +62,31 @@ app.service('currentDealerService', function(){
   this.service_reps = [];
 });
 
-app.service('dealerService', function($http, $ionicLoading, currentUserService, currentDealerService, DEALERSHIP_API){
+app.service('currentDealerSvc', function(store){
+
+  var dealership = {};
+
+
+  function getDealership() {
+    return dealership;
+  }
+
+  function setDealership(currentDealer) {
+    store.set('localDealership', currentDealer);
+    dealership = currentDealer;
+  }
+
+
+  return {
+
+    getDealership: getDealership,
+    setDealership: setDealership
+
+  };
+
+});
+
+app.service('dealerService', function($http, $ionicLoading, currentUserService, currentDealerService, userSvc, currentDealerSvc, DEALERSHIP_API){
   this.resetCurrent = function (){
     currentDealerService.id =
     currentDealerService.name =
@@ -115,35 +163,51 @@ app.service('dealerService', function($http, $ionicLoading, currentUserService, 
       console.log("SUCCESS::getDealership::currentUserService::" + JSON.stringify(currentUserService));
     // }).catch(function(err) {console.log("GET ITEM ERROR::LoginCtrl::currentUser", JSON.stringify(err));});
 
-    return $http({ method: 'GET',
-        url: DEALERSHIP_API.url + "/dealerships/" + currentUserService.dealership_id
-    }).success( function( data ){
-        currentDealerService.id = data.id;
-        currentDealerService.name = data.name;
-        currentDealerService.phone = data.phone;
-        currentDealerService.location = "maps:?q=" + data.location.street + ' ' + data.location.city + ', ' + data.location.state + ' ' + data.location.zipcode;
-        currentDealerService.primary_color = data.primary_color;
-        currentDealerService.new_cars_url = data.new_cars_url;
-        currentDealerService.used_cars_url = data.used_cars_url;
-        currentDealerService.service_url = data.service_url;
-        currentDealerService.service_specials_url = data.service_specials_url;
-        currentDealerService.specials_url = data.specials_url;
-        currentDealerService.parts_url = data.parts_url;
-        currentDealerService.financing_url = data.financing_url;
-        currentDealerService.service_email = data.service_email;
-        currentDealerService.sales_email = data.sales_email;
-        currentDealerService.facebook_url = data.facebook_url;
-        currentDealerService.twitter_url = data.twitter_url;
-        currentDealerService.logo_url = data.logo_url;
-        currentDealerService.background_image_url = data.background_image_url;
-        currentDealerService.iframeFriendly = data.iframeFriendly;
 
-        localforage.setItem('currentDealer', currentDealerService).then(function (value){
-          // console.log("Value set in currentDealer:", JSON.stringify(value));
-          console.log("INFO::services::getDealership::currentDealerService::", JSON.stringify(currentDealerService));
-        }).catch(function(err){
-          console.log("SET ITEM ERROR::Services::authService::currentUser::", JSON.stringify(err));
-        });
+    /// get currentuser from UserSvc
+    var currentUser = userSvc.getUser();
+    console.log(currentUser);
+
+    return $http({ method: 'GET',
+        url: DEALERSHIP_API.url + "/dealerships/" + currentUser.dealership_id
+    }).success( function( data ){
+      
+        // set currentdealership in loginctrl//
+
+      //  data = currentDealerSvc.setDealership();
+        // currentDealerService.id = data.id;
+        // currentDealerService.name = data.name;
+        // currentDealerService.phone = data.phone;
+        // currentDealerService.location = "maps:?q=" + data.location.street + ' ' + data.location.city + ', ' + data.location.state + ' ' + data.location.zipcode;
+        // currentDealerService.primary_color = data.primary_color;
+        // currentDealerService.new_cars_url = data.new_cars_url;
+        // currentDealerService.used_cars_url = data.used_cars_url;
+        // currentDealerService.service_url = data.service_url;
+        // currentDealerService.service_specials_url = data.service_specials_url;
+        // currentDealerService.specials_url = data.specials_url;
+        // currentDealerService.parts_url = data.parts_url;
+        // currentDealerService.financing_url = data.financing_url;
+        // currentDealerService.service_email = data.service_email;
+        // currentDealerService.sales_email = data.sales_email;
+        // currentDealerService.facebook_url = data.facebook_url;
+        // currentDealerService.twitter_url = data.twitter_url;
+        // currentDealerService.logo_url = data.logo_url;
+        // currentDealerService.background_image_url = data.background_image_url;
+        // currentDealerService.iframeFriendly = data.iframeFriendly;
+
+
+        //data = currentDealerSvc.setDealership();
+
+        // var whatisdealer = currentDealerSvc.getDealership().then(function(value){
+        //   console.log(whatisdealer);
+        // });
+
+        // localforage.setItem('currentDealer', currentDealerService).then(function (value){
+        //   // console.log("Value set in currentDealer:", JSON.stringify(value));
+        //   console.log("INFO::services::getDealership::currentDealerService::", JSON.stringify(currentDealerService));
+        // }).catch(function(err){
+        //   console.log("SET ITEM ERROR::Services::authService::currentUser::", JSON.stringify(err));
+        // });
 
         $ionicLoading.hide();
       }).error( function(error){
