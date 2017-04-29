@@ -7,6 +7,10 @@ app.factory('userSvc', function(store) {
       return user;
     }
 
+    function getUserToken() {
+      return user.auth_token;
+    }
+
     function setUser(currentUser) {
       store.set('localUser', currentUser);
       user = currentUser;
@@ -16,6 +20,7 @@ app.factory('userSvc', function(store) {
     return {
 
       getUser: getUser,
+      getUserToken: getUserToken,
       setUser: setUser
 
     };
@@ -86,7 +91,11 @@ app.service('currentDealerSvc', function(store){
 
 });
 
-app.service('dealerService', function($http, $ionicLoading, currentUserService, currentDealerService, userSvc, currentDealerSvc, DEALERSHIP_API){
+app.service('dealerService', function($http, $ionicLoading, currentUserService, currentDealerService, userSvc, currentDealerSvc, DEALERSHIP_API, store){
+
+  // var currentUser = store.get('localUser');
+  // console.log(currentUser);
+
   this.resetCurrent = function (){
     currentDealerService.id =
     currentDealerService.name =
@@ -109,22 +118,24 @@ app.service('dealerService', function($http, $ionicLoading, currentUserService, 
   };
 
   this.getSalesReps = function(){
+    var currentUser = store.get('localUser');
+    console.log(currentUser);
     console.log("CHECK::Services::getSalesReps::currentUser::", JSON.stringify(currentUserService));
     return $http({ method: 'GET',
-                      url: DEALERSHIP_API.url + "/dealerships/" + currentUserService.dealership_id + "/sales_reps",
-                      headers: {'Authorization' : currentUserService.token}
+                      url: DEALERSHIP_API.url + "/dealerships/" + currentUser.dealership_id + "/sales_reps",
+                      headers: {'Authorization' : userSvc.getUserToken()}
                 }).success( function(data){
                   console.log("INFO::services::getSalesReps::data::" + JSON.stringify(data));
                   currentDealerService.sales_reps = [];
                   var newData = angular.copy(data);
                   currentDealerService.sales_reps.push(newData);
 
-                  localforage.setItem('currentDealer', currentDealerService).then(function (value){
-                    // console.log("Value set in currentDealer:", JSON.stringify(value));'
-                    console.log("SUCCESS GET SALES REPS:: " + JSON.stringify(currentDealerService.sales_reps));
-                  }).catch(function(err){
-                    console.log("SET ITEM ERROR::Services::authService::currentUser::", JSON.stringify(err));
-                  });
+                  // localforage.setItem('currentDealer', currentDealerService).then(function (value){
+                  //   // console.log("Value set in currentDealer:", JSON.stringify(value));'
+                  //   console.log("SUCCESS GET SALES REPS:: " + JSON.stringify(currentDealerService.sales_reps));
+                  // }).catch(function(err){
+                  //   console.log("SET ITEM ERROR::Services::authService::currentUser::", JSON.stringify(err));
+                  // });
 
                 }).error( function(error){
                   console.log("ERROR GET SALES REPS:: " + JSON.stringify(error));
@@ -132,10 +143,12 @@ app.service('dealerService', function($http, $ionicLoading, currentUserService, 
   };
 
   this.getServiceReps = function(){
+    var currentUser = store.get('localUser');
+    console.log(currentUser);
     console.log("CHECK::Services::getServiceReps::currentUser::", JSON.stringify(currentUserService));
     return $http({ method: 'GET',
                       url: DEALERSHIP_API.url + "/dealerships/" + currentUserService.dealership_id + "/service_reps",
-                      headers: {'Authorization' : currentUserService.token}
+                      headers: {'Authorization' : currentUser.auth_token}
                 }).success( function(data){
                     currentDealerService.service_reps = [];
                     var newData = angular.copy(data);
@@ -157,21 +170,18 @@ app.service('dealerService', function($http, $ionicLoading, currentUserService, 
   };
 
   this.getDealership = function(){
+    var currentUser = store.get('localUser');
+    console.log(currentUser);
     //-- Get Current User Object
     // localforage.getItem('currentUser').then(function(value){
     //   currentUserService = value;
       console.log("SUCCESS::getDealership::currentUserService::" + JSON.stringify(currentUserService));
     // }).catch(function(err) {console.log("GET ITEM ERROR::LoginCtrl::currentUser", JSON.stringify(err));});
 
-
-    /// get currentuser from UserSvc
-    var currentUser = userSvc.getUser();
-    console.log(currentUser);
-
     return $http({ method: 'GET',
         url: DEALERSHIP_API.url + "/dealerships/" + currentUser.dealership_id
     }).success( function( data ){
-      
+
         // set currentdealership in loginctrl//
 
       //  data = currentDealerSvc.setDealership();

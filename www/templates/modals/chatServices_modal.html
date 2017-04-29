@@ -5,21 +5,22 @@
      </ion-nav-title>
   </ion-nav-bar>
   <ion-content style="margin-top:20px">
+    <ion-item ng-click="startServicesChat(x)" ng-repeat="x in reps">{{x.name}}</ion-item>
     <!-- <div ng-repeat="msg in messages">{{msg}}</div> -->
-  <div class="list" id="messages" ng-if="messages.length > 0">
-  	    <li class="item item-text-wrap no-border {{ isNotCurrentUser(msg.user) }}" ng-repeat="msg in messages">
-  	    	<div class="msg">
-  		    	<div class="details padding">
-  					<p>
-            <!--   <div>{{messages}}</div> -->
-  						<div class="user">{{ msg.user }}</div>
-  						<div class="message">{{ msg.text }}</div>
-  					</p>
-  					<small>{{ humanize(msg.time) }}</small>
-  		    	</div>
-  	    	</div>
-  	    </li>
-  	</div>
+  <!-- <div class="list" id="messages" ng-if="messages.length > 0">
+        <li class="item item-text-wrap no-border {{ isNotCurrentUser(msg.user) }}" ng-repeat="msg in messages">
+          <div class="msg">
+            <div class="details padding">
+            <p>
+            <div>{{messages}}</div>
+              <div class="user">{{ msg.user }}</div>
+              <div class="message">{{ msg.text }}</div>
+            </p>
+            <small>{{ humanize(msg.time) }}</small>
+            </div>
+          </div>
+        </li>
+    </div> -->
 
   	 <!-- <div class="card" ng-if="!$scope.messages.length">
   	  <div class="item item-text-wrap">
@@ -30,10 +31,10 @@
     </ion-content>
 
 
-  <footer class="bar bar-footer bar-positive item-input-inset has-content">
+  <!-- <footer class="bar bar-footer bar-positive item-input-inset has-content">
       <label class="item-input-wrapper">
         <input type="text" id="message" name="text" ng-model="text" placeholder="Type message">
       </label>
-     	<a class="button button-icon icon ion-android-send" ng-click="sendTextMessage(text)"></a>
-  </footer>
+       <a class="button button-icon icon ion-android-send" ng-click="sendTextMessage(text)"></a>
+  </footer> -->
 </ion-modal-view>

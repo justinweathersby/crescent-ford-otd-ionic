@@ -18,7 +18,9 @@
   // function SocketService(socketFactory){
        return socketFactory({
 
-           ioSocket: io.connect('http://localhost:3000')
+        //   ioSocket: io.connect('http://localhost:3000')
+         ioSocket: io.connect('https://testsocketchat.herokuapp.com/')
+
 
        });
 //   }
