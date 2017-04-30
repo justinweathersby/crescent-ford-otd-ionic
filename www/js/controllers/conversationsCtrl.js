@@ -5,7 +5,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 		$scope.messages = [];
     $scope.serviceRep = {};
     $scope.room = {
-     'room_name': "services" /// TODO change? necessary?
+     'room_name': "services" /// TODO change
  };
 
   $ionicPlatform.ready(function() {
@@ -49,7 +49,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
     console.log(x);
     store.set('recipient_id', x.id);
     SocketService.emit('join:room', $scope.room);
-    ///write a service to hold service rep info
+
     $scope.chatServicesModal.hide();
   //   $state.go('chat',{room:x.created_at})
    $state.go('chat',{room:x.created_at}) //CHANGE TO WHAT? TODO?
@@ -64,6 +64,20 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 		};
 
     $scope.openServiceModal = function() {
+      modalService
+        .chatServicesModal('templates/modals/chatServices_modal.html', $scope)
+        .then(function(modal) {
+          modal.show();
+          dealerService.getServiceReps().then(function(result){
+            console.log(result, "result");
+            $scope.reps = result.data;
+          }).catch(function(err){
+            console.log(err, "error");
+          })
+        });
+    }
+
+    $scope.openSalesModal = function() {
       modalService
         .chatServicesModal('templates/modals/chatServices_modal.html', $scope)
         .then(function(modal) {
@@ -88,7 +102,6 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
   				'text': text,
           'recipient_id': recipient_id,
           'conversation_id': conversation_id
-  				//'time': moment() // do you want time?
   			};
 
       ChatService.saveMessage(msg).then(function(result) {
