@@ -4,9 +4,6 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
     $scope.text = "";
 		$scope.messages = [];
     $scope.serviceRep = {};
-    $scope.room = {
-     'room_name': "services" /// TODO change
- };
 
   $ionicPlatform.ready(function() {
     $scope.currentUser = userSvc.getUser();
@@ -22,9 +19,6 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
     console.log($scope.currentUser);
     $scope.dealership = store.get('localDealership')
     console.log($scope.dealership);
-
-
-  //  SocketService.emit('join:room', $scope.room);
   }
 
   ChatService.getMessages().then(function(result) {
@@ -39,8 +33,13 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 }); //end of platform ready
 
   $scope.goBack = function() {
-    console.log("h");
-    SocketService.emit('leave:room', $scope.room);
+    var created_at = store.get("created_at");
+    var room = {
+        'room_name': created_at
+    };
+
+
+    SocketService.emit('leave:room', room);
      $state.go('tab.conversations');
   }
 
@@ -48,7 +47,12 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
   $scope.startServicesChat = function(x) {
     console.log(x);
     store.set('recipient_id', x.id);
-    SocketService.emit('join:room', $scope.room);
+    store.set('created_at', x.created_at);
+    var room = {
+        'room_name': x.created_at
+    };
+
+    SocketService.emit('join:room', room);
 
     $scope.chatServicesModal.hide();
   //   $state.go('chat',{room:x.created_at})
@@ -93,11 +97,13 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
     }
 
   $scope.sendTextMessage = function(text) {
-    console.log($scope.room);
+    var room = store.get('created_at');
+    console.log(room);
+
     var recipient_id = store.get('recipient_id');
-    var conversation_id = store.get('conversation_id')
+    var conversation_id = store.get('conversation_id');
   			var msg = {
-  				'room': $scope.room.room_name,
+  				'room': room,
   				'user': $scope.currentUser.name,
   				'text': text,
           'recipient_id': recipient_id,
@@ -130,10 +136,12 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 		});
 
     $scope.openConversation = function(x) {
-      SocketService.emit('join:room', $scope.room);
+      var room = {
+          'room_name': x.created_at
+      };
+      SocketService.emit('join:room', room);
 
-      console.log(x);
-      store.set('conversation_id', x.conversation_id);
+      store.set('created_at', x.created_at);
       $state.go('chat',{room:x.conversation_id})
 
     }
