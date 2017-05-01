@@ -1,7 +1,22 @@
-app.controller('TabsCtrl', function($scope, $rootScope, $state,
-                                    $ionicActionSheet, $ionicHistory, $ionicPlatform, $ionicLoading, $ionicPopup, $cordovaInAppBrowser,
-                                    $cordovaBadge, $cordovaDialogs,
-                                    authService, currentUserService, currentDealerService, dealerService){
+app.controller('TabsCtrl', function($scope, $rootScope, $state, $ionicActionSheet, $ionicHistory, $ionicPlatform, $ionicLoading, $ionicPopup, $cordovaInAppBrowser, $cordovaBadge, $cordovaDialogs,
+authService, currentUserService, currentDealerService, dealerService, store, userSvc, currentDealerSvc){
+
+
+  $ionicPlatform.ready(function() {
+      $scope.currentUser = userSvc.getUser();
+      $scope.dealership = currentDealerSvc.getDealership();
+
+    if($scope.dealership.id === undefined){
+      console.log("no current dealership");
+      //-- Get Current User Object
+
+      $scope.currentUser = store.get('localUser');
+      console.log($scope.currentUser);
+      $scope.dealership = store.get('localDealership')
+      console.log($scope.dealership);
+
+    }
+  });
 
 $scope.$on('cloud:push:notification', function(event, data) {
   var payload = data.message.raw.additionalData.payload;
@@ -26,22 +41,9 @@ $scope.$on('cloud:push:notification', function(event, data) {
 
 $rootScope.message_badge_count = 0;
 
-if (currentDealerService){
-  $scope.dealership = currentDealerService;
-}
-else{
-    //-- Load Current Dealer
-    localforage.getItem('currentDealer').then(function (value){
-      angular.copy(value, currentDealerService);
-      $scope.dealership = currentDealerService;
-    }).catch(function(err){
-      console.log("GET ITEM ERROR::loginCtrl::currentDealer::", JSON.stringify(err));
-    });
-}
-
 function openExternalURL(url, template, alertString){
   if (url){
-    if(currentDealerService.iframeFriendly){ $state.go(template);}
+    if($scope.dealership.iframeFriendly){ $state.go(template);}
     else{ openLinkInBrowser(url);}
   }else{noUrlAlertAndRedirect(alertString);}
 };
@@ -145,13 +147,13 @@ $scope.openInventoryModal = function(){
       hideSheet();
       switch(index){
         case 0:
-        openExternalURL(currentDealerService.new_cars_url, "tab.new-cars", "New Cars");
+        openExternalURL($scope.dealership.new_cars_url, "tab.new-cars", "New Cars");
         break;
         case 1:
-        openExternalURL(currentDealerService.used_cars_url, "tab.used-cars", "Used Cars");
+        openExternalURL($scope.dealership.used_cars_url, "tab.used-cars", "Used Cars");
         break;
         case 2:
-        openExternalURL(currentDealerService.parts_url, "tab.parts", "Parts");
+        openExternalURL($scope.dealership.parts_url, "tab.parts", "Parts");
         break;
       }
 
@@ -171,10 +173,10 @@ $scope.openSpecialsModal = function(){
       hideSheet();
       switch(index){
         case 0:
-        openExternalURL(currentDealerService.specials_url, "tab.specials", "Specials");
+        openExternalURL($scope.dealership.specials_url, "tab.specials", "Specials");
         break;
         case 1:
-        openExternalURL(currentDealerService.service_specials_url, "tab.service-specials", "Service Specials");
+        openExternalURL($scope.dealership.service_specials_url, "tab.service-specials", "Service Specials");
         break;
       }
     }
@@ -193,7 +195,7 @@ $scope.openMoreModal = function(){
       hideSheet();
       switch(index){
         case 0:
-        openExternalURL(currentDealerService.financing_url, "tab.financing", "Financing");
+        openExternalURL($scope.dealership.financing_url, "tab.financing", "Financing");
         break;
         case 1:
         logout();
@@ -208,18 +210,20 @@ $scope.goToChat = function(){
 };
 
 function logout() {
-  localforage.clear().then(function() {
-    // Run this code once the database has been entirely deleted.
-    console.log('Database is now empty.');
-    authService.resetCurrent();
-    dealerService.resetCurrent();
-    $ionicHistory.clearCache();
-    $ionicHistory.clearHistory();
-    $state.go('login', {}, {reload:true});
-  }).catch(function(err) {
-      // This code runs if there were any errors
-      console.log("ERROR::tabsCtrl::logout::clear::", JSON.stringify(err));
-  });
+  store.set('localDealership', null);
+  store.set('localUser', null);
+  // localforage.clear().then(function() {
+  //   // Run this code once the database has been entirely deleted.
+  //   console.log('Database is now empty.');
+  //   authService.resetCurrent();
+  //   dealerService.resetCurrent();
+  $ionicHistory.clearCache();
+  $ionicHistory.clearHistory();
+  $state.go('login', {}, {reload:true});
+  // }).catch(function(err) {
+  //     // This code runs if there were any errors
+  //     console.log("ERROR::tabsCtrl::logout::clear::", JSON.stringify(err));
+  // });
 
 };
 });

@@ -1,53 +1,31 @@
 app.controller('DashCtrl', function($scope, $sce, $http, $state, $timeout,
-                                    $ionicPlatform, $ionicLoading, $ionicPopup, $ionicActionSheet, $ionicHistory,
-                                    currentUserService, currentDealerService, dealerService,
-                                    DEALERSHIP_API) {
+  $ionicPlatform, $ionicLoading, $ionicPopup, $ionicActionSheet, $ionicHistory,
+  currentUserService, currentDealerService, currentDealerSvc, dealerService, userSvc, store,
+  DEALERSHIP_API) {
 
+  $ionicPlatform.ready(function() {
+    $scope.currentUser = userSvc.getUser();
+    console.log($scope.currentUser);
+    $scope.dealership = currentDealerSvc.getDealership();
+    console.log($scope.dealership);
 
-
-  if(currentDealerService.id == null){
+  if($scope.dealership.id === undefined){
+    console.log("no current dealership");
     //-- Get Current User Object
-    localforage.getItem('currentUser').then(function(value){
-      angular.copy(value, currentUserService);
-      console.log("After Get currentUser. currentUserService::" + JSON.stringify(currentUserService));
-      dealershipInit();
-    }).catch(function(err) {console.log("GET ITEM ERROR::LoginCtrl::currentUser", JSON.stringify(err));});
+
+    $scope.currentUser = store.get('localUser');
+    console.log($scope.currentUser);
+    $scope.dealership = store.get('localDealership')
+    console.log($scope.dealership);
 
   }
-
-  //--Initialize Function for Controller
-  function dealershipInit() {
-    $ionicLoading.show({
-      template: '<p>Loading...</p><ion-spinner></ion-spinner>',
-      hideOnStateChange: true,
-      duration: 5000
-    });
-
-    dealerService.getDealership().success(function(){
-      if ($scope.dealership.id != currentDealerService.id)
-      {
-        $scope.dealership = currentDealerService;
-        $scope.iframeFriendly = currentDealerService.iframeFriendly;
-        $scope.dealership.full_location_string = currentDealerService.location;
-      }
-      $ionicLoading.hide();
-
-    }).error(function(){
-      $ionicLoading.hide();
-      var alertPopup = $ionicPopup.alert({
-        title: 'Could Not Get Dealership Profile',
-        template: "Please Restart Your App. If This problem continues please contact us."
-      });
-    });
- };
- //---End Initialize
-
+});
 
  $scope.contactSales = function(){
     window.plugin.email.open({
          to:      $scope.dealership.sales_email,
          subject: $scope.dealership.name + ' Sales Inquiry',
-         body:    currentUserService.name + ': '
+         body:    $scope.currentUser.name + ': '
          }, function () {
              $ionicPopup.alert({
                      title: 'Email Not Sent',
@@ -71,11 +49,11 @@ app.controller('DashCtrl', function($scope, $sce, $http, $state, $timeout,
          this);
   };
   $scope.goToService = function(){
-    if(currentDealerService.service_url){
-      if(currentDealerService.iframeFriendly){ $state.go('tab.service');}
+    if($scope.dealership.service_url){
+      if($scope.dealership.iframeFriendly){ $state.go('tab.service');}
       else{
         $ionicPlatform.ready(function(){
-          window.open(currentDealerService.service_url, '_blank', 'location=no');
+          window.open($scope.dealership.service_url, '_blank', 'location=no');
         });
       }
     }

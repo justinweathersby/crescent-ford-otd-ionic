@@ -56,6 +56,13 @@ app.config(function($stateProvider, $urlRouterProvider) {
       }
     }
   })
+
+  .state('chat', {
+  url: "/conversations/:room",
+  templateUrl: "templates/chat.html",
+  controller: 'ConversationsCtrl'
+})
+
   .state('tab.messages', {
     url: '/messages',
     cache: false,
