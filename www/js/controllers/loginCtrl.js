@@ -1,42 +1,21 @@
-app.controller('LoginCtrl', function($scope, $http, $state,
-                                     $ionicLoading, $ionicPopup, $ionicPlatform, $ionicPush,
-                                     authService, currentUserService, currentDealerService, dealerService,
-                                     DEALERSHIP_API) {
+app.controller('LoginCtrl', function($scope, $http, $state, $ionicLoading, $ionicPopup,       $ionicPlatform, $ionicPush,authService, currentUserService, userSvc, currentDealerService, currentDealerSvc, dealerService, DEALERSHIP_API, store) {
 
-  //-- Get Current User Object
-  localforage.getItem('currentUser').then(function(value){
-    angular.copy(value, currentUserService);
 
-    //-- Load Current Dealer
-    localforage.getItem('currentDealer').then(function (value){
-      angular.copy(value, currentDealerService);
-      if(currentUserService.token){
-        $state.go('tab.dash');
-      }
-      else{
-        console.log("Getting Device Token in Login Ctrl");
-        $ionicPlatform.ready(function() {
-          $ionicPush.register().then(function(t) {
-            return $ionicPush.saveToken(t);
-          }).then(function(t) {
-            currentUserService.device_token = t.token;
-            currentUserService.device_type = t.type;
+  $ionicPlatform.ready(function() {
+    $scope.currentUser = userSvc.getUser();
+    $scope.dealership = currentDealerSvc.getDealership();
 
-            console.log("loginCTRL::::DEVICE TOKEN:::::::", t.token);
+  if($scope.dealership.id === undefined){
+    console.log("no current dealership");
+    //-- Get Current User Object
 
-            localforage.setItem('currentUser', currentUserService).then(function (value){
-              console.log("Value set in loginctrl:", JSON.stringify(value));
+    $scope.currentUser = store.get('localUser');
+    console.log($scope.currentUser);
+    $scope.dealership = store.get('localDealership')
+    console.log($scope.dealership);
 
-            }).catch(function(err){
-              console.log("SET ITEM ERROR::app.js::currentUserService::", JSON.stringify(err));
-            });
-          });
-        });
-      }
-    }).catch(function(err){
-      console.log("GET ITEM ERROR::loginCtrl::currentDealer::", JSON.stringify(err));
-    });
-  }).catch(function(err) {console.log("GET ITEM ERROR::LoginCtrl::currentUser", JSON.stringify(err));});
+  }
+});
 
   $scope.login = function(user) {
     $ionicLoading.show({
@@ -48,15 +27,24 @@ app.controller('LoginCtrl', function($scope, $http, $state,
     if ($scope.loginForm.$valid){
         console.log("loginCtrl::currentUserService:::", JSON.stringify(currentUserService));
 
-        authService.login(user).success(function(){
-
+        authService.login(user).success(function(data){
+          /// this sets and gets the currentUser///
+          userSvc.setUser(data);
+          $scope.currentUser = userSvc.getUser();
+          console.log($scope.currentUser);
           //--Try to preload the dealership after click
-          dealerService.getDealership().success(function(){
+          dealerService.getDealership().success(function(data){
+            console.log(data);
+            //this sets and gets current dealership
+            currentDealerSvc.setDealership(data)
+            $scope.currentDealership = currentDealerSvc.getDealership();
+            console.log($scope.currentDealership);
             $state.go('tab.dash');
             $ionicLoading.hide();
 
-          }).error(function(){
-            $ionicLoading.hide();
+        }).error(function(err){
+          console.log(err);
+           $ionicLoading.hide();
             var alertPopup = $ionicPopup.alert({
               title: 'Could Not Get Dealership Profile',
               template: "Please Restart Your App. If This problem continues please contact us."
@@ -79,6 +67,7 @@ app.controller('LoginCtrl', function($scope, $http, $state,
       });
     }
   }; //end of login function
+
 
   $scope.resetPassword = function(email) {
     $ionicLoading.show({

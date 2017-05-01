@@ -1,4 +1,10 @@
-var app = angular.module('crescent-ford-otd', ['ionic', 'ionic.cloud', 'ngCordova' ]);
+var app = angular.module('crescent-ford-otd', [
+  'ionic',
+  'ionic.cloud',
+  'ngCordova',
+  'angular-storage',
+  'btford.socket-io'
+]);
 
 app.config(function($ionicCloudProvider, $compileProvider, $ionicConfigProvider){
   $ionicCloudProvider.init({
