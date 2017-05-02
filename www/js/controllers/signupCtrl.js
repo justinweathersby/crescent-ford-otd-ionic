@@ -1,7 +1,7 @@
 app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
                                       $ionicPlatform, $ionicPush, $ionicPopup, $ionicPopup, $ionicLoading, $ionicHistory,
                                       authService, currentUserService, currentDealerService, dealerService,
-                                      DEALERSHIP_API)
+                                      DEALERSHIP_API, userSvc, currentDealerSvc, store)
 {
   $ionicLoading.show({
     template: '<p>Loading...</p><ion-spinner></ion-spinner>',
@@ -15,6 +15,7 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
         .success( function( data )
         {
           $scope.dealerships = data;
+          console.log($scope.dealerships, "dealerships");
           $ionicLoading.hide();
         }
       )
@@ -28,10 +29,11 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
     console.log("Dealership Selected::dealership_id::", dealership_id);
     if (dealership_id != null){
       dealerService.resetCurrent();
-      currentUserService.dealership_id = dealership_id;
+      $scope.currentUser = store.get('localUser');
+    //  currentUserService.dealership_id = dealership_id;
 
       //--This is for determining if this is a new user or old user changing thier viewing dealership
-      if(currentUserService.token != null) // you had to have loged in if you have a token
+      if($scope.currentUser.token != null) // you had to have loged in if you have a token
       {
         $ionicHistory.clearCache();
         $ionicLoading.show({
@@ -40,12 +42,14 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
           duration: 5000
         });
 
-        localforage.setItem('currentUser', currentUserService).then(function (value){
-          console.log("Value set in currentDealer:", JSON.stringify(value));
+
+
+        // localforage.setItem('currentUser', currentUserService).then(function (value){
+        //   console.log("Value set in currentDealer:", JSON.stringify(value));
 
           //--Try to preload the dealership after click
           dealerService.getDealership().success(function(){
-            console.log("About to go to tab.dash... currentUser.dealership_id: ", JSON.stringify(currentUserService));
+            // console.log("About to go to tab.dash... currentUser.dealership_id: ", JSON.stringify(currentUserService));
             $state.go('tab.dash');
             $ionicLoading.hide();
 
@@ -59,9 +63,9 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
           });
 
 
-        }).catch(function(err){
-          console.log("SET ITEM ERROR::singupCtrl::dealershipSelected::currentUser::", JSON.stringify(err));
-        });
+        // }).catch(function(err){
+        //   console.log("SET ITEM ERROR::singupCtrl::dealershipSelected::currentUser::", JSON.stringify(err));
+        // });
 
       }
       else{
@@ -70,9 +74,13 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
     }
   }
 
-  $scope.createUser = function(user)
-  {
+  $scope.createUser = function(user){
+
+    console.log(user);
+    $scope.currentUser = store.get('localUser');
     if ($scope.signupForm.$valid){
+      console.log("valid?");
+
       $ionicPlatform.ready(function() {
         $ionicPush.register().then(function(t) {
           return $ionicPush.saveToken(t);
@@ -86,29 +94,24 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
             template: '<p>Loading...</p><ion-spinner></ion-spinner>'
           });
 
-        	$http.post(DEALERSHIP_API.url + "/users", {user: {email: user.email,
+          $http.post(DEALERSHIP_API.url + "/users", {user: {email: user.email,
                                                              password: user.password,
                                                              name: user.name,
-                                                             device_token: currentUserService.device_token,
-                                                             device_type: currentUserService.device_type,
-                                                             dealership_id: currentUserService.dealership_id}})
-        	.success( function (data) {
+                                                             device_token: $scope.currentUser.device_token,
+                                                             device_type: $scope.currentUser.device_type,
+                                                             dealership_id: $scope.currentUser.dealership_id}})
+          .success( function (data) {
             $ionicLoading.hide();
-            currentUserService.token = data.user.auth_token;
-            currentUserService.id = data.user.id;
-            currentUserService.name = data.user.name;
-            currentUserService.email = data.user.email;
-            currentUserService.roles = data.roles;
-            currentUserService.isCustomer = data.isCustomer;
+            $scope.currentUser.token = data.user.auth_token;
+            $scope.currentUser.id = data.user.id;
+            $scope.currentUser.name = data.user.name;
+            $scope.currentUser.email = data.user.email;
+            $scope.currentUser.roles = data.roles;
+            $scope.currentUser.isCustomer = data.isCustomer;
 
-            localforage.setItem('currentUser', currentUserService).then(function (value){
-              console.log("Value set in currentDealer:", JSON.stringify(value));
-              $state.go('tab.dash');
-            }).catch(function(err){
-              console.log("SET ITEM ERROR::singupCtrl::dealershipSelected::currentUser::", JSON.stringify(err));
-            });
+            userSvc.setUser(data.user);
 
-        	})
+          })
           .error( function(error)
           {
             $ionicLoading.hide();
@@ -133,6 +136,7 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
       });
     }
     else{
+      console.log("error");
       var errorResponse = "";
       if(user.password != user.password_confirmation){
         errorResponse = "Passwords do not match";

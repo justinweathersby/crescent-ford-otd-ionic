@@ -33,9 +33,9 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 }); //end of platform ready
 
   $scope.goBack = function() {
-    var created_at = store.get("created_at");
+    var unique_id = store.get("unique_id");
     var room = {
-        'room_name': created_at
+        'room_name': unique_id
     };
 
 
@@ -47,16 +47,16 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
   $scope.startServicesChat = function(x) {
     console.log(x);
     store.set('recipient_id', x.id);
-    store.set('created_at', x.created_at);
+    store.set('unique_id', x.unique_id);
     var room = {
-        'room_name': x.created_at
+        'room_name': x.unique_id
     };
 
     SocketService.emit('join:room', room);
 
     $scope.chatServicesModal.hide();
-  //   $state.go('chat',{room:x.created_at})
-   $state.go('chat',{room:x.created_at}) //CHANGE TO WHAT? TODO?
+  //   $state.go('chat',{room:x.unique_id})
+   $state.go('chat',{room:x.unique_id}) //CHANGE TO WHAT? TODO?
 }
 
   $scope.isNotCurrentUser = function(user){
@@ -97,7 +97,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
     }
 
   $scope.sendTextMessage = function(text) {
-    var room = store.get('created_at');
+    var room = store.get('unique_id');
     console.log(room);
 
     var recipient_id = store.get('recipient_id');
@@ -137,11 +137,12 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 
     $scope.openConversation = function(x) {
       var room = {
-          'room_name': x.created_at
+          'room_name': x.unique_id
       };
       SocketService.emit('join:room', room);
 
-      store.set('created_at', x.created_at);
+
+      store.set('unique_id', x.unique_id);
       $state.go('chat',{room:x.conversation_id})
 
     }
