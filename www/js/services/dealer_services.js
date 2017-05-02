@@ -48,6 +48,26 @@ app.service('currentDealerSvc', function(store){
 });
 
 app.service('dealerService', function($http, $ionicLoading, currentUserService, currentDealerService, userSvc, currentDealerSvc, DEALERSHIP_API, store){
+  this.resetCurrent = function (){
+    currentDealerService.id =
+    currentDealerService.name =
+    currentDealerService.location =
+    currentDealerService.primary_color =
+    currentDealerService.new_cars_url =
+    currentDealerService.used_cars_url =
+    currentDealerService.specials_url =
+    currentDealerService.service_url =
+    currentDealerService.service_specials_url =
+    currentDealerService.parts_url =
+    currentDealerService.financing_url =
+    currentDealerService.service_email =
+    currentDealerService.sales_email =
+    currentDealerService.facebook_url =
+    currentDealerService.twitter_url =
+    currentDealerService.logo_url =
+    currentDealerService.background_image_url =
+    currentDealerService.iframeFriendly = null;
+  };
 
   this.getSalesReps = function(){
     var currentUser = store.get('localUser');
@@ -101,6 +121,29 @@ app.service('dealerService', function($http, $ionicLoading, currentUserService, 
           console.log("ERROR::MORE INFO::currentUserService:", JSON.stringify(currentUser));
           $ionicLoading.hide();
       });
+  };
+  this.getDealerships = function(){
+    var currentUser = store.get('localUser');
+
+    return $http({ method: 'GET',
+        url: DEALERSHIP_API.url + "/dealerships/"
+    }).success( function( data ){
+
+
+        $ionicLoading.hide();
+      }).error( function(error){
+          console.log("ERROR::services::getDealership::GET::deaelerships::", JSON.stringify(error));
+          console.log("ERROR::MORE INFO::currentUserService:", JSON.stringify(currentUser));
+          $ionicLoading.hide();
+      });
+  };
+
+  this.resetCurrent = function(){
+    currentUserService.id =
+    currentUserService.token =
+    currentUserService.name =
+    currentUserService.email =
+    currentUserService.dealership_id = null;
   };
 
 

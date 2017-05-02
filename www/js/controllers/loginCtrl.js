@@ -105,12 +105,9 @@ app.controller('LoginCtrl', function($scope, $http, $state, $ionicLoading, $ioni
        duration: 5000
     });
 
-    $http({ method: 'GET',
-            url: DEALERSHIP_API.url + "/dealerships"
-          })
-          .success( function( data )
-          {
+    dealerService.getDealership().success(function(data){
             $scope.dealerships = data;
+            console.log($scope.dealerships, "dealerships");
 
             $ionicLoading.hide();
 
@@ -118,37 +115,34 @@ app.controller('LoginCtrl', function($scope, $http, $state, $ionicLoading, $ioni
               $state.go('dealership-list');
             }
             else{
-              dealerService.resetCurrent();
-              currentUserService.dealership_id = $scope.dealerships[0].id
+              dealerService.getDealership().success(function(data){
+                console.log(data);
+                //this sets and gets current dealership
+                currentDealerSvc.setDealership(data)
+                $scope.currentDealership = currentDealerSvc.getDealership();
+                console.log($scope.currentDealership);
+                $state.go('signup');
+                $ionicLoading.hide();
 
-              localforage.setItem('currentUser', currentUserService).then(function (value){
-                console.log("Value set in currentDealer:", JSON.stringify(value));
-
-                //--Try to preload the dealership after click
-                dealerService.getDealership().success(function(){
-                  $state.go('signup');
-
-                }).error(function(){
-                  $ionicLoading.hide();
-                  var alertPopup = $ionicPopup.alert({
-                    title: 'Could Not Get Dealership Profile',
-                    template: "Please Restart Your App. If This problem continues please contact us."
-                  });
-                  $state.go('login');
+            }).error(function(err){
+              console.log(err);
+               $ionicLoading.hide();
+                var alertPopup = $ionicPopup.alert({
+                  title: 'Could Not Get Dealership Profile',
+                  template: "Please Restart Your App. If This problem continues please contact us."
                 });
-              }).catch(function(err){
-                console.log("SET ITEM ERROR::loginCtrl::goToSignup::currentUser::", JSON.stringify(err));
+                $state.go('login');
               });
-            }
-          }
-        )
-        .error( function(error)
-        {
-          $ionicLoading.hide();
-        }
-    );
-  };
 
+      }
+  }).error(function(){
+    $ionicLoading.hide();
+    var alertPopup = $ionicPopup.alert({
+      title: 'Login Unsuccessful',
+      template: "Email and password did not match our records."
+    });
+  });
+}
   $scope.goToLogin = function() {
     $state.go('login');
   };
