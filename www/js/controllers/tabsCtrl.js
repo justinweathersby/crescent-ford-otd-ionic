@@ -144,6 +144,7 @@ $scope.openInventoryModal = function(){
     cancelText: 'Cancel',
     cancel: function() {},
     buttonClicked: function(index) {
+      $scope.dealership = store.get('localDealership'); // when hit back button Android $scope.dealership dropped
       hideSheet();
       switch(index){
         case 0:
