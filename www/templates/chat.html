@@ -41,10 +41,14 @@
     </ion-content>
 
 
-  <footer class="bar bar-footer bar-positive item-input-inset has-content">
-      <label class="item-input-wrapper">
-        <input type="text" id="message" name="text" ng-model="text" placeholder="Type message">
-      </label>
-     	<a class="button button-icon icon ion-android-send" ng-click="sendTextMessage(text)"></a>
-  </footer>
+    <ion-footer-bar keyboard-attach style="height: 55px; padding:0; background-color: #444;">
+       <div class="button-bar" style="padding: 8px; padding-top:1px;">
+         <div class="message-item item-divider" style="width:100%; margin-bottom: 0; background-color: #444;">
+           <button class="button button-small button-positive" style="float:right; max-height: 35px;background: #34a2dab3;" ng-click="sendTextMessage(text)">Send</button>
+           <div style="overflow: hidden; padding-right: .5em;">
+             <input type="text" ng-model="replyMessage.body" style="width: 100%; color:#212121" placeholder="Type message"/>
+           </div>
+         </div>
+       </div>
+     </ion-footer-bar>
 </ion-view>

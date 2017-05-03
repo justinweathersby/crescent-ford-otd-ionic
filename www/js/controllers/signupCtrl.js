@@ -30,10 +30,11 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
     if (dealership_id != null){
       dealerService.resetCurrent();
       $scope.currentUser = store.get('localUser');
+      console.log($scope.currentUser);
     //  currentUserService.dealership_id = dealership_id;
 
       //--This is for determining if this is a new user or old user changing thier viewing dealership
-      if($scope.currentUser.token != null) // you had to have loged in if you have a token
+      if($scope.currentUser.auth_token != null) // you had to have loged in if you have a token
       {
         $ionicHistory.clearCache();
         $ionicLoading.show({
