@@ -9890,7 +9890,7 @@ a.button {
       -ms-flex-item-align: center;
       align-self: center;
       max-width: 90%;
-      max-height: 25vh;
+      max-height: 22vh;
       border-radius: 20px;
       box-shadow: 0 0 10px black; }
   .login-page label#rounded {
