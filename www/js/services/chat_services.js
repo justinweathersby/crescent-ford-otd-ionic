@@ -40,6 +40,21 @@ app.service('ChatService', function($http, DEALERSHIP_API, store) {
     })
 }
 
+      function getAllMessages(x) {
+        console.log(x);
+
+        var data = {
+           "conversation_id": x
+         }
+      // console.log(params);
+       return $http.get(DEALERSHIP_API.url + "/messages?conversation_id=" + x , _options).then(function(result) {
+       console.log(result);
+
+       return {data: result};
+
+     })
+}
+
 // $http({ method: 'GET',
 //                       url: DEALERSHIP_API.url + "/conversations",
 //                       headers: {'Authorization' : currentUserService.token}
@@ -50,7 +65,8 @@ app.service('ChatService', function($http, DEALERSHIP_API, store) {
 
       return {
         saveMessage: saveMessage,
-        getMessages: getMessages
+        getMessages: getMessages,
+        getAllMessages: getAllMessages
       }
 
 
