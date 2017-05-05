@@ -1,4 +1,4 @@
-app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, $stateParams, $cordovaBadge,$ionicPopup, $ionicLoading, $ionicModal,currentUserService, currentConversation, currentDealerService, dealerService, SocketService, $ionicPlatform, userSvc, currentDealerSvc, store, modalService, $ionicScrollDelegate, DEALERSHIP_API, ChatService, $ionicHistory){
+app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, $stateParams, $cordovaBadge,$ionicPopup, $ionicLoading, $ionicModal,currentUserService, currentConversation, currentDealerService, dealerService, SocketService, $ionicPlatform, userSvc, currentDealerSvc, store, modalService, $ionicScrollDelegate, DEALERSHIP_API, ChatService, $ionicHistory, $timeout){
 
   // var me = this;
     $scope.text = "";
@@ -20,17 +20,18 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
     $scope.dealership = store.get('localDealership')
     console.log($scope.dealership);
   }
-
-  ChatService.getMessages().then(function(result) {
-      console.log(result, "messages");
-      $scope.conversations = result.data.data.conversations;
-
-    }).catch(function(err) {
-      console.log(err, "error");
-
-  })
-
+    updateConversations();
 }); //end of platform ready
+
+  function updateConversations() {
+    console.log("updating convos?");
+    ChatService.getMessages().then(function(result) {
+        console.log(result, "messages");
+        $scope.conversations = result.data.data.conversations;
+      }).catch(function(err) {
+        console.log(err, "error");
+    })
+  }
 
   $scope.goBack = function() {
     var unique_id = store.get("unique_id");
@@ -47,6 +48,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
   $scope.startServicesChat = function(x) {
     console.log(x);
     store.set('recipient_id', x.id);
+    store.set('conversation_id', "");
     store.set('unique_id', x.unique_id);
     var room = {
         'room_name': x.unique_id
@@ -59,14 +61,14 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
    $state.go('chat',{room:x.unique_id}) //CHANGE TO WHAT? TODO?
 }
 
+
   $scope.isNotCurrentUser = function(user){
 
-  			if($scope.currentUser.name != user){
-  				return 'not-current-user';
-  			}
-  			return 'current-user';
-		};
-
+        if($scope.currentUser.name != user){
+          return 'not-current-user';
+        }
+        return 'current-user';
+    };
     $scope.openServiceModal = function() {
       modalService
         .chatServicesModal('templates/modals/chatServices_modal.html', $scope)
@@ -135,7 +137,44 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 			$ionicScrollDelegate.scrollBottom();
 		});
 
+
+   $scope.isNotCurrentSender = function(sender_id){
+
+   			if($scope.currentUser.id != sender_id){
+   				return 'not-current-user';
+   			}
+   			return 'current-user';
+ 		};
+
     $scope.openConversation = function(x) {
+      console.log(x);
+        store.set('conversation_id', x.conversation_id);
+        store.set('recipient_id', "");
+      // $scope.oldMessages = x.messages;
+      $scope.currentConvoId = x.conversation_id;
+
+      ChatService.getAllMessages($scope.currentConvoId).then(function(result) {
+          console.log(result.data.data.messages, "All messages");
+        //  $scope.conversations = result.data.data.conversations;
+          $scope.oldMessages = result.data.data.messages;
+          console.log($scope.oldMessages);
+
+          modalService
+            .chatModal('templates/modals/chatModal.html', $scope)
+            .then(function(modal) {
+              modal.show();
+              $ionicScrollDelegate.scrollBottom();
+            });
+
+        }).catch(function(err) {
+          console.log(err, "error");
+
+      })
+    //  console.log($scope.conversations);
+    //  if(x.conversation_id === $scope.conversation)
+
+  //    console.log($scope.oldMessages);
+    //  $scope.$apply();
       var room = {
           'room_name': x.unique_id
       };
@@ -143,8 +182,14 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 
 
       store.set('unique_id', x.unique_id);
-      $state.go('chat',{room:x.conversation_id})
 
     }
+
+    $scope.closeChatModal = function() {
+      $scope.chatModal.hide();
+      $scope.oldMessages = "";
+      console.log("hello");
+      updateConversations()
+    };
 
 });
