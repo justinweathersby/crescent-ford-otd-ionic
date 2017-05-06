@@ -11,6 +11,23 @@ app.service('ChatService', function($http, DEALERSHIP_API, store) {
       'Authorization' : currentUser.auth_token
     }
   };
+  function saveNewMessage(msg) {
+    console.log(msg);
+  //  if(msg.recipient)
+    var data = {
+       "message":{
+       "body": msg.text
+       },
+       "recipient_id": msg.recipient_id
+      // "conversation_id": msg.conversation_id
+     }
+
+      return $http.post(DEALERSHIP_API.url + '/messages', data, _options).then(function(result){
+        console.log(result);
+
+        return{data:result}
+        });
+  }
 
   function saveMessage(msg) {
     console.log(msg);
@@ -65,6 +82,7 @@ app.service('ChatService', function($http, DEALERSHIP_API, store) {
 
       return {
         saveMessage: saveMessage,
+        saveNewMessage: saveNewMessage,
         getMessages: getMessages,
         getAllMessages: getAllMessages
       }

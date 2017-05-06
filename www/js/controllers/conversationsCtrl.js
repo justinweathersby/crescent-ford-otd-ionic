@@ -11,15 +11,15 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
     $scope.dealership = currentDealerSvc.getDealership();
     console.log($scope.dealership);
 
-  if($scope.dealership.id === undefined){
-    console.log("no current dealership");
-    //-- Get Current User Object
+  // if($scope.dealership.id === undefined){
+  //   console.log("no current dealership");
+  //   //-- Get Current User Object
 
     $scope.currentUser = store.get('localUser');
     console.log($scope.currentUser);
     $scope.dealership = store.get('localDealership')
     console.log($scope.dealership);
-  }
+  //}
     updateConversations();
 }); //end of platform ready
 
@@ -46,21 +46,41 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 
 
   $scope.startServicesChat = function(x) {
-    console.log(x);
-    store.set('recipient_id', x.id);
+     console.log(x);
+    // console.log(x.unique_id);
+
+    console.log($scope.reps);
+    for (i = 0; i < $scope.reps.length; i++) {
+      if($scope.reps[i].name === x) {
+        console.log($scope.reps[i].name, "it's a match");
+        $scope.currentChatRep = $scope.reps[i]; /// the reps user object
+        console.log($scope.currentChatRep.created_at);
+
+      }
+    }
+
+    store.set('recipient_id', $scope.currentChatRep.id);
     store.set('conversation_id', "");
-    store.set('unique_id', x.unique_id);
+    store.set('unique_id', $scope.currentChatRep.id);
     var room = {
-        'room_name': x.unique_id
+        'room_name': $scope.currentChatRep.id
     };
+
 
     SocketService.emit('join:room', room);
 
     $scope.chatServicesModal.hide();
-  //   $state.go('chat',{room:x.unique_id})
-   $state.go('chat',{room:x.unique_id}) //CHANGE TO WHAT? TODO?
-}
 
+    modalService
+      .chatModal('templates/modals/chatModal.html', $scope)
+      .then(function(modal) {
+        modal.show();
+        dealerService.getServiceReps().then(function(result){
+          console.log(result, "result");
+          $scope.reps = result.data;
+        });
+})
+}
 
   $scope.isNotCurrentUser = function(user){
 
@@ -77,9 +97,28 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
           dealerService.getServiceReps().then(function(result){
             console.log(result, "result");
             $scope.reps = result.data;
-          }).catch(function(err){
-            console.log(err, "error");
-          })
+
+              var reps = []
+                for (i = 0; i < $scope.reps.length; i++) {
+                //  console.log($scope.reps[i].name, "rep name1");
+                  reps.push($scope.reps[i].name);
+              }
+
+              var convoReps = [];
+                for (i = 0; i < $scope.conversations.length; i++) {
+              //    console.log($scope.conversations[i].sender_name, "sender name");
+                  convoReps.push($scope.conversations[i].sender_name);
+              }
+                console.log(reps);
+                console.log(convoReps);
+                $scope.leftReps = reps.filter(function(x) { return convoReps.indexOf(x) < 0 })
+                console.log($scope.leftReps)
+
+            }).catch(function(err){
+              console.log(err, "error");
+            })
+
+
         });
     }
 
@@ -88,9 +127,27 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
         .chatServicesModal('templates/modals/chatServices_modal.html', $scope)
         .then(function(modal) {
           modal.show();
+
           dealerService.getSalesReps().then(function(result){
             console.log(result, "result");
-            $scope.reps = result.data;
+            $scope.reps = result.data; // change for sales
+
+            var reps = []
+              for (i = 0; i < $scope.reps.length; i++) {
+              //  console.log($scope.reps[i].name, "rep name1");
+                reps.push($scope.reps[i].name);
+            }
+
+            var convoReps = [];
+              for (i = 0; i < $scope.conversations.length; i++) {
+            //    console.log($scope.conversations[i].sender_name, "sender name");
+                convoReps.push($scope.conversations[i].sender_name);
+            }
+              console.log(reps);
+              console.log(convoReps);
+              $scope.leftReps = reps.filter(function(x) { return convoReps.indexOf(x) < 0 })
+              console.log($scope.leftReps)
+
           }).catch(function(err){
             console.log(err, "error");
           })
@@ -104,30 +161,59 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 
     var recipient_id = store.get('recipient_id');
     var conversation_id = store.get('conversation_id');
+    console.log(conversation_id);
+    if(conversation_id != "") {
   			var msg = {
   				'room': room,
   				'user': $scope.currentUser.name,
   				'text': text,
           'recipient_id': recipient_id,
           'conversation_id': conversation_id
-  			};
+  			}
+        ChatService.saveMessage(msg).then(function(result) {
+            console.log(result, "result");
+            console.log(msg);
 
-      ChatService.saveMessage(msg).then(function(result) {
-          console.log(result, "result");
-          console.log(msg);
+      			$scope.messages.push(msg);
+            console.log($scope.messages);
+      			$ionicScrollDelegate.scrollBottom();
 
-    			$scope.messages.push(msg);
-          console.log($scope.messages);
-    			$ionicScrollDelegate.scrollBottom();
+      			$scope.text = "";
 
-    			$scope.text = "";
+      			SocketService.emit('send:message', msg);
 
-    			SocketService.emit('send:message', msg);
+          }).catch(function(err) {
+            console.log(err, "error");
 
-        }).catch(function(err) {
-          console.log(err, "error");
+        })
+      }
+    if(conversation_id === "") {
+      var msg = {
+        'room': room,
+        'user': $scope.currentUser.name,
+        'text': text,
+        'recipient_id': recipient_id
+}
+ChatService.saveNewMessage(msg).then(function(result) {
+    console.log(result, "result");
+    console.log(msg);
 
-      })
+    $scope.messages.push(msg);
+    console.log($scope.messages);
+    $ionicScrollDelegate.scrollBottom();
+
+    $scope.text = "";
+
+    SocketService.emit('send:message', msg);
+
+  }).catch(function(err) {
+    console.log(err, "error");
+
+})
+    }
+
+
+
 		};
 
 
@@ -148,6 +234,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 
     $scope.openConversation = function(x) {
       console.log(x);
+      $scope.theConvo = x;
         store.set('conversation_id', x.conversation_id);
         store.set('recipient_id', "");
       // $scope.oldMessages = x.messages;
@@ -170,11 +257,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
           console.log(err, "error");
 
       })
-    //  console.log($scope.conversations);
-    //  if(x.conversation_id === $scope.conversation)
 
-  //    console.log($scope.oldMessages);
-    //  $scope.$apply();
       var room = {
           'room_name': x.unique_id
       };
