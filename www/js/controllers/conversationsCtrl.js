@@ -155,7 +155,11 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 
     }
 
+
   $scope.sendTextMessage = function(text) {
+
+    this.text = null;
+
     var room = store.get('unique_id');
     console.log(room);
 
@@ -202,7 +206,6 @@ ChatService.saveNewMessage(msg).then(function(result) {
     console.log($scope.messages);
     $ionicScrollDelegate.scrollBottom();
 
-    $scope.text = "";
 
     SocketService.emit('send:message', msg);
 
@@ -211,11 +214,8 @@ ChatService.saveNewMessage(msg).then(function(result) {
 
 })
     }
-
-
-
 		};
-
+}
 
     SocketService.on('message', function(msg){
       console.log(msg);
