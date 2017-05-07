@@ -215,7 +215,7 @@ ChatService.saveNewMessage(msg).then(function(result) {
 })
     }
 		};
-}
+
 
     SocketService.on('message', function(msg){
       console.log(msg);
