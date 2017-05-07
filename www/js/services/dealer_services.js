@@ -75,7 +75,7 @@ app.service('dealerService', function($http, $ionicLoading, currentUserService, 
 
     return $http({ method: 'GET',
                       url: DEALERSHIP_API.url + "/dealerships/" + currentUser.dealership_id + "/sales_reps",
-                      headers: {'Authorization' : userSvc.getUserToken()}
+                      headers: {'Authorization' : currentUser.auth_token}
                 }).success( function(data){
                   console.log("INFO::services::getSalesReps::data::" + JSON.stringify(data));
                   currentDealer.sales_reps = [];
@@ -107,6 +107,26 @@ app.service('dealerService', function($http, $ionicLoading, currentUserService, 
                 });
   };
 
+
+  this.getServiceRep = function(){
+    var currentUser = store.get('localUser');
+    var currentDealer = store.get('localDealership');
+
+    return $http({ method: 'GET',
+                      url: DEALERSHIP_API.url + "/dealerships/" + currentUser.dealership_id + "/service_reps?id=6",
+                      headers: {'Authorization' : currentUser.auth_token}
+                }).success( function(data){
+                    currentDealer.service_reps = [];
+                    var newData = angular.copy(data);
+                    currentDealer.service_reps.push(newData);
+
+                    console.log("1_) returned service reps: " + JSON.stringify(data));
+                    console.log("2_) currentDealerService.service_reps: " + JSON.stringify(currentDealer.service_reps));
+
+                }).error( function(error){
+                  console.log("ERROR GET SERVICE REPS:: " + JSON.stringify(error));
+                });
+  };
   this.getDealership = function(){
     var currentUser = store.get('localUser');
 

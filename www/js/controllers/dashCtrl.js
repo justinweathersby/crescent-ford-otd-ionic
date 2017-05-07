@@ -4,13 +4,13 @@ app.controller('DashCtrl', function($scope, $sce, $http, $state, $timeout,
   DEALERSHIP_API) {
 
   $ionicPlatform.ready(function() {
-    $scope.currentUser = userSvc.getUser();
-    console.log($scope.currentUser);
-    $scope.dealership = currentDealerSvc.getDealership();
-    console.log($scope.dealership);
-
-  if($scope.dealership.id === undefined){
-    console.log("no current dealership");
+  //   $scope.currentUser = userSvc.getUser();
+  //   console.log($scope.currentUser);
+  //   $scope.dealership = currentDealerSvc.getDealership();
+  //   console.log($scope.dealership);
+  //
+  // if($scope.dealership.id === undefined){
+  //   console.log("no current dealership");
     //-- Get Current User Object
 
     $scope.currentUser = store.get('localUser');
@@ -18,7 +18,7 @@ app.controller('DashCtrl', function($scope, $sce, $http, $state, $timeout,
     $scope.dealership = store.get('localDealership')
     console.log($scope.dealership);
 
-  }
+//  }
 });
 
  $scope.contactSales = function(){

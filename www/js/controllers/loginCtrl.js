@@ -11,6 +11,9 @@ app.controller('LoginCtrl', function($scope, $http, $state, $ionicLoading, $ioni
 
     $scope.currentUser = store.get('localUser');
     console.log($scope.currentUser);
+    // if($scope.currentUser === null) {
+    //   $state.go('signup');
+    // }
     $scope.dealership = store.get('localDealership')
     console.log($scope.dealership);
 
@@ -32,6 +35,7 @@ app.controller('LoginCtrl', function($scope, $http, $state, $ionicLoading, $ioni
           userSvc.setUser(data);
           $scope.currentUser = userSvc.getUser();
           console.log($scope.currentUser);
+          store.set('localUser', $scope.currentUser);
           //--Try to preload the dealership after click
           dealerService.getDealership().success(function(data){
             console.log(data);

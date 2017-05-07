@@ -8,6 +8,7 @@
   "dependencies": {
     "a0-angular-storage": "^0.0.15",
     "socket.io-client": "sio-client#^1.4.8",
-    "angular-socket-io": "^0.7.0"
+    "angular-socket-io": "^0.7.0",
+    "angularClearFieldDirective": "angular-clear-field#*"
   }
 }

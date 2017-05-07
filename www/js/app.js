@@ -34,8 +34,17 @@ app.config(function($ionicCloudProvider, $compileProvider, $ionicConfigProvider)
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|map|geo|skype):/);
 });
 
-app.run(function($ionicPlatform, $ionicPush, currentUserService) {
+app.run(function($ionicPlatform, $ionicPush, currentUserService, store, $state) {
   $ionicPlatform.ready(function() {
+    // var currentUser = store.get('localUser');
+    // console.log(currentUser);
+    //
+    // if(currentUser === null) {
+    //   console.log("not logged in");
+    //   $state.go('login');
+    // } else {
+    //   $state.go('tab.dash')
+    // }
     $ionicPush.register().then(function(t) {
       return $ionicPush.saveToken(t);
     }).then(function(t) {
