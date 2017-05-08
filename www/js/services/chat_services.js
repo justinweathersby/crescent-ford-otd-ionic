@@ -53,6 +53,7 @@ app.service('ChatService', function($http, DEALERSHIP_API, store) {
        "recipient_id": msg.recipient_id,
        "conversation_id": msg.conversation_id
      }
+     console.log(data, "this one");
 
       return $http.post(DEALERSHIP_API.url + '/messages', data, _options).then(function(result){
         console.log(result);
