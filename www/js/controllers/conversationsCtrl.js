@@ -271,6 +271,7 @@ ChatService.saveNewMessage(msg).then(function(result) {
     $scope.closeChatModal = function() {
       $scope.chatModal.hide();
       $scope.oldMessages = "";
+      $scope.messages = "";
       console.log("hello");
       updateConversations()
     };
