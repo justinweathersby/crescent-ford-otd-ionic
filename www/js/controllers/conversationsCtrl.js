@@ -1,4 +1,4 @@
-app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, $stateParams, $cordovaBadge,$ionicPopup, $ionicLoading, $ionicModal,currentUserService, currentConversation, currentDealerService, dealerService, SocketService, $ionicPlatform, userSvc, currentDealerSvc, store, modalService, $ionicScrollDelegate, DEALERSHIP_API, ChatService, $ionicHistory, $timeout){
+app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, $stateParams, $cordovaBadge,$ionicPopup, $ionicLoading, $ionicModal,currentUserService, currentConversation, currentDealerService, dealerService, SocketService, $ionicPlatform, userSvc, currentDealerSvc, store, modalService, $ionicScrollDelegate, DEALERSHIP_API, ChatService, $ionicHistory, $window){
 
   // var me = this;
     $scope.text = "";
@@ -21,6 +21,33 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
     console.log($scope.dealership);
   //}
     updateConversations();
+
+    // window.addEventListener('native.keyboardshow', keyboardShowHandler);
+    //
+    // function keyboardShowHandler(e){
+    //     console.log('Keyboard height is: ' + e.keyboardHeight);
+    //
+    //     angular.element($window).bind('native.keyboardshow', function(el) {
+    //             var kh = el.keyboardHeight;
+    //                     var keyTop = kh-44;
+    //                     var content = angular.element(document.querySelector('#footerChat'));
+    //                   //  element[0].style.bottom = keyTop+"px";
+    //                     content[0].style.bottom = kh+"px";
+    //                 });
+    //             }
+      //   setTimeout(function(){
+      //   console.log("set time");
+      //
+      //   var keyTop = kh - 46;
+      //   var content = angular.element(document.querySelector('#footerChat'));
+      //   //element[0].style.setProperty("bottom", keyTop + "px", "important");
+      //   content[0].style.style.setProperty("bottom", 300 + "px", "important");
+      //
+      // }, 5000);
+
+  //  }
+
+
 }); //end of platform ready
 
   function updateConversations() {
@@ -32,6 +59,20 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
         console.log(err, "error");
     })
   }
+
+
+
+  // $scope.keyboard = function() {
+  //   angular.element($window).bind('native.keyboardshow', function (el) {
+  //     console.log(el);
+  //           // var kh = el.keyboardHeight;
+  //           // var keyTop = kh - 46;
+  //           // var content = angular.element(document.querySelector('#footerChat'));
+  //           // element[0].style.setProperty("bottom", keyTop + "px", "important");
+  //           // content[0].style.setProperty("bottom", kh + "px", "important");
+  //           // content.style.bottom: 300px;
+  //   });
+  // }
 
   $scope.goBack = function() {
     var unique_id = store.get("unique_id");
@@ -271,7 +312,7 @@ ChatService.saveNewMessage(msg).then(function(result) {
     $scope.closeChatModal = function() {
       $scope.chatModal.hide();
       $scope.oldMessages = "";
-      $scope.messages = "";
+      $scope.messages = [];
       console.log("hello");
       updateConversations()
     };
