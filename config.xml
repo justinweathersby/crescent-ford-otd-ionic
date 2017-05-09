@@ -22,7 +22,6 @@
     <feature name="StatusBar">
         <param name="ios-package" onload="true" value="CDVStatusBar" />
     </feature>
-    <plugin name="cordova-plugin-device" spec="~1.1.2" />
     <plugin name="cordova-plugin-console" spec="~1.0.3" />
     <plugin name="cordova-plugin-whitelist" spec="~1.2.2" />
     <plugin name="cordova-plugin-splashscreen" spec="~4.0.0" />
@@ -76,4 +75,5 @@
     </platform>
     <icon src="resources/android/icon/drawable-xhdpi-icon.png" />
     <plugin name="cordova-plugin-inappbrowser" spec="~1.7.1" />
+    <plugin name="cordova-plugin-device" spec="~1.1.5" />
 </widget>
