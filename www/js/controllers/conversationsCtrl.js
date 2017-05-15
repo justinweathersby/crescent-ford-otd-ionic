@@ -1,4 +1,4 @@
-app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, $stateParams, $cordovaBadge,$ionicPopup, $ionicLoading, $ionicModal,currentUserService, currentConversation, currentDealerService, dealerService, SocketService, $ionicPlatform, userSvc, currentDealerSvc, store, modalService, $ionicScrollDelegate, DEALERSHIP_API, ChatService, $ionicHistory, $window){
+app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, $stateParams, $cordovaBadge,$ionicPopup, $ionicLoading, $ionicModal,currentUserService, currentConversation, currentDealerService, dealerService, SocketService, $ionicPlatform, userSvc, currentDealerSvc, store, modalService, $ionicScrollDelegate, DEALERSHIP_API, ChatService, $ionicHistory, $window, $timeout){
 
   // var me = this;
     $scope.text = "";
@@ -11,9 +11,6 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
     $scope.dealership = currentDealerSvc.getDealership();
     console.log($scope.dealership);
 
-  // if($scope.dealership.id === undefined){
-  //   console.log("no current dealership");
-  //   //-- Get Current User Object
 
     $scope.currentUser = store.get('localUser');
     console.log($scope.currentUser);
@@ -22,57 +19,43 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
   //}
     updateConversations();
 
-    // window.addEventListener('native.keyboardshow', keyboardShowHandler);
-    //
-    // function keyboardShowHandler(e){
-    //     console.log('Keyboard height is: ' + e.keyboardHeight);
-    //
-    //     angular.element($window).bind('native.keyboardshow', function(el) {
-    //             var kh = el.keyboardHeight;
-    //                     var keyTop = kh-44;
-    //                     var content = angular.element(document.querySelector('#footerChat'));
-    //                   //  element[0].style.bottom = keyTop+"px";
-    //                     content[0].style.bottom = kh+"px";
-    //                 });
-    //             }
-      //   setTimeout(function(){
-      //   console.log("set time");
-      //
-      //   var keyTop = kh - 46;
-      //   var content = angular.element(document.querySelector('#footerChat'));
-      //   //element[0].style.setProperty("bottom", keyTop + "px", "important");
-      //   content[0].style.style.setProperty("bottom", 300 + "px", "important");
-      //
-      // }, 5000);
-
-  //  }
-
-
 }); //end of platform ready
 
+$scope.$on('cloud:push:notification', function(event, data) {
+  var payload = data.message.raw.additionalData.payload;
+  console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
+  if (payload.user_message == 1){
+    if (payload.conversation_id == currentConversation.id){
+        updateConversations();
+        $rootScope.$apply(function () {
+          $rootScope.message_badge_count=0;
+        });
+      }
+    }
+  });
+
+
+// $scope.$on('cloud:push:notification', function(event, data) {
+//   console.log('cloud')
+//   console.log('convo event', event)
+//   console.log('convo data', data)
+//   updateConversations();
+// });
+
+
+
+
   function updateConversations() {
-    console.log("updating convos?");
+    console.log("updating convo conversation");
     ChatService.getMessages().then(function(result) {
         console.log(result, "messages");
         $scope.conversations = result.data.data.conversations;
+        console.log($scope.conversations);
       }).catch(function(err) {
         console.log(err, "error");
     })
   }
 
-
-
-  // $scope.keyboard = function() {
-  //   angular.element($window).bind('native.keyboardshow', function (el) {
-  //     console.log(el);
-  //           // var kh = el.keyboardHeight;
-  //           // var keyTop = kh - 46;
-  //           // var content = angular.element(document.querySelector('#footerChat'));
-  //           // element[0].style.setProperty("bottom", keyTop + "px", "important");
-  //           // content[0].style.setProperty("bottom", kh + "px", "important");
-  //           // content.style.bottom: 300px;
-  //   });
-  // }
 
   $scope.goBack = function() {
     var unique_id = store.get("unique_id");
@@ -218,7 +201,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
         ChatService.saveMessage(msg).then(function(result) {
             console.log(result, "result");
             console.log(msg);
-
+            // $rootScope.$emit('cloud:push:notification', result);
       			$scope.messages.push(msg);
             console.log($scope.messages);
       			$ionicScrollDelegate.scrollBottom();
@@ -249,6 +232,10 @@ ChatService.saveNewMessage(msg).then(function(result) {
 
 
     SocketService.emit('send:message', msg);
+
+
+
+
 
   }).catch(function(err) {
     console.log(err, "error");

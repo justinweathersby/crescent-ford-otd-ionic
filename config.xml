@@ -76,4 +76,5 @@
     <icon src="resources/android/icon/drawable-xhdpi-icon.png" />
     <plugin name="cordova-plugin-inappbrowser" spec="~1.7.1" />
     <plugin name="cordova-plugin-device" spec="~1.1.5" />
+    <plugin name="cordova-plugin-badge" spec="https://github.com/katzer/cordova-plugin-badge.git" />
 </widget>

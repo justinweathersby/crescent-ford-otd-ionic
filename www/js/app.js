@@ -17,11 +17,11 @@ app.config(function($ionicCloudProvider, $compileProvider, $ionicConfigProvider)
         "ios": {
           "badge": true,
           "alert": true,
-          "sound": true
+          "clearBadge": true
         },
         "android": {
           "iconColor": "#343434",
-          "sound": true
+          "clearBadge": true
         }
       }
     }
@@ -34,20 +34,40 @@ app.config(function($ionicCloudProvider, $compileProvider, $ionicConfigProvider)
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|map|geo|skype):/);
 });
 
-app.run(function($ionicPlatform, $ionicPush, currentUserService, store, $state) {
+app.run(function($ionicPlatform, $ionicPush, currentUserService, store, $state, $rootScope, $cordovaBadge, ChatService) {
+
+  // function loadMessageCount () {
+  //   ChatService.getMessages().then(function(result) {
+  //     console.log('get messages');
+  //     var conversations = result.data.data.conversations;
+  //     var unreadMessageCount = 0;
+  //     var readMessages = 0;
+  //     angular.forEach(conversations, function(conversation){
+  //       if(conversation.recipient_read === false) {
+  //         unreadMessageCount ++;
+  //       } else {
+  //         readMessages ++;
+  //       }
+  //     })
+  //     console.log('unreadmessage count', unreadMessageCount);
+  //     console.log('message count', readMessages);
+  //
+  //     $rootScope.message_badge_count = unreadMessageCount;
+  //
+  //     $cordovaBadge.hasPermission().then(function(result) {
+  //         $cordovaBadge.set(unreadMessageCount);
+  //     }, function(error) {
+  //         alert(error, "cordovaBadge error");
+  //     });
+  //   })
+  // }
   $ionicPlatform.ready(function() {
-    // var currentUser = store.get('localUser');
-    // console.log(currentUser);
-    //
-    // if(currentUser === null) {
-    //   console.log("not logged in");
-    //   $state.go('login');
-    // } else {
-    //   $state.go('tab.dash')
-    // }
+
     $ionicPush.register().then(function(t) {
       return $ionicPush.saveToken(t);
     }).then(function(t) {
+      console.log('my token', t);
+      //TODO: save token to db
       currentUserService.device_token = t.token;
       currentUserService.device_type = t.type;
 
@@ -55,13 +75,61 @@ app.run(function($ionicPlatform, $ionicPush, currentUserService, store, $state) 
 
       localforage.setItem('currentUser', currentUserService).then(function (value){
         console.log("Value set in app.js:", JSON.stringify(value));
+      //  loadMessageCount();
+
+
+      // $cordovaBadge.hasPermission().then(function(result) {
+      //   console.log("cordovaBadge result", result);
+      //     $cordovaBadge.set(unreadMessageCount);
+      // }, function(error) {
+      //     alert(error, "cordovaBadge error");
+      // });
 
       }).catch(function(err){
         console.log("SET ITEM ERROR::app.js::currentUserService::", JSON.stringify(err));
       });
     });
 
-    TestFairy.begin("993218db594324f249e28bfa5a72f74f0d21732d");
+
+
+    // function loadMessageCount () {
+    //   ChatService.getMessages().then(function(result) {
+    //     console.log('get messages');
+    //     var conversations = result.data.data.conversations;
+    //     var unreadMessageCount = 0;
+    //     var readMessages = 0;
+    //     angular.forEach(conversations, function(conversation){
+    //       if(conversation.recipient_read === false) {
+    //         unreadMessageCount ++;
+    //       } else {
+    //         readMessages ++;
+    //       }
+    //     })
+    //     console.log('unreadmessage count', unreadMessageCount);
+    //     console.log('message count', readMessages);
+    //
+    //     $rootScope.message_badge_count = unreadMessageCount;
+    //
+    //     $cordovaBadge.hasPermission().then(function(result) {
+    //       console.log("cordovaBadge result", result);
+    //         $cordovaBadge.set(unreadMessageCount);
+    //     }, function(error) {
+    //         alert(error, "cordovaBadge error");
+    //     });
+    //   })
+    // }
+
+
+
+    // $cordovaBadge.hasPermission().then(function(result) {
+    //   $cordovaBadge.set(0);
+    // }, function(error) {
+    //     alert(error);
+    // });
+    // if(store.get('localUser')){
+    //   loadMessageCount();
+    // }
+    // TestFairy.begin("993218db594324f249e28bfa5a72f74f0d21732d");
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
