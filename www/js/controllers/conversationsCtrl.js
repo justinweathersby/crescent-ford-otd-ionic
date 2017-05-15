@@ -260,7 +260,42 @@ ChatService.saveNewMessage(msg).then(function(result) {
    			return 'current-user';
  		};
 
+    function loadMessageCount () {
+      ChatService.getMessages().then(function(result) {
+        console.log('get messages');
+        var conversations = result.data.data.conversations;
+        var unreadMessageCount = 0;
+        var readMessages = 0;
+        angular.forEach(conversations, function(conversation){
+          if(conversation.recipient_read === false) {
+            unreadMessageCount ++;
+          } else {
+            readMessages ++;
+          }
+        })
+        console.log('unreadmessage count', unreadMessageCount);
+        console.log('message count', readMessages);
+        $rootScope.message_badge_count = unreadMessageCount;
+        $cordovaBadge.set(unreadMessageCount).then(function(badge) {
+          console.log('unread from badge', unreadMessageCount)
+        });
+      })
+    }
+
     $scope.openConversation = function(x) {
+      $ionicPlatform.ready(function() {
+        loadMessageCount();
+      });
+      // // updating the in app badge
+      // if($rootScope.message_badge_count > 0) {
+      //   $rootScope.message_badge_count --;
+      // }
+      // // updating the cordova badge
+      // $ionicPlatform.ready(function() {
+      //   $cordovaBadge.decrease().then(function(badge) {
+      //     console.log('decreased badge on read', badge)
+      //   });
+      // });
       console.log(x);
       $scope.theConvo = x;
         store.set('conversation_id', x.conversation_id);
@@ -297,6 +332,9 @@ ChatService.saveNewMessage(msg).then(function(result) {
     }
 
     $scope.closeChatModal = function() {
+      $ionicPlatform.ready(function() {
+        loadMessageCount();
+      });
       $scope.chatModal.hide();
       $scope.oldMessages = "";
       $scope.messages = [];

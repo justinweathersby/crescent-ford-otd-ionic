@@ -34,33 +34,8 @@ app.config(function($ionicCloudProvider, $compileProvider, $ionicConfigProvider)
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|map|geo|skype):/);
 });
 
-app.run(function($ionicPlatform, $ionicPush, currentUserService, store, $state, $rootScope, $cordovaBadge, ChatService) {
+app.run(function($ionicPlatform, $ionicPush, currentUserService, store, $state, $rootScope, $cordovaBadge, ChatService, $rootScope) {
 
-  // function loadMessageCount () {
-  //   ChatService.getMessages().then(function(result) {
-  //     console.log('get messages');
-  //     var conversations = result.data.data.conversations;
-  //     var unreadMessageCount = 0;
-  //     var readMessages = 0;
-  //     angular.forEach(conversations, function(conversation){
-  //       if(conversation.recipient_read === false) {
-  //         unreadMessageCount ++;
-  //       } else {
-  //         readMessages ++;
-  //       }
-  //     })
-  //     console.log('unreadmessage count', unreadMessageCount);
-  //     console.log('message count', readMessages);
-  //
-  //     $rootScope.message_badge_count = unreadMessageCount;
-  //
-  //     $cordovaBadge.hasPermission().then(function(result) {
-  //         $cordovaBadge.set(unreadMessageCount);
-  //     }, function(error) {
-  //         alert(error, "cordovaBadge error");
-  //     });
-  //   })
-  // }
   $ionicPlatform.ready(function() {
 
     $ionicPush.register().then(function(t) {
@@ -75,57 +50,12 @@ app.run(function($ionicPlatform, $ionicPush, currentUserService, store, $state, 
 
       localforage.setItem('currentUser', currentUserService).then(function (value){
         console.log("Value set in app.js:", JSON.stringify(value));
-      //  loadMessageCount();
-
-
-      // $cordovaBadge.hasPermission().then(function(result) {
-      //   console.log("cordovaBadge result", result);
-      //     $cordovaBadge.set(unreadMessageCount);
-      // }, function(error) {
-      //     alert(error, "cordovaBadge error");
-      // });
 
       }).catch(function(err){
         console.log("SET ITEM ERROR::app.js::currentUserService::", JSON.stringify(err));
       });
     });
 
-
-
-    // function loadMessageCount () {
-    //   ChatService.getMessages().then(function(result) {
-    //     console.log('get messages');
-    //     var conversations = result.data.data.conversations;
-    //     var unreadMessageCount = 0;
-    //     var readMessages = 0;
-    //     angular.forEach(conversations, function(conversation){
-    //       if(conversation.recipient_read === false) {
-    //         unreadMessageCount ++;
-    //       } else {
-    //         readMessages ++;
-    //       }
-    //     })
-    //     console.log('unreadmessage count', unreadMessageCount);
-    //     console.log('message count', readMessages);
-    //
-    //     $rootScope.message_badge_count = unreadMessageCount;
-    //
-    //     $cordovaBadge.hasPermission().then(function(result) {
-    //       console.log("cordovaBadge result", result);
-    //         $cordovaBadge.set(unreadMessageCount);
-    //     }, function(error) {
-    //         alert(error, "cordovaBadge error");
-    //     });
-    //   })
-    // }
-
-
-
-    // $cordovaBadge.hasPermission().then(function(result) {
-    //   $cordovaBadge.set(0);
-    // }, function(error) {
-    //     alert(error);
-    // });
     // if(store.get('localUser')){
     //   loadMessageCount();
     // }
@@ -136,6 +66,30 @@ app.run(function($ionicPlatform, $ionicPush, currentUserService, store, $state, 
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
     }
+
+    function loadMessageCount () {
+      ChatService.getMessages().then(function(result) {
+        var conversations = result.data.data.conversations;
+        var unreadMessageCount = 0;
+        var readMessages = 0;
+        angular.forEach(conversations, function(conversation){
+          if(conversation.recipient_read === false) {
+            unreadMessageCount ++;
+          } else {
+            readMessages ++;
+          }
+        })
+        $rootScope.message_badge_count = unreadMessageCount;
+        $cordovaBadge.set(unreadMessageCount).then(function(badge) {
+          console.log('unread from badge', unreadMessageCount)
+        });
+      })
+    }
+    loadMessageCount();
+    $rootScope.$on('cloud:push:notification', function(event, data) {
+      console.log('firing push notification');
+      loadMessageCount();
+    });
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();

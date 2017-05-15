@@ -1,29 +1,27 @@
 app.controller('TabsCtrl', function($scope, $rootScope, $state, $ionicActionSheet, $ionicHistory, $ionicPlatform, $ionicLoading, $ionicPopup, $cordovaInAppBrowser, $cordovaBadge, $cordovaDialogs,
 authService, currentUserService, currentDealerService, dealerService, store, userSvc, currentDealerSvc, ChatService, $ionicPush){
 
-  // function loadMessageCount () {
-  //   ChatService.getMessages().then(function(result) {
-  //     console.log('get messages');
-  //     var conversations = result.data.data.conversations;
-  //     var unreadMessageCount = 0;
-  //     var readMessages = 0;
-  //     angular.forEach(conversations, function(conversation){
-  //       if(conversation.recipient_read === false) {
-  //         unreadMessageCount ++;
-  //       } else {
-  //         readMessages ++;
-  //       }
-  //     })
-  //     console.log('unreadmessage count', unreadMessageCount);
-  //     console.log('message count', readMessages);
-  //     $rootScope.message_badge_count = unreadMessageCount;
-  //     $cordovaBadge.hasPermission().then(function(result) {
-  //         $cordovaBadge.set(unreadMessageCount);
-  //     }, function(error) {
-  //         alert(error);
-  //     });
-  //   })
-  // }
+  function loadMessageCount () {
+    ChatService.getMessages().then(function(result) {
+      console.log('get messages');
+      var conversations = result.data.data.conversations;
+      var unreadMessageCount = 0;
+      var readMessages = 0;
+      angular.forEach(conversations, function(conversation){
+        if(conversation.recipient_read === false) {
+          unreadMessageCount ++;
+        } else {
+          readMessages ++;
+        }
+      })
+      console.log('unreadmessage count', unreadMessageCount);
+      console.log('message count', readMessages);
+      $rootScope.message_badge_count = unreadMessageCount;
+      $cordovaBadge.set(unreadMessageCount).then(function(badge) {
+        console.log('unread from badge', unreadMessageCount)
+      });
+    })
+  }
   // $ionicPlatform.ready(function() {
   //   loadMessageCount();
   //
@@ -49,28 +47,12 @@ authService, currentUserService, currentDealerService, dealerService, store, use
 
 
 
-
-$rootScope.$on('cloud:push:notification', function(event, data) {
-  console.log('a new message push', data);
-  // console.log('tabs event', events)
-  // console.log('tabs data', data)
-  // var payload = data.message.raw.additionalData.payload;
-  // console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
-  // console.log("MESSAGE BADGE COUNT" + $scope.message_badge_count);
-  // if (payload.user_message == 1){
-  //   // $rootScope.message_badge_count++;
-  //   // $rootScope.$apply();
-  // }
-  // else{
-  //   var msg = data.message;
-  //   $cordovaDialogs.alert(
-  //     msg.text,  // the message
-  //     msg.title, // a title
-  //     "OK"       // the button text
-  //   ).then(function() {
-  //     $cordovaBadge.clear();
-  //   });
-  // }
+$ionicPlatform.ready(function() {
+  loadMessageCount();
+  $rootScope.$on('cloud:push:notification', function(event, data) {
+    console.log('firing push notification');
+    loadMessageCount();
+  });
 });
 
 // $rootScope.message_badge_count = 0;

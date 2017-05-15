@@ -22,15 +22,6 @@
     <feature name="StatusBar">
         <param name="ios-package" onload="true" value="CDVStatusBar" />
     </feature>
-    <plugin name="cordova-plugin-console" spec="~1.0.3" />
-    <plugin name="cordova-plugin-whitelist" spec="~1.2.2" />
-    <plugin name="cordova-plugin-splashscreen" spec="~4.0.0" />
-    <plugin name="cordova-plugin-statusbar" spec="~2.2.0" />
-    <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
-    <plugin name="cordova-plugin-wkwebview-engine" spec="https://github.com/driftyco/cordova-plugin-wkwebview-engine.git" />
-    <plugin name="phonegap-plugin-push" spec="~1.8.2">
-        <variable name="SENDER_ID" value="1027849120554" />
-    </plugin>
     <platform name="ios">
         <icon height="57" src="resources/ios/icon/icon.png" width="57" />
         <icon height="114" src="resources/ios/icon/icon@2x.png" width="114" />
@@ -74,7 +65,16 @@
         <splash density="port-xxxhdpi" src="resources/android/splash/drawable-port-xxxhdpi-screen.png" />
     </platform>
     <icon src="resources/android/icon/drawable-xhdpi-icon.png" />
-    <plugin name="cordova-plugin-inappbrowser" spec="~1.7.1" />
+    <plugin name="cordova-plugin-badge" spec="git+https://github.com/katzer/cordova-plugin-badge.git" />
+    <plugin name="cordova-plugin-console" spec="~1.0.3" />
     <plugin name="cordova-plugin-device" spec="~1.1.5" />
-    <plugin name="cordova-plugin-badge" spec="https://github.com/katzer/cordova-plugin-badge.git" />
+    <plugin name="cordova-plugin-inappbrowser" spec="~1.7.1" />
+    <plugin name="cordova-plugin-splashscreen" spec="~4.0.0" />
+    <plugin name="cordova-plugin-statusbar" spec="~2.2.0" />
+    <plugin name="cordova-plugin-whitelist" spec="~1.2.2" />
+    <plugin name="cordova-plugin-wkwebview-engine" spec="https://github.com/driftyco/cordova-plugin-wkwebview-engine.git" />
+    <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
+    <plugin name="phonegap-plugin-push" spec="~1.8.2">
+        <variable name="SENDER_ID" value="1027849120554" />
+    </plugin>
 </widget>
