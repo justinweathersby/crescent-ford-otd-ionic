@@ -1,4 +1,4 @@
-app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, $stateParams, $cordovaBadge,$ionicPopup, $ionicLoading, $ionicModal,currentUserService, currentConversation, currentDealerService, dealerService, SocketService, $ionicPlatform, userSvc, currentDealerSvc, store, modalService, $ionicScrollDelegate, DEALERSHIP_API, ChatService, $ionicHistory, $window, $timeout){
+app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, $stateParams, $cordovaBadge,$ionicPopup,  $ionicPush, $ionicLoading, $ionicModal,currentUserService, currentConversation, currentDealerService, dealerService, SocketService, $ionicPlatform, userSvc, currentDealerSvc, store, modalService, $ionicScrollDelegate, DEALERSHIP_API, ChatService, $ionicHistory, $window, $timeout){
 
   // var me = this;
     $scope.text = "";
@@ -27,6 +27,7 @@ $scope.$on('cloud:push:notification', function(event, data) {
   if (payload.user_message == 1){
     if (payload.conversation_id == currentConversation.id){
         updateConversations();
+        $ionicPush.plugin.getApplicationIconBadgeNumber();
         $rootScope.$apply(function () {
           $rootScope.message_badge_count=0;
         });
