@@ -34,6 +34,28 @@ $scope.$on('cloud:push:notification', function(event, data) {
     }
   });
 
+  function loadMessageCount () {
+    ChatService.getMessages().then(function(result) {
+      var conversations = result.data.data.conversations;
+      var unreadMessageCount = 0;
+      var readMessages = 0;
+      angular.forEach(conversations, function(conversation){
+        if(conversation.recipient_read === false) {
+          unreadMessageCount ++;
+        } else {
+          readMessages ++;
+        }
+      })
+      console.log('loadmessage unreadmessage count', unreadMessageCount);
+      console.log('loadmessage message count', readMessages);
+      $rootScope.message_badge_count = unreadMessageCount;
+      $ionicPlatform.ready(function() {
+        $cordovaBadge.set(unreadMessageCount).then(function(badge) {
+          console.log('unread from badge convo', unreadMessageCount)
+        });
+      })
+    })
+  }
 
 // $scope.$on('cloud:push:notification', function(event, data) {
 //   console.log('cloud')
@@ -249,6 +271,7 @@ ChatService.saveNewMessage(msg).then(function(result) {
       console.log(msg);
 			$scope.messages.push(msg);
 			$ionicScrollDelegate.scrollBottom();
+      loadMessageCount();
 		});
 
 
@@ -260,32 +283,7 @@ ChatService.saveNewMessage(msg).then(function(result) {
    			return 'current-user';
  		};
 
-    function loadMessageCount () {
-      ChatService.getMessages().then(function(result) {
-        console.log('get messages');
-        var conversations = result.data.data.conversations;
-        var unreadMessageCount = 0;
-        var readMessages = 0;
-        angular.forEach(conversations, function(conversation){
-          if(conversation.recipient_read === false) {
-            unreadMessageCount ++;
-          } else {
-            readMessages ++;
-          }
-        })
-        console.log('unreadmessage count', unreadMessageCount);
-        console.log('message count', readMessages);
-        $rootScope.message_badge_count = unreadMessageCount;
-        $cordovaBadge.set(unreadMessageCount).then(function(badge) {
-          console.log('unread from badge', unreadMessageCount)
-        });
-      })
-    }
-
     $scope.openConversation = function(x) {
-      $ionicPlatform.ready(function() {
-        loadMessageCount();
-      });
       // // updating the in app badge
       // if($rootScope.message_badge_count > 0) {
       //   $rootScope.message_badge_count --;
@@ -332,14 +330,12 @@ ChatService.saveNewMessage(msg).then(function(result) {
     }
 
     $scope.closeChatModal = function() {
-      $ionicPlatform.ready(function() {
-        loadMessageCount();
-      });
       $scope.chatModal.hide();
       $scope.oldMessages = "";
       $scope.messages = [];
       console.log("hello");
-      updateConversations()
+      updateConversations();
+      loadMessageCount();
     };
 
 });

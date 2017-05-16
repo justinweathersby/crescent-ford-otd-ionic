@@ -17,42 +17,21 @@ authService, currentUserService, currentDealerService, dealerService, store, use
       console.log('unreadmessage count', unreadMessageCount);
       console.log('message count', readMessages);
       $rootScope.message_badge_count = unreadMessageCount;
-      $cordovaBadge.set(unreadMessageCount).then(function(badge) {
-        console.log('unread from badge', unreadMessageCount)
-      });
+      $ionicPlatform.ready(function() {
+        $cordovaBadge.set(unreadMessageCount).then(function(badge) {
+          console.log('unread from badge', unreadMessageCount)
+        });
+      })
     })
   }
-  // $ionicPlatform.ready(function() {
-  //   loadMessageCount();
-  //
-  //
-  //
-  //
-  //
-  //     $scope.currentUser = userSvc.getUser();
-  //     $scope.dealership = currentDealerSvc.getDealership();
-  //
-  //   if($scope.dealership.id === undefined){
-  //     console.log("no current dealership");
-  //     //-- Get Current User Object
-  //
-  //     $scope.currentUser = store.get('localUser');
-  //     console.log($scope.currentUser);
-  //     $scope.dealership = store.get('localDealership')
-  //     console.log($scope.dealership, "tabs");
-  //     console.log($scope.dealership.logo_url);
-  //
-  //   }
-  // });
 
-
-
-$ionicPlatform.ready(function() {
+$scope.$on('$ionicView.enter', function() {
+  console.log('entering view');
   loadMessageCount();
-  $rootScope.$on('cloud:push:notification', function(event, data) {
-    console.log('firing push notification');
-    loadMessageCount();
-  });
+});
+$scope.$on('$ionicView.leave', function() {
+  console.log('leaving view');
+  loadMessageCount();
 });
 
 // $rootScope.message_badge_count = 0;
