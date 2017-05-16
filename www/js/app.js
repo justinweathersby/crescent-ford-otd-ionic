@@ -34,12 +34,12 @@ app.config(function($ionicCloudProvider, $compileProvider, $ionicConfigProvider)
   $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|chrome-extension|map|geo|skype):/);
 });
 
-app.run(function($ionicPlatform, $ionicPush, currentUserService, store, $state, $rootScope, $cordovaBadge, ChatService, $rootScope) {
+app.run(function($ionicPlatform, currentUserService, store, $state, $rootScope, $cordovaBadge, ChatService, $rootScope, $cordovaPushV5) {
 
   $ionicPlatform.ready(function() {
 
-    $ionicPush.register().then(function(t) {
-      return $ionicPush.saveToken(t);
+    $cordovaPushV5.register().then(function(t) {
+      return $cordovaPushV5.saveToken(t);
     }).then(function(t) {
       console.log('my token', t);
       //TODO: save token to db
@@ -86,7 +86,7 @@ app.run(function($ionicPlatform, $ionicPush, currentUserService, store, $state, 
       })
     }
     loadMessageCount();
-    $rootScope.$on('cloud:push:notification', function(event, data) {
+    $rootScope.$on('$cordovaPushV5:notificationReceived', function(event, data) {
       console.log('firing push notification');
       loadMessageCount();
     });

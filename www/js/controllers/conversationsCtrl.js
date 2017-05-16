@@ -1,4 +1,4 @@
-app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, $stateParams, $cordovaBadge,$ionicPopup, $ionicLoading, $ionicModal,currentUserService, currentConversation, currentDealerService, dealerService, SocketService, $ionicPlatform, userSvc, currentDealerSvc, store, modalService, $ionicScrollDelegate, DEALERSHIP_API, ChatService, $ionicHistory, $window, $timeout){
+app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, $stateParams, $cordovaBadge,$ionicPopup, $ionicLoading, $ionicModal,currentUserService, currentConversation, currentDealerService, dealerService, SocketService, $ionicPlatform, userSvc, currentDealerSvc, store, modalService, $ionicScrollDelegate, DEALERSHIP_API, ChatService, $ionicHistory, $window, $timeout, $cordovaPushV5){
 
   // var me = this;
     $scope.text = "";
@@ -21,15 +21,15 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 
 }); //end of platform ready
 
-$scope.$on('cloud:push:notification', function(event, data) {
+$rootScope.$on('$cordovaPushV5:notificationReceived', function(event, data) {
   var payload = data.message.raw.additionalData.payload;
   console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
   if (payload.user_message == 1){
     if (payload.conversation_id == currentConversation.id){
         updateConversations();
-        $rootScope.$apply(function () {
-          $rootScope.message_badge_count=0;
-        });
+        // $rootScope.$apply(function () {
+        //   $rootScope.message_badge_count=0;
+        // });
       }
     }
   });
