@@ -1,4 +1,4 @@
-app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, $stateParams, $cordovaBadge,$ionicPopup,  $ionicPush, $ionicLoading, $ionicModal,currentUserService, currentConversation, currentDealerService, dealerService, SocketService, $ionicPlatform, userSvc, currentDealerSvc, store, modalService, $ionicScrollDelegate, DEALERSHIP_API, ChatService, $ionicHistory, $window, $timeout){
+app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, $stateParams, $cordovaBadge, $ionicPopup, $ionicPush, $ionicLoading, $ionicModal,currentUserService, currentConversation, currentDealerService, dealerService, SocketService, $ionicPlatform, userSvc, currentDealerSvc, store, modalService, $ionicScrollDelegate, DEALERSHIP_API, ChatService, $ionicHistory, $window, $timeout){
 
   // var me = this;
     $scope.text = "";
@@ -21,13 +21,21 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 
 }); //end of platform ready
 
-$scope.$on('cloud:push:notification', function(event, data) {
+
+$scope.$on('$ionicView.enter', function(){ //This is fired twice in a row
+        updateConversations();
+    });
+
+
+$rootScope.$on('cloud:push:notification', function(event, data) {
   var payload = data.message.raw.additionalData.payload;
   console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
   if (payload.user_message == 1){
     if (payload.conversation_id == currentConversation.id){
         updateConversations();
-        $ionicPush.plugin.getApplicationIconBadgeNumber();
+        $cordovaBadge.set(unreadMessageCount).then(function(badge) {
+          console.log('unread from badge convo', unreadMessageCount)
+        });
         $rootScope.$apply(function () {
           $rootScope.message_badge_count=0;
         });
@@ -37,6 +45,7 @@ $scope.$on('cloud:push:notification', function(event, data) {
 
   function loadMessageCount () {
     ChatService.getMessages().then(function(result) {
+      console.log(result.data.data.conversations, "CONVERSATIONS");
       var conversations = result.data.data.conversations;
       var unreadMessageCount = 0;
       var readMessages = 0;
