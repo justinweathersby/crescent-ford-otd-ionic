@@ -1,45 +1,92 @@
 app.controller('TabsCtrl', function($scope, $rootScope, $state, $ionicActionSheet, $ionicHistory, $ionicPlatform, $ionicLoading, $ionicPopup, $cordovaInAppBrowser, $cordovaBadge, $cordovaDialogs,
-authService, currentUserService, currentDealerService, dealerService, store, userSvc, currentDealerSvc){
+authService, currentUserService, currentDealerService, dealerService, store, userSvc, currentDealerSvc, ChatService, $ionicPush){
+
+  // function loadMessageCount () {
+  //   ChatService.getMessages().then(function(result) {
+  //     console.log('get messages');
+  //     var conversations = result.data.data.conversations;
+  //     var unreadMessageCount = 0;
+  //     var readMessages = 0;
+  //     angular.forEach(conversations, function(conversation){
+  //       if(conversation.recipient_read === false) {
+  //         unreadMessageCount ++;
+  //       } else {
+  //         readMessages ++;
+  //       }
+  //     })
+  //     console.log('unreadmessage count', unreadMessageCount);
+  //     console.log('message count', readMessages);
+  //     $rootScope.message_badge_count = unreadMessageCount;
+  //     $cordovaBadge.hasPermission().then(function(result) {
+  //         $cordovaBadge.set(unreadMessageCount);
+  //     }, function(error) {
+  //         alert(error);
+  //     });
+  //   })
+  // }
+  // $ionicPlatform.ready(function() {
+  //   loadMessageCount();
+  //
+  //
+  //
+  //
+  //
+  //     $scope.currentUser = userSvc.getUser();
+  //     $scope.dealership = currentDealerSvc.getDealership();
+  //
+  //   if($scope.dealership.id === undefined){
+  //     console.log("no current dealership");
+  //     //-- Get Current User Object
+  //
+  //     $scope.currentUser = store.get('localUser');
+  //     console.log($scope.currentUser);
+  //     $scope.dealership = store.get('localDealership')
+  //     console.log($scope.dealership, "tabs");
+  //     console.log($scope.dealership.logo_url);
+  //
+  //   }
+  // });
 
 
-  $ionicPlatform.ready(function() {
-      $scope.currentUser = userSvc.getUser();
-      $scope.dealership = currentDealerSvc.getDealership();
 
-    if($scope.dealership.id === undefined){
-      console.log("no current dealership");
-      //-- Get Current User Object
 
-      $scope.currentUser = store.get('localUser');
-      console.log($scope.currentUser);
-      $scope.dealership = store.get('localDealership')
-      console.log($scope.dealership);
-
-    }
-  });
-
-$scope.$on('cloud:push:notification', function(event, data) {
-  var payload = data.message.raw.additionalData.payload;
-  console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
-  console.log("MESSAGE BADGE COUNT" + $scope.message_badge_count);
-  if (payload.user_message == 1){
-    $rootScope.$apply(function () {
-      $rootScope.message_badge_count++;
-    });
-  }
-  else{
-    var msg = data.message;
-    $cordovaDialogs.alert(
-      msg.text,  // the message
-      msg.title, // a title
-      "OK"       // the button text
-    ).then(function() {
-      $cordovaBadge.clear();
-    });
-  }
+$rootScope.$on('cloud:push:notification', function(event, data) {
+  console.log('a new message push', data);
+  // console.log('tabs event', events)
+  // console.log('tabs data', data)
+  // var payload = data.message.raw.additionalData.payload;
+  // console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
+  // console.log("MESSAGE BADGE COUNT" + $scope.message_badge_count);
+  // if (payload.user_message == 1){
+  //   // $rootScope.message_badge_count++;
+  //   // $rootScope.$apply();
+  // }
+  // else{
+  //   var msg = data.message;
+  //   $cordovaDialogs.alert(
+  //     msg.text,  // the message
+  //     msg.title, // a title
+  //     "OK"       // the button text
+  //   ).then(function() {
+  //     $cordovaBadge.clear();
+  //   });
+  // }
 });
 
-$rootScope.message_badge_count = 0;
+// $rootScope.message_badge_count = 0;
+
+if (currentDealerService){
+  $scope.dealership = currentDealerService;
+}
+else{
+    //-- Load Current Dealer
+    localforage.getItem('currentDealer').then(function (value){
+      angular.copy(value, currentDealerService);
+      $scope.dealership = currentDealerService;
+    }).catch(function(err){
+      console.log("GET ITEM ERROR::loginCtrl::currentDealer::", JSON.stringify(err));
+    });
+}
 
 function openExternalURL(url, template, alertString){
   if (url){

@@ -4,22 +4,22 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
                                         DEALERSHIP_API)
 {
 
-  $scope.$on('cloud:push:notification', function(event, data) {
-  var payload = data.message.raw.additionalData.payload;
-  console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
-  if (payload.user_message == 1){
-    if (payload.conversation_id == currentConversation.id){
-        $scope.getMessages();
-        $rootScope.$apply(function () {
-          $rootScope.message_badge_count=0;
-        });
-      }
-    }
-  });
+  // $scope.$on('cloud:push:notification', function(event, data) {
+  // var payload = data.message.raw.additionalData.payload;
+  // console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
+  // // if (payload.user_message == 1){
+  // //   if (payload.conversation_id == currentConversation.id){
+  // //       $scope.getMessages();
+  // //       $rootScope.$apply(function () {
+  // //         $rootScope.message_badge_count=0;
+  // //       });
+  // //     }
+  // //   }
+  // });
 
   var viewScroll = $ionicScrollDelegate.$getByHandle('userMessageScroll');
   $scope.current_user = currentUserService;
-  
+
   function keyboardShowHandler(e){
       console.log('Keyboard height is: ' + e.keyboardHeight);
       $ionicScrollDelegate.scrollBottom(true);
@@ -35,7 +35,7 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
     window.addEventListener('native.keyboardshow', keyboardShowHandler);
     window.addEventListener('native.keyboardhide', keyboardHideHandler);
 
-    $rootScope.message_badge_count = 0;
+    // $rootScope.message_badge_count = 0;
   });
 
 
