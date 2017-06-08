@@ -1,0 +1,12 @@
+<ion-modal-view style="">
+  <ion-header-bar class="bar-dark" style="">
+    <h1 class="title" style="">
+    <img src="{{dealership.logo_url}}" style="margin-left:auto; margin-right:auto; display:block; padding-top: 8px;" height="40px" alt="">
+    </h1>
+    <button class="button button-clear button-primary" ng-click="closeModal()">Cancel</button>
+  </ion-header-bar>
+
+  <ion-content style="margin-top:10px">
+    <ion-item ng-click="startServicesChat(x)" ng-repeat="x in leftReps">{{x}}</ion-item>
+  </ion-content>
+</ion-modal-view>

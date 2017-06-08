@@ -1,0 +1,14 @@
+{
+  "name": "HelloIonic",
+  "private": "true",
+  "devDependencies": {
+    "ionic": "driftyco/ionic-bower#1.3.1",
+    "ionic-platform-web-client": "~0.7.1"
+  },
+  "dependencies": {
+    "a0-angular-storage": "^0.0.15",
+    "socket.io-client": "sio-client#^1.4.8",
+    "angular-socket-io": "^0.7.0",
+    "angularClearFieldDirective": "angular-clear-field#*"
+  }
+}

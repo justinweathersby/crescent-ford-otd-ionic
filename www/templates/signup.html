@@ -1,0 +1,48 @@
+<ion-view hide-nav-bar="true" style="background: dimgray;">
+  <form name="signupForm" ng-controller="SignupCtrl">
+  <ion-content class="login-page">
+    <div class="row" style="height:20vh; background: white;">
+      <div class="col logo-col">
+        <img src="img/logo.jpeg" alt="" style="max-height: 18vh;"/>
+      </div>
+    </div>
+    <div class="row" style="height:10vh">
+      <div class="col">
+        <div class="row">
+          <button class="button button-full login-btn" style="background-color: #f0aa5b; height:10vh"  ng-click="createUser(data)">
+            SIGNUP
+          </button>
+        </div>
+        <div class="row">
+          <div class="lower-triangle"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="min-height:60vh; background: #696969; overflow:auto;">
+      <div class="col">
+        <div class="list list-inset " style="background:transparent; width:85%; max-width: 500px; margin-left:auto; margin-right: auto;">
+          <label id = "rounded" class="item item-input">
+            <i class="icon ion-ios-person-outline placeholder-icon" style="padding-top: 3px; padding-left:13px;"></i>
+            <input type="text" placeholder="NAME"  type="text" ng-model="data.name" required>
+          </label>
+          <label id = "rounded" class="item item-input">
+            <i class="icon ion-ios-email-outline placeholder-icon" style="padding-top: 3px;"></i>
+            <input type="text" placeholder="EMAIL"  type="email" ng-model="data.email" required>
+          </label>
+          <label id = "rounded" class="item item-input">
+            <i class="icon ion-ios-unlocked-outline placeholder-icon" style="padding-left: 13px; padding-top: 2px;"></i>
+            <input type="password" placeholder="PASSWORD" ng-model="data.password" required>
+          </label>
+          <label id = "rounded" class="item item-input">
+            <i class="icon ion-ios-locked-outline placeholder-icon" style="padding-left: 13px; padding-top: 2px;"></i>
+            <input type="password" placeholder="RE-ENTER PASSWORD" ng-model="data.password_confirmation" required compare-to="data.password">
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="row login-footer hide-on-keyboard-open" style="text-align:center; ">
+      <div class="title" ng-click="goToLogin()">Back to Login</div>
+    </div>
+    </form>
+  </ion-content>
+</ion-view>

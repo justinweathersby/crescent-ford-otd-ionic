@@ -1,0 +1,345 @@
+/*
+To customize the look and feel of Ionic, you can override the variables
+in ionic's _variables.scss file.
+
+For example, you might change some of the default colors:
+*/
+$light:                           #fff !default;
+$stable:                          #f8f8f8 !default;
+$positive:                        #387ef5 !default;
+$calm:                            #11c1f3 !default;
+$balanced:                        #33cd5f !default;
+$energized:                       #ffc900 !default;
+$assertive:                       #ef473a !default;
+$royal:                           #886aea !default;
+$dark:                            #444 !default;
+
+$positive:                        #114926 !default;
+
+// The path for our ionicons font files, relative to the built CSS in www/css
+$ionicons-font-path: "../lib/ionic/fonts" !default;
+
+// @import url(http://fonts.googleapis.com/css?family=Dosis);
+@import url(http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900);
+
+// $font-family-base: "Dosis", sans-serif !default;
+
+// Include all of Ionic
+@import "www/lib/ionic/scss/ionic";
+.platform-android .messages-container {
+  padding-bottom:25px;
+}
+
+.holds-the-iframe {
+  height:100%;
+  padding-bottom:60px;
+  background-image: url(../img/box.gif);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  overflow-y: scroll;
+}
+
+.no-matches-container{
+  margin-top: 22vh;
+  background-color: #455A64;
+  border-radius: 5px;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  padding:10px;
+  text-align: center;
+  box-shadow: 0 0 10px black;
+}
+
+.login-page{
+  font-family: Lato;
+  font-weight: 200;
+
+  .login-btn{
+    font-size: 45px;
+    font-weight: 400;
+    color: rgba(256,256,256,.8);
+    letter-spacing: 3px;
+    box-shadow: 0 2px 10px #545454;
+    z-index:10;
+  }
+  .lower-triangle{
+    content: '';
+    // position: absolute;
+    z-index:11;
+    height: 0;
+    width: 0;
+    margin-left: auto;
+    margin-right: auto;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 20px solid transparent;
+    border-top: 15px solid #f0aa5b;
+  }
+  .row{
+    padding:0;
+    margin:0;
+  }
+
+  .col{
+    padding:0;
+    margin:0;
+  }
+
+  .button{
+    margin:0;
+  }
+  .item{
+    margin-top:15px
+  }
+  .logo-col {
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: nowrap;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-align-content: stretch;
+    -ms-flex-line-pack: stretch;
+    align-content: stretch;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    img {
+    -webkit-order: 0;
+    -ms-flex-order: 0;
+    order: 0;
+    -webkit-flex: 0 1 auto;
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+    -webkit-align-self: center;
+    -ms-flex-item-align: center;
+    align-self: center;
+    max-width: 90%;
+    max-height: 22vh;
+
+    //--TODO:UNIQUE
+    border-radius: 20px;
+    box-shadow: 0 0 10px black;
+    }
+  }
+  label#rounded{
+      border-radius: 25px;
+      height: 50px;
+      input{
+        font-family: Lato;
+        font-weight:400;
+        font-size:16px;
+        color: rgba(256,256,256,.6);
+        padding-left:10px;
+        padding-right:10px;
+      }
+      input::-webkit-input-placeholder{
+        font-weight:700;
+        letter-spacing: 2px;
+        font-variant: small-caps;
+      }
+      i{
+        height: 44px;
+        background: #323232;
+        width: 44px;
+        border-radius: 22px;
+        margin-left: -12px;
+        padding-left: 11px;
+        padding-top: 5px;
+        font-size: 30px;
+      }
+    }
+}
+
+.login-footer{
+  background: #494949;
+  height:10vh;
+  text-align:center;
+
+  .title{
+    font-family: Lato;
+    font-weight: 500;
+    color: rgba(256,256,256,.6);
+    font-size: 20px;
+    letter-spacing: 1.5px;
+    line-height: 10vh;
+    height:10vh;
+    width:100%;
+  }
+
+  .title::after{
+    content: '';
+    position: absolute;
+    height: 0;
+    width: 0;
+    margin-left:5px;
+    margin-top: 4.2vh;
+
+    border-left: 1vh solid rgba(256,256,256,.6);
+    border-right: 1vh solid transparent;
+    border-bottom: 1vh solid transparent;
+    border-top: 1vh solid transparent
+  }
+}
+
+
+.tabs .tab-item .badge.badge-assertive, .badge.badge-assertive {
+  opacity: 1; }
+
+.message-from-me {
+  // background: #FF5252 !important;
+background: #3885ad;
+  border-radius: 30px 30px 0px 30px;
+  max-width: 90%;
+  float: right;
+  text-align: right;
+  padding: 10px; }
+
+.message-from-sender {
+  float: clear;
+  background: #444 !important;
+  border-radius: 30px 30px 30px 0;
+  max-width: 90%;
+  width: auto;
+  padding: 10px; }
+
+.messages-container li.item {
+  padding: 0; }
+
+.item {
+  background-color: rgba(0, 0, 0, 0.2);
+  border: none;
+  margin-bottom: 1.5vh;
+  font-family: Brandon;
+  font-size: 20px; }
+
+.startChatButtons{
+  line-height: 35px;
+  margin: auto 4.5%;
+  width: 40%;
+  border-radius: 10px !important;
+  height: 80%;
+  color: #d7dada;
+  border: 1px solid #95a4a9 !important;
+  background: #364859;
+  font-size: 30px;
+  font-weight: 100;
+  text-shadow: 0 0 10px #1c1c1c;
+  padding-top:3px !important;
+}
+
+.startChatButtons:hover{
+  color: #d7dada;
+}
+.sendMessagePopup{
+  background: rgba(0, 0, 0, .6);
+}
+.sendMessagePopup .popup{
+  width:85%;
+  border-radius: 10px;
+  align-self: flex-start;
+  margin-top: 60px;
+  background: white;
+  box-shadow: 0 0 10px black;
+  .popup-body{
+    min-height:20vh;
+  }
+}
+
+.title .title-center .header-item{
+  font-weight:300;
+}
+
+.conversation-item{
+  font-family: "Dosis", sans-serif;
+  margin: 5px;
+  border: none ;
+  background: rgba(256, 256, 256, .85);
+  border-radius:5px;
+
+  h2{
+    font-size: 18px;
+  }
+}
+
+.message-item{
+  font-family: "Dosis", sans-serif;
+  font-size: 16px;
+}
+
+.gradientBackgroundImage{
+  background: #00EFFD; /* For browsers that do not support gradients */
+  background: -webkit-linear-gradient(#00EFFD, #0067d2); /* For Safari 5.1 to 6.0 */
+  background: -o-linear-gradient(#00EFFD, #0067d2); /* For Opera 11.1 to 12.0 */
+  background: -moz-linear-gradient(#00EFFD, #0067d2); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(#00EFFD, #0067d2); /* Standard syntax */
+}
+
+.convoImageUnreadOverlay{
+  background-color: #f14e4e;
+  padding: .4em;
+  color: #fff;
+  text-align: center;
+  border-radius: 50%;
+  position: absolute;
+  left: 18px;
+  bottom: 13px;
+}
+
+
+.user {
+    font-weight: bold;
+}
+
+/* .current-user {
+  float: left;
+    clear: both;
+}
+
+.not-current-user {
+  float: right;
+  clear: both;
+} */
+
+.current-user  {
+	//.background-color: #72CBFF;
+  background: #3885ad;
+    border-radius: 30px 30px 0px 30px;
+    max-width: 90%;
+    float: right;
+    clear: both;
+    text-align: right;
+    padding: 10px;
+    margin-right: 10px;
+}
+
+.not-current-user  {
+  //  background-color: #DCDCDC;
+    float: left;
+    clear: both;
+    background: #444 !important;
+    border-radius: 30px 30px 30px 0;
+    max-width: 90%;
+    width: auto;
+    padding: 10px;
+    margin-left: 10px;
+}
+
+.msg {
+  color:white;
+  padding-left:10px;
+  width:auto;
+  overflow: visible;
+  overflow-wrap:
+  break-word;
+  white-space: normal;
+
+}

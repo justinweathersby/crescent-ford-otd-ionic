@@ -1,0 +1,34 @@
+<ion-view view-title="Connect">
+  <ion-content class="" has-footer="true">
+    <!-- <div class="list list-inset"> -->
+      <a class="item item-icon-left" ng-click="callDealership()" ng-show="dealership.phone" style="margin: 10px; background: white;box-shadow: 0 0 5px black;border-radius: 5px;">
+        <i class="icon ion-iphone"></i>
+        Call Dealership
+      </a>
+      <a class="item item-icon-left" ng-click="goToMaps()" ng-show="dealership.full_location_string" target="_system" style="margin: 10px; background: white;box-shadow: 0 0 5px black;border-radius: 5px;">
+        <i class="icon ion-map"></i>
+        Get Directions
+      </a>
+      <a class="item item-icon-left" ng-click="contactSales()" ng-show="dealership.sales_email" style="margin: 10px; background: white;box-shadow: 0 0 5px black;border-radius: 5px;">
+        <i class="icon ion-email"></i>
+        Contact Sales
+      </a>
+      <a class="item item-icon-left" ng-click="contactService()" ng-show="dealership.service_email" style="margin: 10px; background: white;box-shadow: 0 0 5px black;border-radius: 5px;">
+        <i class="icon ion-wrench"></i>
+        Contact Service
+      </a>
+    <!-- </div> -->
+    <div class="list list-inset">
+      <a class="item item-icon-left" ng-click="openSocialMediaBrowser(dealership.facebook_url)" ng-show="dealership.facebook_url">
+        <i class="icon ion-social-facebook"></i>
+        Facebook Page
+      </a>
+      <a class="item item-icon-left" ng-click="openSocialMediaBrowser(dealership.twitter_url)" ng-show="dealership.twitter_url">
+        <i class="icon ion-social-twitter"></i>
+        Twitter Page
+      </a>
+    </div>
+  </div>
+  </ion-content>
+  <div ng-include src="'templates/partials/footer.html'"></div>
+</ion-view>

@@ -1,0 +1,21 @@
+<ion-view>
+  <ion-header-bar  class="bar-dark">
+    <button class="button icon ion-arrow-left-c" ng-click="goBack()"> Back </button>
+    <h1 class="title">Choose A Dealership</h1>
+  </ion-header-bar>
+  <ion-content style="">
+    <div class="list">
+
+      <a class="item item-text-wrap" ng-repeat="d in dealerships" ng-click="dealershipSelected(d.id)" style="background:white; border-bottom:1px solid black">
+        <div class="row" style="height:100px">
+          <div class="col col-center text-center" style="width:20%">
+            <img ng-src="{{d.logo_url}}" alt="" style="max-width:100%; max-height:100px;"/>
+          </div>
+          <div class = "col col-center text-center" style="width:80%">
+            <h1 style="color: black; font-size:20px; font-variant:small-caps; word-wrap: break-word;">{{d.name}}</h1>
+          </div>
+        </div>
+      </a>
+    </div>
+  </ion-content>
+</ion-view>

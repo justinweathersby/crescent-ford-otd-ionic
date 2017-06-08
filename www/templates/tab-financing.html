@@ -1,0 +1,10 @@
+<ion-view >
+  <ion-content overflow-scroll="true" has-footer="true">
+    <div class="holds-the-iframe">
+      <iframe id="iframe" ng-src="{{trustSrc(dealership.financing_url)}}" width="100%" height="100%" sandbox="allow-same-origin allow-scripts allow-forms"></iframe>
+    </div>
+ </ion-content>
+
+      <!-- Footer Content -->
+      <div ng-include src="'templates/partials/footer.html'"></div>
+</ion-view>

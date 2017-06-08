@@ -1,0 +1,77 @@
+<ion-view style="">
+  <ion-header-bar class="bar-dark" style="height: 60px">
+    <div class="row">
+      <div class="col" ng-click="goBack()">Back</div>
+      <div class="col">
+        <img src="{{dealership.logo_url}}" style="margin-left:auto; margin-right:auto; display:block;" height="40px" height="40px" alt="">
+      </div>
+
+    <div class="col"></div>
+  </div>
+  </ion-header-bar>
+  <!-- <ion-nav-bar class="bar-dark">
+    <ion-nav-title>
+        <img src="{{dealership.logo_url}}" style=" alt="">
+     </ion-nav-title>
+     <div style="color: white">kjhkjh</div>
+  </ion-nav-bar> -->
+  <ion-content style="margin-top:20px">
+
+  <!--   <div style="background-color: red" ng-repeat="old in oldMessages">{{old}}hi
+    <div>hi</div>
+  </div>
+    <div class="list" id="oldMessages" style="background-color: purple">
+        <li class="item item-text-wrap no-border" ng-repeat="old in oldMessages">
+          <div>hello</div>
+          <div class="msg">
+            <div class="details padding">
+            <p>
+               <div>{{old}} hello</div>
+              <div class="user">{{ x.user }}</div>
+              <div class="message">{{ msg.text }}</div>
+            </p>
+            <small>{{ humanize(msg.time) }}</small>
+            </div>
+          </div>
+        </li>
+    </div>
+  <div ng-repeat="msg in messages">{{msg}}</div>
+  <div>hello</div>
+  <div ng-repeat="old in oldMessages">
+    <div>{{old}}</div>
+  </div>
+    <div class="list" id="messages" ng-if="messages.length > 0">
+          <li class="item item-text-wrap no-border {{ isNotCurrentUser(msg.user) }}" ng-repeat="msg in messages">
+            <div class="msg">
+              <div class="details padding">
+              <p>
+          <div>{{messages}}</div>
+                <div class="user">{{ msg.user }}</div>
+                <div class="message">{{ msg.text }}</div>
+              </p>
+              <small>{{ humanize(msg.time) }}</small>
+              </div>
+            </div>
+          </li>
+      </div> -->
+
+  	 <!-- <div class="card" ng-if="!$scope.messages.length">
+  	  <div class="item item-text-wrap">
+  	    No messages yet.
+  	  </div>
+  	     </div>  -->
+
+    </ion-content>
+
+
+    <ion-footer-bar keyboard-attach style="height: 55px; padding:0; background-color: #444;">
+       <div class="button-bar" style="padding: 8px; padding-top:1px;">
+         <div class="message-item item-divider" style="width:100%; margin-bottom: 0; background-color: #444;">
+           <button class="button button-small button-positive" style="float:right; max-height: 35px;background: #34a2dab3;" ng-click="sendTextMessage(text)">Send</button>
+           <div style="overflow: hidden; padding-right: .5em;">
+             <input type="text" ng-model="text" style="width: 100%; color:#212121" placeholder="Type message"/>
+           </div>
+         </div>
+       </div>
+     </ion-footer-bar>
+</ion-view>

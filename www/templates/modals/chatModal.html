@@ -1,0 +1,61 @@
+<ion-modal-view style="">
+  <ion-header-bar class="bar-dark" style="">
+    <h1 class="title" style="">
+    <div style="color: white">{{theConvo.sender_name}}</div>
+    </h1>
+    <button class="button button-clear button-primary" ng-click="closeChatModal()">Cancel</button>
+  </ion-header-bar>
+
+  <ion-content style="margin-top:10px; margin-bottom: 15px">
+    <div class="list" id="messages">
+          <li class="item item-text-wrap no-border {{ isNotCurrentSender(msg.sender_id) }}" ng-repeat="msg in oldMessages">
+            <div class="msg">
+              <div class="">
+              <p>
+                <div class="user">{{msg.sender_name }}</div>
+                <div class="message">{{ msg.body }}</div>
+              </p>
+              <small>{{ humanize(msg.time) }}</small>
+              </div>
+            </div>
+          </li>
+      </div>
+      <div class="list" id="messages" ng-if="messages.length > 0">
+            <li class="item item-text-wrap no-border {{ isNotCurrentUser(msg.user) }}" ng-repeat="msg in messages">
+              <div class="msg">
+                <div class="">
+                <p>
+                  <div class="user">{{ msg.user }}</div>
+                  <div class="message">{{ msg.text }}</div>
+                </p>
+                <small>{{ humanize(msg.time) }}</small>
+                </div>
+              </div>
+            </li>
+        </div>
+  </ion-content>
+
+  <!--  <ion-footer-bar id="footerChat" align-title="left" keyboard-attach class="bar-assertive">
+  <label class="item-input-wrapper">
+    <input type="text" name="text" ng-model="text" placeholder="Type message">
+  </label>
+   <div class="button button-icon icon ion-android-send" ng-click="sendTextMessage(text)"></div>
+  </ion-footer-bar> -->
+  <ion-footer-bar id="footerChat" fix class="bar-positive item-input-inset has-content" style="height: 55px; padding:0; background-color: #444; border-top: 2px solid #444;">
+      <label class="item-input-wrapper">
+        <input type="text" id="message" name="text" ng-model="text" placeholder="Type message">
+      </label>
+       <a class="button button-icon icon ion-android-send" ng-click="sendTextMessage(text)"></a>
+  </ion-footer-bar>
+
+<!--  <ion-footer-bar keyboard-attach style="height: 55px; padding:0; background-color: #444;">
+    <div class="button-bar" style="padding: 8px; padding-top:1px;">
+      <div class="message-item item-divider" style="width:100%; margin-bottom: 0; background-color: #444;">
+        <button class="button button-small button-positive" style="float:right; max-height: 35px;background: #34a2dab3;" ng-click="sendTextMessage(text)">Send</button>
+        <div style="overflow: hidden; padding-right: .5em;">
+          <input type="text" ng-model="text" style="width: 100%; color:#212121" placeholder="Type message">
+        </div>
+      </div>
+    </div>
+  </ion-footer-bar> -->
+</ion-modal-view>
