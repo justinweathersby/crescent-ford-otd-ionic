@@ -1,6 +1,12 @@
 app.config(function($stateProvider, $urlRouterProvider) {
 
   $stateProvider
+
+  .state('sign-in-up', {
+      url: '/sign-in-up',
+      templateUrl: 'templates/sign-in-up.html',
+      controller: 'SignInUpCtrl'
+  })
   .state('login', {
       url: '/login',
       templateUrl: 'templates/login.html',
@@ -9,7 +15,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
   .state('dealership-list', {
     url: '/dealership-list',
     templateUrl: 'templates/dealership-list.html',
-    controller: 'SignupCtrl'
+    controller: 'DealershipCtrl'
   })
   .state('signup', {
     url: '/signup',
@@ -19,7 +25,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
   .state('forgot-password', {
     url: '/forgot-password',
     templateUrl: 'templates/forgot-password.html',
-    controller: 'LoginCtrl'
+    controller: 'ForgotPasswordCtrl'
   })
   //setup an abstract state for the tabs directive
   .state('tab', {
@@ -147,5 +153,5 @@ app.config(function($stateProvider, $urlRouterProvider) {
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/login'); //--default go to page
+  $urlRouterProvider.otherwise('/sign-in-up'); //--default go to page
 });
