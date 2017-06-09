@@ -4,6 +4,9 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
   .state('sign-in-up', {
       url: '/sign-in-up',
+      params: {
+        isSignUp: null
+      },
       templateUrl: 'templates/sign-in-up.html',
       controller: 'SignInUpCtrl'
   })

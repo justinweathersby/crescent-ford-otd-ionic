@@ -70,7 +70,7 @@ app.controller('DealershipCtrl', function($scope, $http, $state, $ionicLoading, 
       else{
         store.set('selected_dealership_id', dealership_id);
         //$state.go('signup');
-        $state.go('sign-in-up', {'isSignUp': true});
+        $state.go('sign-in-up', {isSignUp: true});
       }
     }
   }

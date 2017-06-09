@@ -16,11 +16,14 @@ app.controller('SignInUpCtrl', function($scope, $state, $http, $stateParams,
 
   }
 
-
-  $scope.isSignUp = ($stateParams.isSignUp == undefined || $stateParams.isSignUp == null ) ? false : $stateParams.isSignUp;
-  console.log('isSignUp', $scope.isSignUp );
-  $scope.switchSignInUp($scope.isSignUp);
-
+  $scope.$on('$ionicView.enter', function(ev) {
+      if(ev.targetScope !== $scope)
+          return;
+      console.log('$stateParams.isSignUp : ', $stateParams);
+      $scope.isSignUp = ($stateParams.isSignUp == undefined || $stateParams.isSignUp == null ) ? false : $stateParams.isSignUp;
+      console.log('isSignUp', $scope.isSignUp );
+      $scope.switchSignInUp($scope.isSignUp);
+  });
 
   /////////// Log In Tab /////////
 
