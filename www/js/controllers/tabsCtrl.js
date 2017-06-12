@@ -267,7 +267,8 @@ function logout() {
   //   dealerService.resetCurrent();
   $ionicHistory.clearCache();
   $ionicHistory.clearHistory();
-  $state.go('login', {}, {reload:true});
+  //$state.go('login', {}, {reload:true});
+  $state.go('sign-in-up', {'isSignUp': false});
   // }).catch(function(err) {
   //     // This code runs if there were any errors
   //     console.log("ERROR::tabsCtrl::logout::clear::", JSON.stringify(err));

@@ -1,3 +1,5 @@
+// NOTE: This is the old SignUp Controller, we are using the SignInUpCtrl instead.
+
 app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
                                       $ionicPlatform, $ionicPush, $ionicPopup, $ionicPopup, $ionicLoading, $ionicHistory,
                                       authService, currentUserService, currentDealerService, dealerService,

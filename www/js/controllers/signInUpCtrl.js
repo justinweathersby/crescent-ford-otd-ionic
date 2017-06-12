@@ -19,11 +19,14 @@ app.controller('SignInUpCtrl', function($scope, $state, $http, $stateParams,
   $scope.$on('$ionicView.enter', function(ev) {
       if(ev.targetScope !== $scope)
           return;
-      console.log('$stateParams.isSignUp : ', $stateParams);
+      console.log('$stateParams.isSignUp : ', $stateParams.isSignUp);
       $scope.isSignUp = ($stateParams.isSignUp == undefined || $stateParams.isSignUp == null ) ? false : $stateParams.isSignUp;
       console.log('isSignUp', $scope.isSignUp );
       $scope.switchSignInUp($scope.isSignUp);
   });
+
+
+
 
   /////////// Log In Tab /////////
 
@@ -82,18 +85,18 @@ app.controller('SignInUpCtrl', function($scope, $state, $http, $stateParams,
 
   }
 
-
-  $scope.login = function(user) {
+  $scope.user = {};
+  $scope.login = function(loginForm) {
     $ionicLoading.show({
        template: '<p style="font-family:Brandon;color:grey;">Logging in</p><ion-spinner class="spinner-positive" icon="dots"></ion-spinner>',
        hideOnStateChange: true,
        duration: 8000
     });
 
-    if ($scope.loginForm.$valid){
+    if (loginForm.$valid){
         console.log("loginCtrl::currentUserService:::", JSON.stringify(currentUserService));
 
-        authService.login(user).success(function(data){
+        authService.login($scope.user).success(function(data){
           /// this sets and gets the currentUser///
           userSvc.setUser(data);
           $scope.currentUser = userSvc.getUser();
@@ -215,12 +218,23 @@ app.controller('SignInUpCtrl', function($scope, $state, $http, $stateParams,
         }
     );
   }
+  $scope.data = {};
+  $scope.createUser = function(signupForm){
 
-  $scope.createUser = function(user){
-
-    console.log(user);
+    console.log($scope.data);
     $scope.currentUser = store.get('localUser');
-    if ($scope.signupForm.$valid){
+
+    if($scope.data.password != $scope.data.password_confirmation){
+      var errorResponse = "";
+      errorResponse = "Passwords do not match";
+      var alertPopup = $ionicPopup.alert({
+        title: 'Incorrect Input',
+        template: errorResponse
+      });
+      return;
+    }
+
+    if (signupForm.$valid){
       console.log("valid?");
 
       $ionicPlatform.ready(function() {
@@ -236,16 +250,17 @@ app.controller('SignInUpCtrl', function($scope, $state, $http, $stateParams,
             template: '<p>Loading...</p><ion-spinner></ion-spinner>'
           });
 
-          $http.post(DEALERSHIP_API.url + "/users", {user: {email: user.email,
-                                                             password: user.password,
-                                                             name: user.name,
+          $http.post(DEALERSHIP_API.url + "/users", {user: {email: $scope.data.email,
+                                                             password: $scope.data.password,
+                                                             name: $scope.data.name,
                                                              device_token: t.device_token,
                                                              device_type: t.device_type,
                                                              dealership_id: store.get('selected_dealership_id')}})
           .success( function (data) {
             console.log("SignUpResponse: " + JSON.stringify(data));
             $ionicLoading.hide();
-            $state.go('login');
+            //$state.go('login');
+            $scope.goToSignIn();
             // $scope.currentUser.token = data.user.auth_token;
             // $scope.currentUser.id = data.user.id;
             // $scope.currentUser.name = data.user.name;
@@ -276,18 +291,15 @@ app.controller('SignInUpCtrl', function($scope, $state, $http, $stateParams,
               template: errorResponse
             });
           });
+        }, function(err) {
+          console.log(err);
         });
       });
     }
     else{
       console.log("error");
       var errorResponse = "";
-      if(user.password != user.password_confirmation){
-        errorResponse = "Passwords do not match";
-      }
-      else{
-        errorResponse = "Fields cannot be blank or of incorrect format";
-      }
+      errorResponse = "Fields cannot be blank or of incorrect format";
       var alertPopup = $ionicPopup.alert({
         title: 'Incorrect Input',
         template: errorResponse

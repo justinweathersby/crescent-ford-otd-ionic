@@ -73,7 +73,8 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
                       "Woops",  // a title
                       "OK"                                // the button text
                     );
-                    $state.go('login');
+                    //$state.go('login');
+                    $state.go('sign-in-up', {'isSignUp': false});
                   }
                   $state.go('tab.conversations');
             }).finally(function() {
