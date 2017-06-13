@@ -1,8 +1,11 @@
 <ion-view hide-nav-bar="true" style="background: dimgray;" class="page-sign-in-up">
   <div ng-controller="SignInUpCtrl">
 
-    <div class="header-section">
-      <div class="header-transparent-bg">
+
+
+    <ion-content >
+
+      <div class="header-section">
         <div class="logo-wrapper">
           <img src="img/logo.png" />
         </div>
@@ -15,9 +18,7 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <ion-content >
       <!-- Sign In Tab -->
       <form ng-if="!isSignUp" name="loginForm" novalidate>
         <div class="body-section">

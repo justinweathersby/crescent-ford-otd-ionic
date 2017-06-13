@@ -286,16 +286,10 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
   background-size: auto;
   background-position: center;
   background-repeat: no-repeat;
-  .header-section  {
-    background-image: url(../img/bg-main.png) !important;
-    background-size: auto;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    z-index: 9999;
-    .header-transparent-bg{
+
+  ion-content {
+    background-color: transparent;
+    .header-section  {
       text-align: center;
       background-image: url(../img/bg-mask.png);
       background-size: 100% 100%;
@@ -308,13 +302,8 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
           height: 170px;
         }
       }
+
     }
-
-  }
-
-  ion-content {
-    margin-top: 270px;
-    background-color: transparent;
   }
 }
 
