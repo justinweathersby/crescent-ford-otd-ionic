@@ -3,7 +3,7 @@ app.service('ChatService', function($http, DEALERSHIP_API, store) {
 
   //  var currentUser = store.get('localUser');
   //  console.log(currentUser);
-  //
+  
   // var _options = {
   //   headers: {
   //     'Authorization' : currentUser.auth_token
@@ -18,6 +18,16 @@ app.service('ChatService', function($http, DEALERSHIP_API, store) {
        'Authorization' : currentUser.auth_token
      }
    };
+
+
+
+
+
+
+
+
+
+
     console.log(msg);
   //  if(msg.recipient)
     var data = {
@@ -95,6 +105,8 @@ app.service('ChatService', function($http, DEALERSHIP_API, store) {
            "conversation_id": x
          }
       // console.log(params);
+      console.log(_options);
+      
        return $http.get(DEALERSHIP_API.url + "/messages?conversation_id=" + x , _options).then(function(result) {
        console.log(result);
 

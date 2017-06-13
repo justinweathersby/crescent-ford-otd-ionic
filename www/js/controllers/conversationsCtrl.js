@@ -1,3 +1,4 @@
+// header("Access-Control-Allow-Origin: http://localhost:8100");
 app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, $stateParams, $cordovaBadge,$ionicPopup, $ionicLoading, $ionicModal,currentUserService, currentConversation, currentDealerService, dealerService, SocketService, $ionicPlatform, userSvc, currentDealerSvc, store, modalService, $ionicScrollDelegate, DEALERSHIP_API, ChatService, $ionicHistory, $window, $timeout){
 
   // var me = this;
@@ -115,7 +116,8 @@ $scope.$on('cloud:push:notification', function(event, data) {
     };
     $scope.openServiceModal = function() {
       modalService
-        .chatServicesModal('templates/modals/chatServices_modal.html', $scope)
+        // .chatServicesModal('templates/modals/chatServices_modal.html', $scope)
+        .chatServicesModal('templates/modals/select-chat-rep.html', $scope)
         .then(function(modal) {
           modal.show();
           dealerService.getServiceReps().then(function(result){
@@ -125,7 +127,8 @@ $scope.$on('cloud:push:notification', function(event, data) {
               var reps = []
                 for (i = 0; i < $scope.reps.length; i++) {
                 //  console.log($scope.reps[i].name, "rep name1");
-                  reps.push($scope.reps[i].name);
+                  // reps.push($scope.reps[i].name);
+                  reps.push($scope.reps[i]);
               }
 
               var convoReps = [];
@@ -148,7 +151,8 @@ $scope.$on('cloud:push:notification', function(event, data) {
 
     $scope.openSalesModal = function() {
       modalService
-        .chatServicesModal('templates/modals/chatServices_modal.html', $scope)
+        // .chatServicesModal('templates/modals/chatServices_modal.html', $scope)
+        .chatServicesModal('templates/modals/select-chat-rep.html', $scope)
         .then(function(modal) {
           modal.show();
 
@@ -159,7 +163,8 @@ $scope.$on('cloud:push:notification', function(event, data) {
             var reps = []
               for (i = 0; i < $scope.reps.length; i++) {
               //  console.log($scope.reps[i].name, "rep name1");
-                reps.push($scope.reps[i].name);
+                // reps.push($scope.reps[i].name);
+                reps.push($scope.reps[i]);
             }
 
             var convoReps = [];
