@@ -23,6 +23,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 }); //end of platform ready
 
 $scope.$on('cloud:push:notification', function(event, data) {
+  alert("New Message");
   var payload = data.message.raw.additionalData.payload;
   console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
   if (payload.user_message == 1){
@@ -120,6 +121,8 @@ $scope.$on('cloud:push:notification', function(event, data) {
         .chatServicesModal('templates/modals/select-chat-rep.html', $scope)
         .then(function(modal) {
           modal.show();
+          $scope.repsModal = modal;
+          
           dealerService.getServiceReps().then(function(result){
             console.log(result, "result");
             $scope.reps = result.data;
@@ -155,6 +158,7 @@ $scope.$on('cloud:push:notification', function(event, data) {
         .chatServicesModal('templates/modals/select-chat-rep.html', $scope)
         .then(function(modal) {
           modal.show();
+          $scope.repsModal = modal;
 
           dealerService.getSalesReps().then(function(result){
             console.log(result, "result");
@@ -299,7 +303,65 @@ ChatService.saveNewMessage(msg).then(function(result) {
 
       store.set('unique_id', x.unique_id);
 
-    }
+    }    
+
+    //-- Triggered on a button click, or some other target
+    $scope.showPopup = function(send_to_id) {
+      $scope.data = {};
+      // An elaborate, custom popup
+      var myPopup = $ionicPopup.show({
+        templateUrl: "templates/popups/send-message-input.html",
+        cssClass: 'sendMessagePopup',
+        title: 'Send A Message To Chat',
+        scope: $scope,
+        buttons: [
+          { text: 'Cancel',type: 'button-small'},
+          {
+            text: '<b>Send</b>',
+            type: 'button-small button-positive',
+            onTap: function(e) {
+              if (!$scope.data.msg) {
+                e.preventDefault();
+              } else {
+                startConversation(send_to_id, $scope.data.msg);
+                return $scope.data.msg;
+              }
+            }
+          }
+        ]
+      });
+      myPopup.then(function(res) {
+        console.log('Tapped!', res);
+        $scope.repsModal.hide();
+      });
+    };
+
+    function startConversation(send_to, body){
+      $ionicLoading.show({
+        template: '<p>Sending Message...</p><ion-spinner></ion-spinner>',
+        delay: 500
+      });
+
+      var msg = {
+        'text': body,
+        'recipient_id': send_to
+      }
+      ChatService.saveNewMessage(msg).then(function(result) {
+        console.log(result, "result");
+        console.log(msg);
+        $ionicLoading.hide();
+        currentConversation.id = result.data.data.conversation_id;
+        currentConversation.sender_id = result.data.data.partner_id;
+        currentConversation.sender_name = result.data.data.partner_name;
+        localforage.setItem('conversation', currentConversation).then(function(value){
+          $state.go('tab.messages');
+        });
+        $ionicScrollDelegate.scrollBottom();			
+      }).catch(function(error) {
+        $ionicLoading.hide();
+        console.log("ERROR::conversationCtrl::startConversation::POST Messages API::", JSON.stringify(error));			
+      })
+	  } 
 
     $scope.closeChatModal = function() {
       $scope.chatModal.hide();

@@ -31,7 +31,9 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
 
   $scope.$on('$ionicView.enter', function() {
 
-    cordova.plugins.Keyboard.disableScroll(true);
+    if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
+      cordova.plugins.Keyboard.disableScroll(true);
+    }
     window.addEventListener('native.keyboardshow', keyboardShowHandler);
     window.addEventListener('native.keyboardhide', keyboardHideHandler);
 
@@ -43,7 +45,9 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
     window.removeEventListener('native.keyboardshow', keyboardShowHandler);
     window.removeEventListener('native.keyboardhide', keyboardHideHandler);
 
-    cordova.plugins.Keyboard.disableScroll(false);
+    if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
+      cordova.plugins.Keyboard.disableScroll(false);
+    }
   });
 
   $scope.getMessages = function() {
