@@ -1,6 +1,6 @@
 app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $stateParams, $timeout,
                                         $ionicPopup, $ionicLoading, $ionicScrollDelegate, $cordovaDialogs, $cordovaBadge,
-                                        currentUserService, currentConversation,
+                                        currentUserService, currentConversation,SocketService,store,
                                         DEALERSHIP_API)
 {
 
@@ -30,10 +30,9 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
   }
 
   $scope.$on('$ionicView.enter', function() {
-
-    if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.disableScroll(true);
-    }
+	if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
+		cordova.plugins.Keyboard.disableScroll(true);
+	}
     window.addEventListener('native.keyboardshow', keyboardShowHandler);
     window.addEventListener('native.keyboardhide', keyboardHideHandler);
 
@@ -42,12 +41,11 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
 
 
   $scope.$on('$ionicView.leave', function() {
+	  if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
+		  cordova.plugins.Keyboard.disableScroll(false);
+	  }
     window.removeEventListener('native.keyboardshow', keyboardShowHandler);
-    window.removeEventListener('native.keyboardhide', keyboardHideHandler);
-
-    if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.disableScroll(false);
-    }
+    window.removeEventListener('native.keyboardhide', keyboardHideHandler);    
   });
 
   $scope.getMessages = function() {
@@ -79,6 +77,11 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
                     );
                     $state.go('login');
                   }
+					var unique_id = store.get("unique_id");
+					var room = {
+						'room_name': unique_id
+					};
+					SocketService.emit('leave:room', room);
                   $state.go('tab.conversations');
             }).finally(function() {
                  $ionicLoading.hide();
@@ -93,6 +96,12 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
   };
 
   $scope.getMessages();
+
+  SocketService.on('message', function(msg){
+		console.log(msg);
+		$scope.messages.push(msg);
+		$ionicScrollDelegate.scrollBottom();
+  });
 
   $scope.reply = function(body){
     $ionicLoading.show({
@@ -114,6 +123,23 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
                   },
                   headers: {'Authorization' : currentUserService.token}
         }).success( function( data ){
+				console.log(data);
+				console.log(store);
+				var room = store.get('unique_id');
+				console.log(room);
+				var recipient_id = store.get('recipient_id');
+				console.log(recipient_id);
+				var conversation_id = store.get('conversation_id');
+				console.log(conversation_id);
+				var msg = {
+					'room': room,
+					'user': value.sender_name,
+					'text': body,
+					'recipient_id': recipient_id,
+					'conversation_id': conversation_id
+				}
+				console.log(msg);
+				SocketService.emit('send:message', msg);
                 $ionicLoading.hide();
                 delete $scope.replyMessage.body;
                 $scope.getMessages();

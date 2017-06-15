@@ -7,12 +7,17 @@
   </ion-header-bar>
 
   <ion-content style="margin-top:10px; margin-bottom: 15px">
+    <ion-refresher
+      pulling-text="Pull to refresh..."
+      on-refresh="getConversations()">
+    </ion-refresher>
+
     <div class="list" id="messages">
           <li class="item item-text-wrap no-border {{ isNotCurrentSender(msg.sender_id) }}" ng-repeat="msg in oldMessages">
             <div class="msg">
               <div class="">
               <p>
-                <div class="user">{{msg.sender_name }}</div>
+                <!--<div class="user">{{msg.sender_name }}</div>-->
                 <div class="message">{{ msg.body }}</div>
               </p>
               <small>{{ humanize(msg.time) }}</small>
@@ -25,7 +30,7 @@
               <div class="msg">
                 <div class="">
                 <p>
-                  <div class="user">{{ msg.user }}</div>
+                  <!--<div class="user">{{ msg.user }}</div>-->
                   <div class="message">{{ msg.text }}</div>
                 </p>
                 <small>{{ humanize(msg.time) }}</small>
@@ -41,7 +46,7 @@
   </label>
    <div class="button button-icon icon ion-android-send" ng-click="sendTextMessage(text)"></div>
   </ion-footer-bar> -->
-  <ion-footer-bar keyboard-attach fix class="footerChat bar-positive item-input-inset has-content" style="height: 55px; padding:0; background-color: #444; border-top: 2px solid #444;">
+  <ion-footer-bar id="footerChat" fix class="bar-positive item-input-inset has-content" style="height: 55px; padding:0; background-color: #444; border-top: 2px solid #444;">
       <label class="item-input-wrapper">
         <input type="text" id="message" name="text" ng-model="text" placeholder="Type message">
       </label>

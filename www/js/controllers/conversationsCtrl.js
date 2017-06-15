@@ -1,40 +1,42 @@
-// header("Access-Control-Allow-Origin: http://localhost:8100");
 app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, $stateParams, $cordovaBadge,$ionicPopup, $ionicLoading, $ionicModal,currentUserService, currentConversation, currentDealerService, dealerService, SocketService, $ionicPlatform, userSvc, currentDealerSvc, store, modalService, $ionicScrollDelegate, DEALERSHIP_API, ChatService, $ionicHistory, $window, $timeout){
 
-  // var me = this;
-    $scope.text = "";
-		$scope.messages = [];
+	// var me = this;
+	$scope.text = "";
+	$scope.messages = [];
     $scope.serviceRep = {};
 
-  $ionicPlatform.ready(function() {
-    $scope.currentUser = userSvc.getUser();
-    console.log($scope.currentUser);
-    $scope.dealership = currentDealerSvc.getDealership();
-    console.log($scope.dealership);
+	$ionicPlatform.ready(function() {
+		$scope.currentUser = userSvc.getUser();
+		console.log($scope.currentUser);
+		$scope.dealership = currentDealerSvc.getDealership();
+		console.log($scope.dealership);
 
 
-    $scope.currentUser = store.get('localUser');
-    console.log($scope.currentUser);
-    $scope.dealership = store.get('localDealership')
-    console.log($scope.dealership);
+		$scope.currentUser = store.get('localUser');
+		console.log($scope.currentUser);
+		$scope.dealership = store.get('localDealership')
+		console.log($scope.dealership);
   //}
-    updateConversations();
+		updateConversations();
+		var unique_id = store.get("unique_id");
+		var room = {
+			'room_name': unique_id
+		};
+		SocketService.emit('leave:room', room);
+	}); //end of platform ready
 
-}); //end of platform ready
-
-$scope.$on('cloud:push:notification', function(event, data) {
-  alert("New Message");
-  var payload = data.message.raw.additionalData.payload;
-  console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
-  if (payload.user_message == 1){
-    if (payload.conversation_id == currentConversation.id){
-        updateConversations();
-        $rootScope.$apply(function () {
-          $rootScope.message_badge_count=0;
-        });
-      }
-    }
-  });
+	$scope.$on('cloud:push:notification', function(event, data) {
+		var payload = data.message.raw.additionalData.payload;
+		console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
+		if (payload.user_message == 1){
+			if (payload.conversation_id == currentConversation.id){
+				updateConversations();
+				$rootScope.$apply(function () {
+					$rootScope.message_badge_count=0;
+				});
+			}
+		}
+	});
 
 
 // $scope.$on('cloud:push:notification', function(event, data) {
@@ -47,328 +49,341 @@ $scope.$on('cloud:push:notification', function(event, data) {
 
 
 
-  function updateConversations() {
-    console.log("updating convo conversation");
-    ChatService.getMessages().then(function(result) {
-        console.log(result, "messages");
-        $scope.conversations = result.data.data.conversations;
-        console.log($scope.conversations);
-      }).catch(function(err) {
-        console.log(err, "error");
-    })
-  }
+	function updateConversations() {
+		$ionicLoading.show({
+			template: '<p>Loading Conversation...</p><ion-spinner></ion-spinner>',
+			hideOnStateChange: true,
+			duration: 5000
+		});
+
+		console.log("updating convo conversation");
+		ChatService.getMessages().then(function(result) {
+			$ionicLoading.hide();
+			console.log(result, "messages");
+			$scope.conversations = result.data.data.conversations;
+			console.log($scope.conversations);
+		}).catch(function(err) {
+			$ionicLoading.hide();
+			console.log(err, "error");
+		})
+	}
 
 
-  $scope.goBack = function() {
-    var unique_id = store.get("unique_id");
-    var room = {
-        'room_name': unique_id
-    };
+	$scope.goBack = function() {
+		var unique_id = store.get("unique_id");
+		var room = {
+			'room_name': unique_id
+		};
 
 
-    SocketService.emit('leave:room', room);
-     $state.go('tab.conversations');
-  }
+		SocketService.emit('leave:room', room);
+		$state.go('tab.conversations');
+	}
 
 
-  $scope.startServicesChat = function(x) {
-     console.log(x);
-    // console.log(x.unique_id);
+	$scope.startServicesChat = function(x) {
+		console.log(x);
+		// console.log(x.unique_id);
 
-    console.log($scope.reps);
-    for (i = 0; i < $scope.reps.length; i++) {
-      if($scope.reps[i].name === x) {
-        console.log($scope.reps[i].name, "it's a match");
-        $scope.currentChatRep = $scope.reps[i]; /// the reps user object
-        console.log($scope.currentChatRep.created_at);
+		console.log($scope.reps);
+		for (i = 0; i < $scope.reps.length; i++) {
+			if($scope.reps[i].name === x) {
+				console.log($scope.reps[i].name, "it's a match");
+				$scope.currentChatRep = $scope.reps[i]; /// the reps user object
+				console.log($scope.currentChatRep.created_at);
+			}
+		}
 
-      }
-    }
+		store.set('recipient_id', $scope.currentChatRep.id);
+		store.set('conversation_id', "");
+		store.set('unique_id', $scope.currentChatRep.id);
+		var room = {
+			'room_name': $scope.currentChatRep.id
+		};
 
-    store.set('recipient_id', $scope.currentChatRep.id);
-    store.set('conversation_id', "");
-    store.set('unique_id', $scope.currentChatRep.id);
-    var room = {
-        'room_name': $scope.currentChatRep.id
-    };
+		SocketService.emit('join:room', room);
 
+		$scope.chatServicesModal.hide();
 
-    SocketService.emit('join:room', room);
+		modalService.chatModal('templates/modals/chatModal.html', $scope).then(function(modal) {
+			modal.show();
+			dealerService.getServiceReps().then(function(result){
+				console.log(result, "result");
+				$scope.reps = result.data;
+			});
+		})
+	}
 
-    $scope.chatServicesModal.hide();
-
-    modalService
-      .chatModal('templates/modals/chatModal.html', $scope)
-      .then(function(modal) {
-        modal.show();
-        dealerService.getServiceReps().then(function(result){
-          console.log(result, "result");
-          $scope.reps = result.data;
-        });
-})
-}
-
-  $scope.isNotCurrentUser = function(user){
-
+	$scope.isNotCurrentUser = function(user){
         if($scope.currentUser.name != user){
-          return 'not-current-user';
+			return 'not-current-user';
         }
         return 'current-user';
     };
+	
     $scope.openServiceModal = function() {
-      modalService
-        // .chatServicesModal('templates/modals/chatServices_modal.html', $scope)
-        .chatServicesModal('templates/modals/select-chat-rep.html', $scope)
-        .then(function(modal) {
-          modal.show();
-          $scope.repsModal = modal;
-          
-          dealerService.getServiceReps().then(function(result){
-            console.log(result, "result");
-            $scope.reps = result.data;
+		$ionicLoading.show({
+			template: '<p>Loading Representatives...</p><ion-spinner></ion-spinner>',
+			hideOnStateChange: true,
+			duration: 5000
+		});
+		modalService.chatServicesModal('templates/modals/select-chat-rep.html', $scope).then(function(modal) {
+			$scope.repsModal = modal;
+			modal.show();
+			dealerService.getServiceReps().then(function(result){
+				console.log(result, "result");
+				$scope.reps = result.data;
 
-              var reps = []
+				var reps = []
                 for (i = 0; i < $scope.reps.length; i++) {
-                //  console.log($scope.reps[i].name, "rep name1");
-                  // reps.push($scope.reps[i].name);
-                  reps.push($scope.reps[i]);
-              }
+					//  console.log($scope.reps[i].name, "rep name1");
+					reps.push($scope.reps[i]);
+				}
 
-              var convoReps = [];
+				var convoReps = [];
                 for (i = 0; i < $scope.conversations.length; i++) {
-              //    console.log($scope.conversations[i].sender_name, "sender name");
-                  convoReps.push($scope.conversations[i].sender_name);
-              }
+					//    console.log($scope.conversations[i].sender_name, "sender name");
+					convoReps.push($scope.conversations[i].sender_name);
+				}
                 console.log(reps);
                 console.log(convoReps);
-                $scope.leftReps = reps.filter(function(x) { return convoReps.indexOf(x) < 0 })
+                $scope.leftReps = reps.filter(function(x) { return convoReps.indexOf(x) < 0 });
+				$ionicLoading.hide();
                 console.log($scope.leftReps)
-
             }).catch(function(err){
-              console.log(err, "error");
+				$ionicLoading.hide();
+				console.log(err, "error");
             })
-
-
         });
     }
 
     $scope.openSalesModal = function() {
-      modalService
-        // .chatServicesModal('templates/modals/chatServices_modal.html', $scope)
-        .chatServicesModal('templates/modals/select-chat-rep.html', $scope)
-        .then(function(modal) {
-          modal.show();
-          $scope.repsModal = modal;
+		$ionicLoading.show({
+			template: '<p>Loading Representatives...</p><ion-spinner></ion-spinner>',
+			hideOnStateChange: true,
+			duration: 5000
+		});
+		modalService.chatServicesModal('templates/modals/select-chat-rep.html', $scope).then(function(modal) {
+			$scope.repsModal = modal;
+			modal.show();
 
-          dealerService.getSalesReps().then(function(result){
-            console.log(result, "result");
-            $scope.reps = result.data; // change for sales
+			dealerService.getSalesReps().then(function(result){
+				console.log(result, "result");
+				$scope.reps = result.data; // change for sales
 
-            var reps = []
-              for (i = 0; i < $scope.reps.length; i++) {
-              //  console.log($scope.reps[i].name, "rep name1");
-                // reps.push($scope.reps[i].name);
-                reps.push($scope.reps[i]);
-            }
+				var reps = []
+				for (i = 0; i < $scope.reps.length; i++) {
+					//  console.log($scope.reps[i].name, "rep name1");
+					reps.push($scope.reps[i]);
+				}
 
-            var convoReps = [];
-              for (i = 0; i < $scope.conversations.length; i++) {
-            //    console.log($scope.conversations[i].sender_name, "sender name");
-                convoReps.push($scope.conversations[i].sender_name);
-            }
-              console.log(reps);
-              console.log(convoReps);
-              $scope.leftReps = reps.filter(function(x) { return convoReps.indexOf(x) < 0 })
-              console.log($scope.leftReps)
-
-          }).catch(function(err){
-            console.log(err, "error");
-          })
+				var convoReps = [];
+				for (i = 0; i < $scope.conversations.length; i++) {
+					//    console.log($scope.conversations[i].sender_name, "sender name");
+					convoReps.push($scope.conversations[i].sender_name);
+				}
+				console.log(reps);
+				console.log(convoReps);
+				$scope.leftReps = reps.filter(function(x) { return convoReps.indexOf(x) < 0 })
+				console.log($scope.leftReps);
+				$ionicLoading.hide();
+			}).catch(function(err){
+				console.log(err, "error");
+				$ionicLoading.hide();
+			})
         });
-
     }
 
 
-  $scope.sendTextMessage = function(text) {
+	$scope.sendTextMessage = function(text) {
+		$ionicLoading.show({
+			template: '<p>Sending Message...</p><ion-spinner></ion-spinner>',
+			hideOnStateChange: true,
+			duration: 5000
+		});
+		
+		this.text = null;
 
-    this.text = null;
+		var room = store.get('unique_id');
+		console.log(room);
 
-    var room = store.get('unique_id');
-    console.log(room);
-
-    var recipient_id = store.get('recipient_id');
-    var conversation_id = store.get('conversation_id');
-    console.log(conversation_id);
-    if(conversation_id != "") {
-  			var msg = {
+		var recipient_id = store.get('recipient_id');
+		var conversation_id = store.get('conversation_id');
+		console.log(conversation_id);
+		if(conversation_id != "") {
+			var msg = {
   				'room': room,
   				'user': $scope.currentUser.name,
   				'text': text,
-          'recipient_id': recipient_id,
-          'conversation_id': conversation_id
+				'recipient_id': recipient_id,
+				'conversation_id': conversation_id
   			}
-        ChatService.saveMessage(msg).then(function(result) {
-            console.log(result, "result");
-            console.log(msg);
-            // $rootScope.$emit('cloud:push:notification', result);
+			ChatService.saveMessage(msg).then(function(result) {
+				$ionicLoading.hide();
+				console.log(result, "result");
+				console.log(msg);
+				// $rootScope.$emit('cloud:push:notification', result);
       			$scope.messages.push(msg);
-            console.log($scope.messages);
+				console.log($scope.messages);
       			$ionicScrollDelegate.scrollBottom();
 
       			$scope.text = "";
 
       			SocketService.emit('send:message', msg);
 
-          }).catch(function(err) {
-            console.log(err, "error");
+			}).catch(function(err) {
+				$ionicLoading.hide();
+				console.log(err, "error");
+			})
+		}
+		if(conversation_id === "") {
+			var msg = {
+				'room': room,
+				'user': $scope.currentUser.name,
+				'text': text,
+				'recipient_id': recipient_id
+			}
+			ChatService.saveNewMessage(msg).then(function(result) {
+				$ionicLoading.hide();
+				console.log(result, "result");
+				console.log(msg);
 
-        })
-      }
-    if(conversation_id === "") {
-      var msg = {
-        'room': room,
-        'user': $scope.currentUser.name,
-        'text': text,
-        'recipient_id': recipient_id
-}
-ChatService.saveNewMessage(msg).then(function(result) {
-    console.log(result, "result");
-    console.log(msg);
+				$scope.messages.push(msg);
+				console.log($scope.messages);
+				$ionicScrollDelegate.scrollBottom();
+				SocketService.emit('send:message', msg);
+			}).catch(function(err) {
+				$ionicLoading.hide();
+				console.log(err, "error");
+			})
+		}
+	};
 
-    $scope.messages.push(msg);
-    console.log($scope.messages);
-    $ionicScrollDelegate.scrollBottom();
+/**    SocketService.on('message', function(msg){
+		console.log(msg);
+		$scope.messages.push(msg);
+		$ionicScrollDelegate.scrollBottom();
+	});
+**/
 
-
-    SocketService.emit('send:message', msg);
-
-
-
-
-
-  }).catch(function(err) {
-    console.log(err, "error");
-
-})
-    }
-		};
-
-
-    SocketService.on('message', function(msg){
-      console.log(msg);
-			$scope.messages.push(msg);
-			$ionicScrollDelegate.scrollBottom();
-		});
-
-
-   $scope.isNotCurrentSender = function(sender_id){
-
-   			if($scope.currentUser.id != sender_id){
+	$scope.isNotCurrentSender = function(sender_id){
+		if($scope.currentUser.id != sender_id){
    				return 'not-current-user';
-   			}
-   			return 'current-user';
- 		};
+   		}
+   		return 'current-user';
+ 	};
 
     $scope.openConversation = function(x) {
-      console.log(x);
-      $scope.theConvo = x;
-        store.set('conversation_id', x.conversation_id);
-        store.set('recipient_id', "");
-      // $scope.oldMessages = x.messages;
-      $scope.currentConvoId = x.conversation_id;
+		console.log(x);
+		console.log($scope.currentUser.id);
+		console.log(x.sender_id);
+		//$scope.theConvo = x;
+        //store.set('conversation_id', x.conversation_id);
+        //store.set('recipient_id', "");
+		// $scope.oldMessages = x.messages;
+		//$scope.currentConvoId = x.conversation_id;
 
-      ChatService.getAllMessages($scope.currentConvoId).then(function(result) {
-          console.log(result.data.data.messages, "All messages");
-        //  $scope.conversations = result.data.data.conversations;
-          $scope.oldMessages = result.data.data.messages;
-          console.log($scope.oldMessages);
+		//ChatService.getAllMessages($scope.currentConvoId).then(function(result) {
+		//	console.log(result.data.data.messages, "All messages");
+			//  $scope.conversations = result.data.data.conversations;
+			//$scope.oldMessages = result.data.data.messages;
+		//	$scope.messages = result.data.data.messages;
+		//	console.log($scope.messages);
+			currentConversation.id = x.conversation_id;
+			currentConversation.sender_id = x.sender_id;
+			currentConversation.sender_name = x.sender_name;
+			localforage.setItem('conversation', currentConversation).then(function(value){
+				console.log(x.unique_id);
+				var room = {
+					'room_name': x.unique_id
+				};
+				SocketService.emit('join:room', room);
+				store.set('unique_id', x.unique_id);
+				store.set('recipient_id', x.sender_id);
+				store.set('conversation_id', x.conversation_id);
+				$state.go('tab.messages');
+			});
+			//console.log($scope.oldMessages);
+			//modalService.chatModal('templates/modals/chatModal.html', $scope).then(function(modal) {
+			//	modal.show();
+			//	$ionicScrollDelegate.scrollBottom();
+            //});
+        //}).catch(function(err) {
+		//	console.log(err, "error");
+		//})		
+    }
 
-          modalService
-            .chatModal('templates/modals/chatModal.html', $scope)
-            .then(function(modal) {
-              modal.show();
-              $ionicScrollDelegate.scrollBottom();
-            });
+	//-- Triggered on a button click, or some other target
+	$scope.showPopup = function(send_to_id) {
+		$scope.data = {};
+		// An elaborate, custom popup
+		var myPopup = $ionicPopup.show({
+			templateUrl: "templates/popups/send-message-input.html",
+			cssClass: 'sendMessagePopup',
+			title: 'Send A Message To Chat',
+			scope: $scope,
+			buttons: [
+				{ text: 'Cancel',type: 'button-small'},
+				{
+					text: '<b>Send</b>',
+					type: 'button-small button-positive',
+					onTap: function(e) {
+						if (!$scope.data.msg) {
+							e.preventDefault();
+						} else {
+							startConversation(send_to_id, $scope.data.msg);
+							return $scope.data.msg;
+						}
+					}
+				}
+			]
+		});
+		myPopup.then(function(res) {
+			console.log('Tapped!', res);
+			$scope.repsModal.hide();
+		});
+	};
+	
+	function startConversation(send_to, body){
+		$ionicLoading.show({
+			template: '<p>Sending Message...</p><ion-spinner></ion-spinner>',
+			delay: 500
+		});
 
-        }).catch(function(err) {
-          console.log(err, "error");
+		var msg = {
+			'text': body,
+			'recipient_id': send_to
+		}
+		ChatService.saveNewMessage(msg).then(function(result) {
+			console.log(result, "result");
+			console.log(msg);
+			$ionicLoading.hide();
+			currentConversation.id = result.data.data.conversation_id;
+			currentConversation.sender_id = result.data.data.partner_id;
+			currentConversation.sender_name = result.data.data.partner_name;
+			localforage.setItem('conversation', currentConversation).then(function(value){
+				console.log(send_to);
+				store.set('unique_id', send_to);
+				var room = {
+					'room_name': send_to
+				};
 
-      })
-
-      var room = {
-          'room_name': x.unique_id
-      };
-      SocketService.emit('join:room', room);
-
-
-      store.set('unique_id', x.unique_id);
-
-    }    
-
-    //-- Triggered on a button click, or some other target
-    $scope.showPopup = function(send_to_id) {
-      $scope.data = {};
-      // An elaborate, custom popup
-      var myPopup = $ionicPopup.show({
-        templateUrl: "templates/popups/send-message-input.html",
-        cssClass: 'sendMessagePopup',
-        title: 'Send A Message To Chat',
-        scope: $scope,
-        buttons: [
-          { text: 'Cancel',type: 'button-small'},
-          {
-            text: '<b>Send</b>',
-            type: 'button-small button-positive',
-            onTap: function(e) {
-              if (!$scope.data.msg) {
-                e.preventDefault();
-              } else {
-                startConversation(send_to_id, $scope.data.msg);
-                return $scope.data.msg;
-              }
-            }
-          }
-        ]
-      });
-      myPopup.then(function(res) {
-        console.log('Tapped!', res);
-        $scope.repsModal.hide();
-      });
-    };
-
-    function startConversation(send_to, body){
-      $ionicLoading.show({
-        template: '<p>Sending Message...</p><ion-spinner></ion-spinner>',
-        delay: 500
-      });
-
-      var msg = {
-        'text': body,
-        'recipient_id': send_to
-      }
-      ChatService.saveNewMessage(msg).then(function(result) {
-        console.log(result, "result");
-        console.log(msg);
-        $ionicLoading.hide();
-        currentConversation.id = result.data.data.conversation_id;
-        currentConversation.sender_id = result.data.data.partner_id;
-        currentConversation.sender_name = result.data.data.partner_name;
-        localforage.setItem('conversation', currentConversation).then(function(value){
-          $state.go('tab.messages');
-        });
-        $ionicScrollDelegate.scrollBottom();			
-      }).catch(function(error) {
-        $ionicLoading.hide();
-        console.log("ERROR::conversationCtrl::startConversation::POST Messages API::", JSON.stringify(error));			
-      })
-	  } 
-
+				SocketService.emit('join:room', room);
+				SocketService.emit('send:message', msg);
+				$state.go('tab.messages');
+			});
+			$ionicScrollDelegate.scrollBottom();			
+		}).catch(function(error) {
+			$ionicLoading.hide();
+			console.log("ERROR::conversationCtrl::startConversation::POST Messages API::", JSON.stringify(error));			
+		});
+	}
+  	
     $scope.closeChatModal = function() {
-      $scope.chatModal.hide();
-      $scope.oldMessages = "";
-      $scope.messages = [];
-      console.log("hello");
-      updateConversations()
+		$scope.chatModal.hide();
+		$scope.oldMessages = "";
+		$scope.messages = [];
+		console.log("hello");
+		updateConversations()
     };
-
 });
