@@ -363,13 +363,14 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 			currentConversation.sender_name = result.data.data.partner_name;
 			localforage.setItem('conversation', currentConversation).then(function(value){
 				console.log(send_to);
-				store.set('unique_id', send_to);
+				var unique_id = "1911c9b4."+result.data.data.conversation_id;
 				var room = {
-					'room_name': send_to
+					'room_name': unique_id
 				};
-
-				SocketService.emit('join:room', room);
-				SocketService.emit('send:message', msg);
+				SocketService.emit('join:room', room);				
+				store.set('unique_id', unique_id);
+				store.set('recipient_id', send_to);
+				store.set('conversation_id', result.data.data.conversation_id);				
 				$state.go('tab.messages');
 			});
 			$ionicScrollDelegate.scrollBottom();			
