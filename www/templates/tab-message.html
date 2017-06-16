@@ -15,10 +15,8 @@
     <ol class="messages-container">
       <li ng-repeat="message in messages" class="item message-item" style="width:100%; background:transparent;">
         <div ng-class="{{message.sender_id == current_user.id}} ? 'message-from-me' : ['message-from-sender']" style="display: inline-block; padding-right: 20px;">
-          <!-- <img ng-src="{{current_conv.sender_image}}" ng-hide="{{message.sender_id == current_user.id}}" style=""> -->
           <p style="color:white; padding-left:10px; width:auto; overflow: visible; overflow-wrap: break-word;white-space: normal;">{{message.body}}</p>
         </div>
-        <!-- <h2>{{changeName(message.sender_name)}} </h2> -->
       </li>
     </ol>
     <div ng-init="afterMessagesLoad()"></div>
@@ -35,7 +33,3 @@
     </div>
   </ion-footer-bar>
 </ion-view>
-
-
-
-<!-- startConversation(match.id, replyMessage.body) -->
