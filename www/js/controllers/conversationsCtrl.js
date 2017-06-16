@@ -1,6 +1,5 @@
 app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, $stateParams, $cordovaBadge,$ionicPopup, $ionicLoading, $ionicModal,currentUserService, currentConversation, currentDealerService, dealerService, SocketService, $ionicPlatform, userSvc, currentDealerSvc, store, modalService, $ionicScrollDelegate, DEALERSHIP_API, ChatService, $ionicHistory, $window, $timeout){
 
-	// var me = this;
 	$scope.text = "";
 	$scope.messages = [];
     $scope.serviceRep = {};
@@ -16,7 +15,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 		console.log($scope.currentUser);
 		$scope.dealership = store.get('localDealership')
 		console.log($scope.dealership);
-  //}
+
 		updateConversations();
 		var unique_id = store.get("unique_id");
 		var room = {
@@ -37,17 +36,6 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 			}
 		}
 	});
-
-
-// $scope.$on('cloud:push:notification', function(event, data) {
-//   console.log('cloud')
-//   console.log('convo event', event)
-//   console.log('convo data', data)
-//   updateConversations();
-// });
-
-
-
 
 	function updateConversations() {
 		$ionicLoading.show({
@@ -83,7 +71,6 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 
 	$scope.startServicesChat = function(x) {
 		console.log(x);
-		// console.log(x.unique_id);
 
 		console.log($scope.reps);
 		for (i = 0; i < $scope.reps.length; i++) {
@@ -222,7 +209,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 				$ionicLoading.hide();
 				console.log(result, "result");
 				console.log(msg);
-				// $rootScope.$emit('cloud:push:notification', result);
+
       			$scope.messages.push(msg);
 				console.log($scope.messages);
       			$ionicScrollDelegate.scrollBottom();
@@ -259,13 +246,6 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 		}
 	};
 
-/**    SocketService.on('message', function(msg){
-		console.log(msg);
-		$scope.messages.push(msg);
-		$ionicScrollDelegate.scrollBottom();
-	});
-**/
-
 	$scope.isNotCurrentSender = function(sender_id){
 		if($scope.currentUser.id != sender_id){
    				return 'not-current-user';
@@ -277,21 +257,11 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 		console.log(x);
 		console.log($scope.currentUser.id);
 		console.log(x.sender_id);
-		//$scope.theConvo = x;
-        //store.set('conversation_id', x.conversation_id);
-        //store.set('recipient_id', "");
-		// $scope.oldMessages = x.messages;
-		//$scope.currentConvoId = x.conversation_id;
 
-		//ChatService.getAllMessages($scope.currentConvoId).then(function(result) {
-		//	console.log(result.data.data.messages, "All messages");
-			//  $scope.conversations = result.data.data.conversations;
-			//$scope.oldMessages = result.data.data.messages;
-		//	$scope.messages = result.data.data.messages;
-		//	console.log($scope.messages);
 			currentConversation.id = x.conversation_id;
 			currentConversation.sender_id = x.sender_id;
 			currentConversation.sender_name = x.sender_name;
+
 			localforage.setItem('conversation', currentConversation).then(function(value){
 				console.log(x.unique_id);
 				var room = {
@@ -303,14 +273,6 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 				store.set('conversation_id', x.conversation_id);
 				$state.go('tab.messages');
 			});
-			//console.log($scope.oldMessages);
-			//modalService.chatModal('templates/modals/chatModal.html', $scope).then(function(modal) {
-			//	modal.show();
-			//	$ionicScrollDelegate.scrollBottom();
-            //});
-        //}).catch(function(err) {
-		//	console.log(err, "error");
-		//})		
     }
 
 	//-- Triggered on a button click, or some other target

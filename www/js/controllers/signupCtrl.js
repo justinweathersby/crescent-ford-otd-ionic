@@ -41,12 +41,7 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
           template: '<p>Loading...</p><ion-spinner></ion-spinner>',
           hideOnStateChange: true,
           duration: 5000
-        });
-
-
-
-        // localforage.setItem('currentUser', currentUserService).then(function (value){
-        //   console.log("Value set in currentDealer:", JSON.stringify(value));
+        });       
 
           //--Try to preload the dealership after click
           dealerService.getDealership().success(function(){
@@ -62,12 +57,6 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
             });
             $state.go('login');
           });
-
-
-        // }).catch(function(err){
-        //   console.log("SET ITEM ERROR::singupCtrl::dealershipSelected::currentUser::", JSON.stringify(err));
-        // });
-
       }
       else{
         store.set('selected_dealership_id', dealership_id);
@@ -106,15 +95,6 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
             console.log("SignUpResponse: " + JSON.stringify(data));
             $ionicLoading.hide();
             $state.go('login');
-            // $scope.currentUser.token = data.user.auth_token;
-            // $scope.currentUser.id = data.user.id;
-            // $scope.currentUser.name = data.user.name;
-            // $scope.currentUser.email = data.user.email;
-            // $scope.currentUser.roles = data.roles;
-            // $scope.currentUser.isCustomer = data.isCustomer;
-
-            // userSvc.setUser(data.user);
-
           })
           .error( function(error)
           {
