@@ -75,12 +75,14 @@ $rootScope.$on('cloud:push:notification', function(event, data) {
 
 // $rootScope.message_badge_count = 0;
 
-if (currentDealerService){
-  $scope.dealership = currentDealerService;
+if (currentDealerService){	
+	$scope.dealership = store.get('localDealership');
 }
-else{
+else{	
     //-- Load Current Dealer
     localforage.getItem('currentDealer').then(function (value){
+		console.log(currentDealerService);
+		console.log(value);
       angular.copy(value, currentDealerService);
       $scope.dealership = currentDealerService;
     }).catch(function(err){
@@ -209,7 +211,7 @@ $scope.openInventoryModal = function(){
   });
 };
 
-$scope.openSpecialsModal = function(){
+$scope.openSpecialsModal = function(){	
   var hideSheet = $ionicActionSheet.show({
     buttons: [
       { text: 'Inventory Specials' },

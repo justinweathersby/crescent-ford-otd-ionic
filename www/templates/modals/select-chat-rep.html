@@ -1,7 +1,6 @@
 <ion-modal-view style="">
   <ion-nav-bar class="bar-dark">
     <ion-nav-title>
-        <!--<img src="{{dealership.logo_url}}" style="margin-left:auto; margin-right:auto; display:block; padding-top: 8px;" height="40px" alt="">-->
         <img ng-src="{{dealership.logo_url}}" style="margin-left:auto; margin-right:auto; display:block; padding-top: 8px;" height="40px" alt="">
      </ion-nav-title>
   </ion-nav-bar>
@@ -10,7 +9,7 @@
     Please Choose a Representative
   </h2>
   <hr style="box-shadow: 0 0 5px #3f636f; border-top:0; border-color:white"/>
-  <div ng-hide="reps.length">
+  <div ng-if="reps.length == 0">
     <div class="no-matches-container" style="margin-top: 15vh;">
         <h4 style="text-align: center; color: white">Sorry</h4>
         <hr style=" display: block; height: 0px; border: 0; border-top: 1px solid #fff; border-bottom: 1px solid #fff; border-radius:2px; margin: 1em auto; padding: 0; width: 90% "/>
