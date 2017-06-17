@@ -40,27 +40,10 @@
         </div>
   </ion-content>
 
-  <!--  <ion-footer-bar id="footerChat" align-title="left" keyboard-attach class="bar-assertive">
-  <label class="item-input-wrapper">
-    <input type="text" name="text" ng-model="text" placeholder="Type message">
-  </label>
-   <div class="button button-icon icon ion-android-send" ng-click="sendTextMessage(text)"></div>
-  </ion-footer-bar> -->
   <ion-footer-bar id="footerChat" fix class="bar-positive item-input-inset has-content" style="height: 55px; padding:0; background-color: #444; border-top: 2px solid #444;">
       <label class="item-input-wrapper">
         <input type="text" id="message" name="text" ng-model="text" placeholder="Type message">
       </label>
        <a class="button button-icon icon ion-android-send" ng-click="sendTextMessage(text)"></a>
   </ion-footer-bar>
-
-<!--  <ion-footer-bar keyboard-attach style="height: 55px; padding:0; background-color: #444;">
-    <div class="button-bar" style="padding: 8px; padding-top:1px;">
-      <div class="message-item item-divider" style="width:100%; margin-bottom: 0; background-color: #444;">
-        <button class="button button-small button-positive" style="float:right; max-height: 35px;background: #34a2dab3;" ng-click="sendTextMessage(text)">Send</button>
-        <div style="overflow: hidden; padding-right: .5em;">
-          <input type="text" ng-model="text" style="width: 100%; color:#212121" placeholder="Type message">
-        </div>
-      </div>
-    </div>
-  </ion-footer-bar> -->
 </ion-modal-view>
