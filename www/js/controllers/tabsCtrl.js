@@ -1,79 +1,9 @@
 app.controller('TabsCtrl', function($scope, $rootScope, $state, $ionicActionSheet, $ionicHistory, $ionicPlatform, $ionicLoading, $ionicPopup, $cordovaInAppBrowser, $cordovaBadge, $cordovaDialogs,
 authService, currentUserService, currentDealerService, dealerService, store, userSvc, currentDealerSvc, ChatService, $ionicPush){
-
-  // function loadMessageCount () {
-  //   ChatService.getMessages().then(function(result) {
-  //     console.log('get messages');
-  //     var conversations = result.data.data.conversations;
-  //     var unreadMessageCount = 0;
-  //     var readMessages = 0;
-  //     angular.forEach(conversations, function(conversation){
-  //       if(conversation.recipient_read === false) {
-  //         unreadMessageCount ++;
-  //       } else {
-  //         readMessages ++;
-  //       }
-  //     })
-  //     console.log('unreadmessage count', unreadMessageCount);
-  //     console.log('message count', readMessages);
-  //     $rootScope.message_badge_count = unreadMessageCount;
-  //     $cordovaBadge.hasPermission().then(function(result) {
-  //         $cordovaBadge.set(unreadMessageCount);
-  //     }, function(error) {
-  //         alert(error);
-  //     });
-  //   })
-  // }
-  // $ionicPlatform.ready(function() {
-  //   loadMessageCount();
-  //
-  //
-  //
-  //
-  //
-  //     $scope.currentUser = userSvc.getUser();
-  //     $scope.dealership = currentDealerSvc.getDealership();
-  //
-  //   if($scope.dealership.id === undefined){
-  //     console.log("no current dealership");
-  //     //-- Get Current User Object
-  //
-  //     $scope.currentUser = store.get('localUser');
-  //     console.log($scope.currentUser);
-  //     $scope.dealership = store.get('localDealership')
-  //     console.log($scope.dealership, "tabs");
-  //     console.log($scope.dealership.logo_url);
-  //
-  //   }
-  // });
-
-
-
-
+ 
 $rootScope.$on('cloud:push:notification', function(event, data) {
-  console.log('a new message push', data);
-  // console.log('tabs event', events)
-  // console.log('tabs data', data)
-  // var payload = data.message.raw.additionalData.payload;
-  // console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
-  // console.log("MESSAGE BADGE COUNT" + $scope.message_badge_count);
-  // if (payload.user_message == 1){
-  //   // $rootScope.message_badge_count++;
-  //   // $rootScope.$apply();
-  // }
-  // else{
-  //   var msg = data.message;
-  //   $cordovaDialogs.alert(
-  //     msg.text,  // the message
-  //     msg.title, // a title
-  //     "OK"       // the button text
-  //   ).then(function() {
-  //     $cordovaBadge.clear();
-  //   });
-  // }
+  console.log('a new message push', data);  
 });
-
-// $rootScope.message_badge_count = 0;
 
 if (currentDealerService){	
 	$scope.dealership = store.get('localDealership');
@@ -119,34 +49,7 @@ function openLinkInBrowser(url, redirect){
           console.log("ERROR::OPEN IN APP BROWSER... EVENT::", event);
           console.log("ERROR::OPEN IN APP BROWSER... URL::", url);
       });
-
-
-    // $cordovaInAppBrowser.close();
   });
-
-  // $rootScope.$on('$cordovaInAppBrowser:loadstart', function(e, event){
-  //
-  // });
-  //
-  // $rootScope.$on('$cordovaInAppBrowser:loadstop', function(e, event){
-    // insert CSS via code / file
-    // $cordovaInAppBrowser.insertCSS({
-    //   code: 'body {background-color:blue;}'
-    // });
-
-    // insert Javascript via code / file
-    // $cordovaInAppBrowser.executeScript({
-    //   file: 'script.js'
-    // });
-  // });
-  //
-  // $rootScope.$on('$cordovaInAppBrowser:loaderror', function(e, event){
-  //
-  // });
-  //
-  // $rootScope.$on('$cordovaInAppBrowser:exit', function(e, event){
-  //
-  // });
 };
 
 function noUrlAlertAndRedirect(fromString){
@@ -262,18 +165,8 @@ $scope.goToChat = function(){
 function logout() {
   store.set('localDealership', null);
   store.set('localUser', null);
-  // localforage.clear().then(function() {
-  //   // Run this code once the database has been entirely deleted.
-  //   console.log('Database is now empty.');
-  //   authService.resetCurrent();
-  //   dealerService.resetCurrent();
   $ionicHistory.clearCache();
   $ionicHistory.clearHistory();
   $state.go('login', {}, {reload:true});
-  // }).catch(function(err) {
-  //     // This code runs if there were any errors
-  //     console.log("ERROR::tabsCtrl::logout::clear::", JSON.stringify(err));
-  // });
-
 };
 });
