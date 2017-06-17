@@ -1,5 +1,7 @@
-app.controller('TabsCtrl', function($scope, $rootScope, $state, $ionicActionSheet, $ionicHistory, $ionicPlatform, $ionicLoading, $ionicPopup, $cordovaInAppBrowser, $cordovaBadge, $cordovaDialogs,
-authService, currentUserService, currentDealerService, dealerService, store, userSvc, currentDealerSvc, ChatService, $ionicPush){
+app.controller('TabsCtrl', function($scope, $rootScope, $state,
+                                    $ionicActionSheet, $ionicHistory, $ionicPlatform, $ionicLoading, $ionicPopup, $ionicPush,
+                                    $cordovaInAppBrowser, $cordovaBadge, $cordovaDialogs,
+                                    authService, currentUserService, currentDealerService, dealerService, store, userSvc, currentDealerSvc, ChatService){
 
 //--------------------------Handles Push Notifications--------------------------
 $scope.$on('cloud:push:notification', function(event, data) {
@@ -21,7 +23,7 @@ $scope.$on('cloud:push:notification', function(event, data) {
       $cordovaBadge.clear();
     });
   }
-};
+});
 //------------------------------------------------------------------------------
 
 if (currentDealerService){
