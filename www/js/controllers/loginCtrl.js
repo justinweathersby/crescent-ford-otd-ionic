@@ -25,10 +25,7 @@ app.controller('LoginCtrl', function($scope, $http, $state, $ionicLoading, $ioni
           //-- Get Current User Object
 
           $scope.currentUser = store.get('localUser');
-          console.log($scope.currentUser);
-          // if($scope.currentUser === null) {
-          //   $state.go('signup');
-          // }
+          console.log($scope.currentUser);          
           $scope.dealership = store.get('localDealership')
           console.log($scope.dealership);
         }
@@ -53,35 +50,6 @@ app.controller('LoginCtrl', function($scope, $http, $state, $ionicLoading, $ioni
       console.log("GET ITEM ERROR::loginCtrl::currentDealer::", JSON.stringify(err));
     });
   }).catch(function(err) {console.log("GET ITEM ERROR::LoginCtrl::currentUser", JSON.stringify(err));});
-
-
-//    $ionicPlatform.ready(function() {
-//
-// $cordovaBadge.hasPermission().then(function(result) {
-//   console.log("cordovaBadge result", result);
-//     $cordovaBadge.set(unreadMessageCount);
-// }, function(error) {
-//     alert(error, "cordovaBadge error");
-// });
-// });
-//
-//     $scope.currentUser = userSvc.getUser();
-//     $scope.dealership = currentDealerSvc.getDealership();
-//
-//   if($scope.dealership.id === undefined){
-//     console.log("no current dealership");
-//     //-- Get Current User Object
-//
-//     $scope.currentUser = store.get('localUser');
-//     console.log($scope.currentUser);
-//     // if($scope.currentUser === null) {
-//     //   $state.go('signup');
-//     // }
-//     $scope.dealership = store.get('localDealership')
-//     console.log($scope.dealership);
-//
-//   }
-// });
 
   $scope.login = function(user) {
     $ionicLoading.show({

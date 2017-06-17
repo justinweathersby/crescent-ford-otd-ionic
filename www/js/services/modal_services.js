@@ -113,12 +113,7 @@ app.service('modalService', function($ionicModal, $rootScope) {
         console.log("hhhh");
         return modal;
       });
-
-        // $scope.closeChatModal = function() {
-        //   $scope.chatModal.hide();
-        //   $scope.oldMessages = "";
-        //   console.log("hello");
-        // };
+      
         // Cleanup the modal when we're done with it!
         $scope.$on('$destroy', function() {
           $scope.chatModal.remove();

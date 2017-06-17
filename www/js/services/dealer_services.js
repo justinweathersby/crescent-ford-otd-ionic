@@ -149,13 +149,6 @@ app.service('dealerService', function($http, $ionicLoading, currentUserService, 
 		return $http({ method: 'GET',
 			url: DEALERSHIP_API.url + "/dealerships/"
 		});
-		// .success( function( data ){
-		//     $ionicLoading.hide();
-		//   }).error( function(error){
-		//       console.log("ERROR::services::getDealership::GET::deaelerships::", JSON.stringify(error));
-		//       console.log("ERROR::MORE INFO::currentUserService:", JSON.stringify(currentUser));
-		//       $ionicLoading.hide();
-		//   });
 	};
 
   this.resetCurrent = function(){

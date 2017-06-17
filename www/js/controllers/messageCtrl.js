@@ -4,19 +4,6 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
                                         DEALERSHIP_API)
 {
 
-  // $scope.$on('cloud:push:notification', function(event, data) {
-  // var payload = data.message.raw.additionalData.payload;
-  // console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
-  // // if (payload.user_message == 1){
-  // //   if (payload.conversation_id == currentConversation.id){
-  // //       $scope.getMessages();
-  // //       $rootScope.$apply(function () {
-  // //         $rootScope.message_badge_count=0;
-  // //       });
-  // //     }
-  // //   }
-  // });
-
   var viewScroll = $ionicScrollDelegate.$getByHandle('userMessageScroll');
   $scope.current_user = currentUserService;
 
@@ -36,7 +23,6 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
     window.addEventListener('native.keyboardshow', keyboardShowHandler);
     window.addEventListener('native.keyboardhide', keyboardHideHandler);
 
-    // $rootScope.message_badge_count = 0;
   });
 
 
@@ -73,7 +59,7 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
                     $cordovaDialogs.alert(
                       "Sorry you have been logged out. Please re-login",
                       "Woops",  // a title
-                      "OK"                                // the button text
+                      "OK"    // the button text
                     );
                     //$state.go('login');
                     $state.go('sign-in-up', {'isSignUp': false});
@@ -108,7 +94,7 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
     $ionicLoading.show({
         template: '<p>Sending Message...</p><ion-spinner></ion-spinner>',
         hideOnStateChange: true,
-        duration: 5000
+        duration: 2000
     });
     localforage.getItem('currentUser').then(function(value){
       angular.copy(value, currentUserService)

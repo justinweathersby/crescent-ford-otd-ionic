@@ -1,14 +1,6 @@
 
 app.service('ChatService', function($http, DEALERSHIP_API, store) {
 
-  //  var currentUser = store.get('localUser');
-  //  console.log(currentUser);
-  //
-  // var _options = {
-  //   headers: {
-  //     'Authorization' : currentUser.auth_token
-  //   }
-  // };
 	function saveNewMessage(msg) {
 		var currentUser = store.get('localUser');
 		console.log(currentUser);
