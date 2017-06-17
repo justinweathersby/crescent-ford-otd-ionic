@@ -1,0 +1,85 @@
+<ion-view hide-nav-bar="true" style="background: dimgray;" class="page-sign-in-up">
+  <div ng-controller="SignInUpCtrl">
+
+
+
+    <ion-content >
+
+      <div class="header-section">
+        <div class="logo-wrapper">
+          <img src="img/logo.png" />
+        </div>
+        <div class="row">
+          <div ng-class="{'selected-tab' : !isSignUp}" class="col col-50">
+            <button class="button button-block button-small button-clear sign-btn" ng-click="switchSignInUp(false)">SIGN IN</button>
+          </div>
+          <div ng-class="{'selected-tab' : isSignUp}" class="col col-50">
+            <button class="button button-block button-small button-clear sign-btn" ng-click="switchSignInUp(true)">SIGN UP</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sign In Tab -->
+      <form ng-if="!isSignUp" name="loginForm" novalidate>
+        <div class="body-section">
+          <div class="list">
+            <a class="item item-icon-left" >
+              <i class="icon">
+                <img src="img/ic-email.png" />
+              </i>
+              <input placeholder="EMAIL"  type="email" ng-model="user.email" required></input>
+            </a>
+            <a class="item item-icon-left">
+              <i class="icon">
+                <img src="img/ic-password.png" />
+              </i>
+              <input type="password" placeholder="PASSWORD" ng-model="user.password" required></input>
+            </a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <button class="button button-block continue-btn" ng-click="login(loginForm)">Continue</button>
+          <button class="button button-clear button-block terms-btn" ng-click="goToForgotPassword()">Forgot Password?</button>
+        </div>
+      </form>
+
+      <!-- Sign In Tab -->
+      <form ng-if="isSignUp" name="signupForm" novalidate>
+        <div class="body-section">
+          <div class="list">
+            <a class="item item-icon-left" >
+              <i class="icon">
+                <img src="img/ic-username.png" />
+              </i>
+              <input type="text" placeholder="NAME"  type="text" ng-model="data.name" required></input>
+            </a>
+            <a class="item item-icon-left">
+              <i class="icon">
+                <img src="img/ic-email.png" />
+              </i>
+              <input placeholder="EMAIL"  type="email" ng-model="data.email" required></input>
+            </a>
+            <a class="item item-icon-left">
+              <i class="icon">
+                <img src="img/ic-password.png" />
+              </i>
+              <input type="password" placeholder="PASSWORD" ng-model="data.password" required></input>
+            </a>
+            <a class="item item-icon-left">
+              <i class="icon">
+                <img src="img/ic-password.png" />
+              </i>
+              <input type="password" placeholder="RE-ENTER PASSWORD" ng-model="data.password_confirmation" required compare-to="data.password"></input>
+            </a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <button class="button button-block continue-btn" ng-click="createUser(signupForm)">Continue</button>
+          <button class="button button-clear button-block terms-btn" ng-click="termsAndConditions()">Terms & Conditions</button>
+        </div>
+      </form>
+
+    </ion-content>
+
+  </div>
+</ion-view>

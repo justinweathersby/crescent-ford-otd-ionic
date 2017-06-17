@@ -9942,6 +9942,83 @@ a.button {
     border-bottom: 1vh solid transparent;
     border-top: 1vh solid transparent; }
 
+/* Start: Added by Ken */
+.main-bg {
+  background-image: url(../img/bg-main.png);
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat; }
+
+.header-section {
+  height: 270px; }
+  .header-section .row {
+    padding: 0; }
+  .header-section .col {
+    padding: 0px;
+    border-bottom: solid 6px transparent; }
+  .header-section .sign-btn {
+    font-size: 0.8rem;
+    color: white; }
+  .header-section .selected-tab {
+    border-bottom: solid 6px #1a71ad; }
+
+.body-section {
+  height: 240px; }
+  .body-section .list {
+    padding: 20px; }
+    .body-section .list .item-block:first-child {
+      border-top: none; }
+    .body-section .list .item {
+      padding: 7px 5px 7px 45px;
+      background: transparent;
+      border-top: none;
+      border-bottom: solid 1.5px #727677; }
+      .body-section .list .item .icon {
+        left: 2px; }
+        .body-section .list .item .icon img {
+          width: 30px;
+          height: 30px; }
+      .body-section .list .item input {
+        background: transparent;
+        color: white;
+        font-size: 1.2rem;
+        width: 100%; }
+
+.footer-section {
+  margin-top: 10px;
+  padding: 20px; }
+  .footer-section .continue-btn {
+    height: 60px;
+    border-radius: 6px;
+    font-size: 1.2rem;
+    text-transform: none;
+    background-color: #1a71ad;
+    color: white; }
+  .footer-section .terms-btn {
+    margin-top: 0px;
+    font-size: 0.8rem;
+    text-transform: none;
+    color: white; }
+
+.page-sign-in-up {
+  background-image: url(../img/bg-main.png) !important;
+  background-size: auto;
+  background-position: center;
+  background-repeat: no-repeat; }
+  .page-sign-in-up ion-content {
+    background-color: transparent; }
+    .page-sign-in-up ion-content .header-section {
+      text-align: center;
+      background-image: url(../img/bg-mask.png);
+      background-size: 100% 100%;
+      background-position: center; }
+      .page-sign-in-up ion-content .header-section .logo-wrapper {
+        padding-top: 39px; }
+        .page-sign-in-up ion-content .header-section .logo-wrapper img {
+          width: 210px;
+          height: 170px; }
+
+/* End: Added by Ken */
 .tabs .tab-item .badge.badge-assertive, .badge.badge-assertive {
   opacity: 1; }
 

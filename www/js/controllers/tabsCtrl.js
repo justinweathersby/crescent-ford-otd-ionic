@@ -188,6 +188,6 @@ function logout() {
   store.set('localUser', null);
   $ionicHistory.clearCache();
   $ionicHistory.clearHistory();
-  $state.go('login', {}, {reload:true});
+  $state.go('sign-in-up', {'isSignUp': false});
 };
 });
