@@ -163,6 +163,7 @@ $scope.goToChat = function(){
 };
 
 function logout() {
+  localforage.clear();
   store.set('localDealership', null);
   store.set('localUser', null);
   $ionicHistory.clearCache();

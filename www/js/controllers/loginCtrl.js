@@ -1,7 +1,5 @@
 app.controller('LoginCtrl', function($scope, $http, $state, $ionicLoading, $ionicPopup,       $ionicPlatform, $ionicPush,authService, currentUserService, userSvc, currentDealerService, currentDealerSvc, dealerService, DEALERSHIP_API, store) {
 
-
-
   //-- Get Current User Object
   localforage.getItem('currentUser').then(function(value){
     angular.copy(value, currentUserService);
@@ -23,7 +21,10 @@ app.controller('LoginCtrl', function($scope, $http, $state, $ionicLoading, $ioni
           //-- Get Current User Object
 
           $scope.currentUser = store.get('localUser');
-          console.log($scope.currentUser);          
+          console.log($scope.currentUser);
+          // if($scope.currentUser === null) {
+          //   $state.go('signup');
+          // }
           $scope.dealership = store.get('localDealership')
           console.log($scope.dealership);
         }
@@ -48,6 +49,35 @@ app.controller('LoginCtrl', function($scope, $http, $state, $ionicLoading, $ioni
       console.log("GET ITEM ERROR::loginCtrl::currentDealer::", JSON.stringify(err));
     });
   }).catch(function(err) {console.log("GET ITEM ERROR::LoginCtrl::currentUser", JSON.stringify(err));});
+
+
+//    $ionicPlatform.ready(function() {
+//
+// $cordovaBadge.hasPermission().then(function(result) {
+//   console.log("cordovaBadge result", result);
+//     $cordovaBadge.set(unreadMessageCount);
+// }, function(error) {
+//     alert(error, "cordovaBadge error");
+// });
+// });
+//
+//     $scope.currentUser = userSvc.getUser();
+//     $scope.dealership = currentDealerSvc.getDealership();
+//
+//   if($scope.dealership.id === undefined){
+//     console.log("no current dealership");
+//     //-- Get Current User Object
+//
+//     $scope.currentUser = store.get('localUser');
+//     console.log($scope.currentUser);
+//     // if($scope.currentUser === null) {
+//     //   $state.go('signup');
+//     // }
+//     $scope.dealership = store.get('localDealership')
+//     console.log($scope.dealership);
+//
+//   }
+// });
 
   $scope.login = function(user) {
     $ionicLoading.show({
@@ -104,7 +134,7 @@ app.controller('LoginCtrl', function($scope, $http, $state, $ionicLoading, $ioni
 
   $scope.resetPassword = function(email) {
     $ionicLoading.show({
-       template: '<p style="font-family:Brandon;color:grey;">Checking to see if your account exists..</p><ion-spinner class="spinner-positive" icon="dots"></ion-spinner>',
+       template: '<p style="font-family:Brandon;color:grey;">Reset password process in progress..</p><ion-spinner class="spinner-positive" icon="dots"></ion-spinner>',
        hideOnStateChange: true,
        duration: 5000
     });
@@ -113,11 +143,21 @@ app.controller('LoginCtrl', function($scope, $http, $state, $ionicLoading, $ioni
       .success( function( data )
       {
         $ionicLoading.hide();
-        $ionicPopup.alert({
-           title: 'Thank You',
-           content: 'An email has been sent to the email provided with instructions to reset your password.'
-         });
-         $state.go('login');
+		if(data.result){
+			$ionicPopup.alert({
+				title: 'Thank You',
+				//content: 'An email has been sent to the email provided with instructions to reset your password.'
+				content: data.result
+			});		 
+			$state.go('login');
+		 }
+		 if(data.errors){
+			$ionicPopup.alert({
+				title: 'Error',
+				//content: 'An email has been sent to the email provided with instructions to reset your password.'
+				content: data.errors
+			});			 
+		 }
       }
     )
     .error( function(error)
@@ -125,9 +165,9 @@ app.controller('LoginCtrl', function($scope, $http, $state, $ionicLoading, $ioni
       $ionicLoading.hide();
       $ionicPopup.alert({
          title: 'Woops..',
-         content: 'The email you have entered does not exist in our records'
+         content: 'Unexpected error happend during reset password process'
        });
-       $state.go('signup');
+       //$state.go('signup');
     });
   };//end of reset password function
 
