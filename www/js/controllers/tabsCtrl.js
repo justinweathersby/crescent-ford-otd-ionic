@@ -1,14 +1,33 @@
 app.controller('TabsCtrl', function($scope, $rootScope, $state, $ionicActionSheet, $ionicHistory, $ionicPlatform, $ionicLoading, $ionicPopup, $cordovaInAppBrowser, $cordovaBadge, $cordovaDialogs,
 authService, currentUserService, currentDealerService, dealerService, store, userSvc, currentDealerSvc, ChatService, $ionicPush){
- 
-$rootScope.$on('cloud:push:notification', function(event, data) {
-  console.log('a new message push', data);  
-});
 
-if (currentDealerService){	
+//--------------------------Handles Push Notifications--------------------------
+$scope.$on('cloud:push:notification', function(event, data) {
+  var payload = data.message.raw.additionalData.payload;
+  console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
+  console.log("MESSAGE BADGE COUNT" + $scope.message_badge_count);
+  if (payload.user_message == 1){
+    $rootScope.$apply(function () {
+      $rootScope.message_badge_count++;
+    });
+  }
+  else{
+    var msg = data.message;
+    $cordovaDialogs.alert(
+      msg.text,  // the message
+      msg.title, // a title
+      "OK"       // the button text
+    ).then(function() {
+      $cordovaBadge.clear();
+    });
+  }
+};
+//------------------------------------------------------------------------------
+
+if (currentDealerService){
 	$scope.dealership = store.get('localDealership');
 }
-else{	
+else{
     //-- Load Current Dealer
     localforage.getItem('currentDealer').then(function (value){
 		console.log(currentDealerService);
@@ -114,7 +133,7 @@ $scope.openInventoryModal = function(){
   });
 };
 
-$scope.openSpecialsModal = function(){	
+$scope.openSpecialsModal = function(){
   var hideSheet = $ionicActionSheet.show({
     buttons: [
       { text: 'Inventory Specials' },

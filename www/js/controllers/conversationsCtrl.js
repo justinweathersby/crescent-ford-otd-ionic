@@ -24,18 +24,22 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 		SocketService.emit('leave:room', room);
 	}); //end of platform ready
 
-	$scope.$on('cloud:push:notification', function(event, data) {
-		var payload = data.message.raw.additionalData.payload;
-		console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
-		if (payload.user_message == 1){
-			if (payload.conversation_id == currentConversation.id){
-				updateConversations();
-				$rootScope.$apply(function () {
-					$rootScope.message_badge_count=0;
-				});
-			}
-		}
-	});
+//--------------------------Handles Push Notifications--------------------------
+  // -- Commenting this out bc websockets update conversations / messages now
+	// $scope.$on('cloud:push:notification', function(event, data) {
+	// 	var payload = data.message.raw.additionalData.payload;
+	// 	console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
+	// 	if (payload.user_message == 1){
+	// 		if (payload.conversation_id == currentConversation.id){
+	// 			updateConversations();
+	// 			$rootScope.$apply(function () {
+	// 				$rootScope.message_badge_count=0;
+	// 			});
+	// 		}
+	// 	}
+	// });
+//------------------------------------------------------------------------------
+
 
 	function updateConversations() {
 		$ionicLoading.show({
@@ -107,7 +111,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
         }
         return 'current-user';
     };
-	
+
     $scope.openServiceModal = function() {
 		$ionicLoading.show({
 			template: '<p>Loading Representatives...</p><ion-spinner></ion-spinner>',
@@ -188,7 +192,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 			hideOnStateChange: true,
 			duration: 5000
 		});
-		
+
 		this.text = null;
 
 		var room = store.get('unique_id');
@@ -305,7 +309,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 			$scope.repsModal.hide();
 		});
 	};
-	
+
 	function startConversation(send_to, body){
 		$ionicLoading.show({
 			template: '<p>Sending Message...</p><ion-spinner></ion-spinner>',
@@ -329,19 +333,19 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 				var room = {
 					'room_name': unique_id
 				};
-				SocketService.emit('join:room', room);				
+				SocketService.emit('join:room', room);
 				store.set('unique_id', unique_id);
 				store.set('recipient_id', send_to);
-				store.set('conversation_id', result.data.data.conversation_id);				
+				store.set('conversation_id', result.data.data.conversation_id);
 				$state.go('tab.messages');
 			});
-			$ionicScrollDelegate.scrollBottom();			
+			$ionicScrollDelegate.scrollBottom();
 		}).catch(function(error) {
 			$ionicLoading.hide();
-			console.log("ERROR::conversationCtrl::startConversation::POST Messages API::", JSON.stringify(error));			
+			console.log("ERROR::conversationCtrl::startConversation::POST Messages API::", JSON.stringify(error));
 		});
 	}
-  	
+
     $scope.closeChatModal = function() {
 		$scope.chatModal.hide();
 		$scope.oldMessages = "";
