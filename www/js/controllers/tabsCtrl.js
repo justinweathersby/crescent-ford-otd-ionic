@@ -188,6 +188,7 @@ function logout() {
   store.set('localUser', null);
   $ionicHistory.clearCache();
   $ionicHistory.clearHistory();
-  $state.go('sign-in-up', {'isSignUp': false});
+  localforage.clear()
+  $state.go('login');
 };
 });

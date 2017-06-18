@@ -1,7 +1,7 @@
 // NOTE: This is the old SignUp Controller, we are using the SignInUpCtrl instead.
 
 app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
-                                      $ionicPlatform, $ionicPush, $ionicPopup, $ionicPopup, $ionicLoading, $ionicHistory,
+                                      $ionicPlatform, $ionicPush, $ionicPopup, $ionicLoading, $ionicHistory,
                                       authService, currentUserService, currentDealerService, dealerService,
                                       DEALERSHIP_API, userSvc, currentDealerSvc, store)
 {
@@ -43,7 +43,7 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
           template: '<p>Loading...</p><ion-spinner></ion-spinner>',
           hideOnStateChange: true,
           duration: 5000
-        });       
+        });
 
           //--Try to preload the dealership after click
           dealerService.getDealership().success(function(){
@@ -69,57 +69,71 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
 
   $scope.createUser = function(user){
 
-    console.log(user);
+    console.log("Inside createUser - user: " + JSON.stringify(user));
     $scope.currentUser = store.get('localUser');
     if ($scope.signupForm.$valid){
       console.log("valid?");
 
       $ionicPlatform.ready(function() {
+        console.log("ionic platform is ready");
         $ionicPush.register().then(function(t) {
-          return $ionicPush.saveToken(t);
-        }).then(function(t) {
-          currentUserService.device_token = t.token;
-          currentUserService.device_type = t.type;
-
-          console.log("DEVICE TOKEN:::::::", t.token);
-
-          $ionicLoading.show({
-            template: '<p>Loading...</p><ion-spinner></ion-spinner>'
-          });
-
-          $http.post(DEALERSHIP_API.url + "/users", {user: {email: user.email,
-                                                             password: user.password,
-                                                             name: user.name,
-                                                             device_token: t.device_token,
-                                                             device_type: t.device_type,
-                                                             dealership_id: store.get('selected_dealership_id')}})
-          .success( function (data) {
-            console.log("SignUpResponse: " + JSON.stringify(data));
-            $ionicLoading.hide();
-            $state.go('login');
-          })
-          .error( function(error)
-          {
-            $ionicLoading.hide();
-            var errorResponse = "";
-            if (angular.isDefined(error.errors)){
-              if ( angular.isDefined(error.errors.password)){
-                errorResponse = "Password: " + error.errors.password;
-              }
-              if (angular.isDefined(error.errors.email)){
-                errorResponse += "<br>Email: " + error.errors.email;
-              }
-            }
-            else{
-              errorResponse += "<br>Error: " + error;
-            }
-            var alertPopup = $ionicPopup.alert({
-              title: 'Well, We Have A Problem...',
-              template: errorResponse
-            });
-          });
-        });
-      });
+console.log("in then for ionic push register: " + t);
+}, function(error) {
+console.log("error in ionic push register: " + error);
+}).catch(function(e) {
+  console.log("Error in ionicPush.register() : " + e);
+});
+});
+        // $ionicPush.register().then(function(t) {
+        //   console.log("ionic push register then statement");
+        //   return $ionicPush.saveToken(t);
+        // }).then(function(t) {
+        //   console.log('After ionic register');
+        //   currentUserService.device_token = t.token;
+        //   currentUserService.device_type = t.type;
+        //
+        //   console.log("DEVICE TOKEN:::::::", t.token);
+        //
+        //   $ionicLoading.show({
+        //     template: '<p>Loading...</p><ion-spinner></ion-spinner>'
+        //   });
+        //
+        //   $http.post(DEALERSHIP_API.url + "/users", {user: {email: user.email,
+        //                                                      password: user.password,
+        //                                                      name: user.name,
+        //                                                      device_token: t.device_token,
+        //                                                      device_type: t.device_type,
+        //                                                      dealership_id: store.get('selected_dealership_id')}})
+        //   .success( function (data) {
+        //     console.log("SignUpResponse: " + JSON.stringify(data));
+        //     $ionicLoading.hide();
+        //     $state.go('tab.dash');
+        //   })
+        //   .error( function(error)
+        //   {
+        //     console.log("Signup Error");
+        //     $ionicLoading.hide();
+        //     var errorResponse = "";
+        //     if (angular.isDefined(error.errors)){
+        //       if ( angular.isDefined(error.errors.password)){
+        //         errorResponse = "Password: " + error.errors.password;
+        //       }
+        //       if (angular.isDefined(error.errors.email)){
+        //         errorResponse += "<br>Email: " + error.errors.email;
+        //       }
+        //     }
+        //     else{
+        //       errorResponse += "<br>Error: " + error;
+        //     }
+        //     var alertPopup = $ionicPopup.alert({
+        //       title: 'Well, We Have A Problem...',
+        //       template: errorResponse
+        //     });
+        //   });
+        // }).catch(function(e) {
+        //   console.log("Error in ionicPush.register() : " + e);
+        // });
+      // });
     }
     else{
       console.log("error");
@@ -144,6 +158,13 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
 
   $scope.goBack = function(){
     $ionicHistory.goBack();
-  }
+  };
+
+  $scope.termsAndConditions = function() {
+    var alertPopup = $ionicPopup.alert({
+      title: 'Terms & Conditions',
+      template: '<div style="text-align: center">None uploaded yet</div>'
+    });
+  };
 
 });

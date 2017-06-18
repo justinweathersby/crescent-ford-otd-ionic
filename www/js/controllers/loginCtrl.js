@@ -25,7 +25,7 @@ app.controller('LoginCtrl', function($scope, $http, $state, $ionicLoading, $ioni
           //-- Get Current User Object
 
           $scope.currentUser = store.get('localUser');
-          console.log($scope.currentUser);          
+          console.log($scope.currentUser);
           $scope.dealership = store.get('localDealership')
           console.log($scope.dealership);
         }

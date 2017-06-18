@@ -283,9 +283,9 @@ $ionicons-font-path: "../lib/ionic/fonts" !default;
 .page-sign-in-up {
 
   background-image: url(../img/bg-main.png) !important;
-  background-size: auto;
+  background-size: cover !important;
   background-position: center;
-  background-repeat: no-repeat;
+  background-repeat: no-repeat !important;
 
   ion-content {
     background-color: transparent;

@@ -156,5 +156,5 @@ app.config(function($stateProvider, $urlRouterProvider) {
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/sign-in-up'); //--default go to page
+  $urlRouterProvider.otherwise('/login'); //--default go to page
 });

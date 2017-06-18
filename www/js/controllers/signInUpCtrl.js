@@ -238,13 +238,13 @@ app.controller('SignInUpCtrl', function($scope, $state, $http, $stateParams,
       console.log("valid?");
 
       $ionicPlatform.ready(function() {
-        $ionicPush.register().then(function(t) {
-          return $ionicPush.saveToken(t);
-        }).then(function(t) {
-          currentUserService.device_token = t.token;
-          currentUserService.device_type = t.type;
+        // $ionicPush.register().then(function(t) {
+        //   return $ionicPush.saveToken(t);
+        // }).then(function(t) {
+        //   currentUserService.device_token = t.token;
+        //   currentUserService.device_type = t.type;
 
-          console.log("DEVICE TOKEN:::::::", t.token);
+          console.log("DEVICE TOKEN:::::::", currentUserService.token);
 
           $ionicLoading.show({
             template: '<p>Loading...</p><ion-spinner></ion-spinner>'
@@ -253,14 +253,15 @@ app.controller('SignInUpCtrl', function($scope, $state, $http, $stateParams,
           $http.post(DEALERSHIP_API.url + "/users", {user: {email: $scope.data.email,
                                                              password: $scope.data.password,
                                                              name: $scope.data.name,
-                                                             device_token: t.device_token,
-                                                             device_type: t.device_type,
+                                                             device_token: currentUserService.device_token,
+                                                             device_type: currentUserService.device_type,
                                                              dealership_id: store.get('selected_dealership_id')}})
           .success( function (data) {
             console.log("SignUpResponse: " + JSON.stringify(data));
             $ionicLoading.hide();
-            //$state.go('login');
-            $scope.goToSignIn();
+            $state.go('tab.dash');
+
+            // $scope.goToSignIn();
             // $scope.currentUser.token = data.user.auth_token;
             // $scope.currentUser.id = data.user.id;
             // $scope.currentUser.name = data.user.name;
@@ -291,9 +292,9 @@ app.controller('SignInUpCtrl', function($scope, $state, $http, $stateParams,
               template: errorResponse
             });
           });
-        }, function(err) {
-          console.log(err);
-        });
+        // }, function(err) {
+        //   console.log(err);
+        // });
       });
     }
     else{
