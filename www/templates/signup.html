@@ -1,5 +1,6 @@
 
 <ion-view hide-nav-bar="true" style="background: dimgray;" class="page-sign-in-up">
+  <form name="signupForm" ng-controller="SignupCtrl" novalidate>
   <ion-content>
     <div class="header-section">
       <div class="logo-wrapper">
@@ -7,15 +8,15 @@
       </div>
       <div class="row">
         <div class="col col-50">
-          <button class="button button-block button-small button-clear sign-btn">SIGN IN</button>
+          <button class="button button-block button-small button-clear sign-btn" ng-click="goToLogin()">SIGN IN</button>
         </div>
         <div class="selected-tab col col-50">
-          <button class="button button-block button-small button-clear sign-btn" ng-click="goToSignUp()">SIGN UP</button>
+          <button class="button button-block button-small button-clear sign-btn">SIGN UP</button>
         </div>
       </div>
     </div>
 
-    <form name="signupForm" ng-controller="SignupCtrl" novalidate>
+
       <div class="body-section">
         <div class="list">
           <a class="item item-icon-left" >
