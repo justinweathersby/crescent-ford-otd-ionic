@@ -18,8 +18,7 @@ app.controller('ForgotPasswordCtrl', function($scope, $state, $http, $stateParam
            title: 'Thank You',
            content: 'An email has been sent to the email provided with instructions to reset your password.'
          });
-         //$state.go('login');
-         $state.go('sign-in-up', {'isSignUp': false});
+         $state.go('login');
       }
     )
     .error( function(error)
@@ -29,14 +28,12 @@ app.controller('ForgotPasswordCtrl', function($scope, $state, $http, $stateParam
          title: 'Woops..',
          content: 'The email you have entered does not exist in our records'
        });
-       //$state.go('signup');
-       $state.go('sign-in-up', {'isSignUp': true});
+       $state.go('signup');
     });
   };//end of reset password function
 
   $scope.goToLogin = function() {
-    //$state.go('login');
-    $state.go('sign-in-up', {'isSignUp': false});
+    $state.go('login');
   };
 
 });

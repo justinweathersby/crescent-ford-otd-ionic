@@ -57,8 +57,8 @@ app.controller('DealershipCtrl', function($scope, $http, $state, $ionicLoading, 
               title: 'Could Not Get Dealership Profile',
               template: "Please Restart Your App. If This problem continues please contact us."
             });
-            //$state.go('login');
-            $state.go('sign-in-up', {'isSignUp': false});
+            $state.go('login');
+            // $state.go('sign-in-up', {'isSignUp': false});
           });
 
 
@@ -69,8 +69,8 @@ app.controller('DealershipCtrl', function($scope, $http, $state, $ionicLoading, 
       }
       else{
         store.set('selected_dealership_id', dealership_id);
-        //$state.go('signup');
-        $state.go('sign-in-up', {isSignUp: true});
+        $state.go('signup');
+        // $state.go('sign-in-up', {isSignUp: true});
       }
     }
   }

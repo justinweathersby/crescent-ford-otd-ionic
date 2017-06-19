@@ -3,17 +3,19 @@ app.controller('DashCtrl', function($scope, $sce, $http, $state, $timeout,
   currentUserService, currentDealerService, currentDealerSvc, dealerService, userSvc, store,
   DEALERSHIP_API) {
 
-    if(currentDealerService.id == null){
+  if(currentDealerService.id == null){
     //-- Get Current User Object
     localforage.getItem('currentUser').then(function(value){
       angular.copy(value, currentUserService);
       console.log("After Get currentUser. currentUserService::" + JSON.stringify(currentUserService));
       dealershipInit();
-    }).catch(function(err) {console.log("GET ITEM ERROR::LoginCtrl::currentUser", JSON.stringify(err));});
+    }).catch(function(err) {
+      $state.go('tab.login');
+      console.log("GET ITEM ERROR::LoginCtrl::currentUser", JSON.stringify(err));
+    });
+  };
 
-  }
-
-  $ionicPlatform.ready(function() { 
+  $ionicPlatform.ready(function() {
     $scope.currentUser = store.get('localUser');
     console.log($scope.currentUser);
     $scope.dealership = store.get('localDealership')

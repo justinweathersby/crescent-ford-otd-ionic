@@ -2,14 +2,6 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
   $stateProvider
 
-  .state('sign-in-up', {
-      url: '/sign-in-up',
-      params: {
-        isSignUp: null
-      },
-      templateUrl: 'templates/sign-in-up.html',
-      controller: 'SignInUpCtrl'
-  })
   .state('login', {
       url: '/login',
       templateUrl: 'templates/login.html',
@@ -18,7 +10,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
   .state('dealership-list', {
     url: '/dealership-list',
     templateUrl: 'templates/dealership-list.html',
-    controller: 'DealershipCtrl'
+    controller: 'SignupCtrl'
   })
   .state('signup', {
     url: '/signup',
@@ -156,5 +148,5 @@ app.config(function($stateProvider, $urlRouterProvider) {
   });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/sign-in-up'); //--default go to page
+  $urlRouterProvider.otherwise('/login'); //--default go to page
 });

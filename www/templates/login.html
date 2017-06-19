@@ -1,47 +1,41 @@
 
-<!-- NOTE: This is the old login page, we are using the sign-in-up.html instead. -->
+<ion-view hide-nav-bar="true" style="background: dimgray;" class="page-sign-in-up">
+  <ion-content>
+    <div class="header-section">
+      <div class="logo-wrapper">
+        <img src="img/logo.png" />
+      </div>
+      <div class="row">
+        <div class="selected-tab  col col-50">
+          <button class="button button-block button-small button-clear sign-btn">SIGN IN</button>
+        </div>
+        <div class="col col-50">
+          <button class="button button-block button-small button-clear sign-btn" ng-click="goToSignUp()">SIGN UP</button>
+        </div>
+      </div>
+    </div>
 
-<?php header('Access-Control-Allow-Origin: *'); ?>
-<ion-view hide-nav-bar="true" style="background: dimgray;">
-  <form name="loginForm" ng-controller="LoginCtrl">
-  <ion-content class="login-page">
-    <div class="row" style="height:30vh; background: white;">
-      <div class="col logo-col">
-        <img src="img/logo.jpeg" alt="" />
-      </div>
-    </div>
-    <div class="row" style="height:10vh">
-      <div class="col">
-        <div class="row">
-          <button class="button button-full login-btn" style="background-color: #f0aa5b; height:10vh" ng-click="login(user)">
-            LOGIN
-          </button>
-        </div>
-        <div class="row">
-          <div class="lower-triangle"></div>
+    <form name="loginForm" ng-controller="LoginCtrl" novalidate>
+      <div class="body-section">
+        <div class="list">
+          <a class="item item-icon-left" >
+            <i class="icon">
+              <img src="img/ic-email.png" />
+            </i>
+            <input placeholder="EMAIL"  type="email" ng-model="user.email" required></input>
+          </a>
+          <a class="item item-icon-left">
+            <i class="icon">
+              <img src="img/ic-password.png" />
+            </i>
+            <input type="password" placeholder="PASSWORD" ng-model="user.password" required></input>
+          </a>
         </div>
       </div>
-    </div>
-    <div class="row" style="height:50vh; background: #696969;" >
-      <div class="col">
-        <div class="list list-inset " style="background:transparent; width:85%; max-width: 500px; margin-left:auto; margin-right: auto;">
-          <label id = "rounded" class="item item-input">
-            <i class="icon ion-ios-email-outline placeholder-icon" style="padding-top: 3px;"></i>
-            <input type="text" placeholder="EMAIL"  type="email" ng-model="user.email" required>
-          </label>
-          <label id = "rounded" class="item item-input">
-            <i class="icon ion-ios-locked-outline placeholder-icon" style="padding-left: 13px; padding-top: 2px;"></i>
-            <input type="password" placeholder="PASSWORD" ng-model="user.password" required>
-          </label>
-          <div class="button button-full" style="background:transparent; color: rgba(256,256,256,.6); font-weight:600; font-size:16px; letter-spacing: 1px;" ng-click="goToForgotPassword()">
-            forgot password?
-          </div>
-        </div>
+      <div class="footer-section">
+        <button class="button button-block continue-btn" ng-click="login(user)">Continue</button>
+        <button class="button button-clear button-block terms-btn" ng-click="goToForgotPassword()">Forgot Password?</button>
       </div>
-    </div>
-    <div class="row login-footer hide-on-keyboard-open">
-      <div class="title" ng-click="goToSignUp()">Create an account</div>
-    </div>
     </form>
 
   </ion-content>

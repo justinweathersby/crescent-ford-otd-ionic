@@ -12,7 +12,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 
 
 		$scope.currentUser = store.get('localUser');
-		console.log($scope.currentUser);
+		console.log("VALUE AFTER GET localUSER in conversations CTRL: " + JSON.stringify($scope.currentUser));
 		$scope.dealership = store.get('localDealership')
 		console.log($scope.dealership);
 
@@ -257,7 +257,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
    		return 'current-user';
  	};
 
-    $scope.openConversation = function(x) {
+  $scope.openConversation = function(x) {
 		console.log(x);
 		console.log($scope.currentUser.id);
 		console.log(x.sender_id);

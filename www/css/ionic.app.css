@@ -10002,9 +10002,9 @@ a.button {
 
 .page-sign-in-up {
   background-image: url(../img/bg-main.png) !important;
-  background-size: auto;
+  background-size: cover !important;
   background-position: center;
-  background-repeat: no-repeat; }
+  background-repeat: no-repeat !important; }
   .page-sign-in-up ion-content {
     background-color: transparent; }
     .page-sign-in-up ion-content .header-section {

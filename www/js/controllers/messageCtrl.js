@@ -5,7 +5,7 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
 {
 
   var viewScroll = $ionicScrollDelegate.$getByHandle('userMessageScroll');
-  $scope.current_user = currentUserService;
+  $scope.current_user = store.get('localUser');
 
   function keyboardShowHandler(e){
       console.log('Keyboard height is: ' + e.keyboardHeight);
@@ -31,55 +31,52 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
 		  cordova.plugins.Keyboard.disableScroll(false);
 	  }
     window.removeEventListener('native.keyboardshow', keyboardShowHandler);
-    window.removeEventListener('native.keyboardhide', keyboardHideHandler);    
+    window.removeEventListener('native.keyboardhide', keyboardHideHandler);
   });
 
   $scope.getMessages = function() {
+    console.log("inside messagesCtrl::getMessages()");
     $ionicLoading.show({
         template: '<p>Loading...</p><ion-spinner></ion-spinner>',
         hideOnStateChange: true,
         duration: 5000
     });
-    localforage.getItem('currentUser').then(function(value){
-      angular.copy(value, currentUserService);
 
-      localforage.getItem('conversation').then(function(value) {
-        $scope.current_conv = value;
-        $http({ method: 'GET',
-                  url: DEALERSHIP_API.url + "/messages",
-                  params: { "conversation_id": $scope.current_conv.id },
-                  headers: {'Authorization' : currentUserService.token}
-              }).success( function( data ){
-                  console.log("GOT MESSAGES SUCCESS::::");
-                  console.log( JSON.stringify(data, null, 4));
-                  $scope.messages = data.messages;
-              }).error( function(error){
-                  console.log( JSON.stringify(error, null, 4));
-                  if (error.errors === "Not authenticated"){
-                    $cordovaDialogs.alert(
-                      "Sorry you have been logged out. Please re-login",
-                      "Woops",  // a title
-                      "OK"    // the button text
-                    );
-                    //$state.go('login');
-                    $state.go('sign-in-up', {'isSignUp': false});
-                  }
-					var unique_id = store.get("unique_id");
-					var room = {
-						'room_name': unique_id
-					};
-					SocketService.emit('leave:room', room);
-                  $state.go('tab.conversations');
-            }).finally(function() {
-                 $ionicLoading.hide();
-                 $scope.$broadcast('scroll.refreshComplete');
-                 $timeout(function() {
-                    viewScroll.resize(true);
-                    viewScroll.scrollBottom(true);
-                  }, 1000);
-            });
-        }).catch(function(err) { console.log("GET ITEM ERROR::Messages::getMessages::conversation", JSON.stringify(err));});
-    }).catch(function(err) { console.log("GET ITEM ERROR::Messages::getMessages::user_token", JSON.stringify(err));});
+    localforage.getItem('conversation').then(function(value) {
+      $scope.current_conv = value;
+      $http({ method: 'GET',
+                url: DEALERSHIP_API.url + "/messages",
+                params: { "conversation_id": $scope.current_conv.id },
+                headers: {'Authorization' : $scope.current_user.auth_token}
+            }).success( function( data ){
+                console.log("GOT MESSAGES SUCCESS::::");
+                console.log( JSON.stringify(data, null, 4));
+                $scope.messages = data.messages;
+            }).error( function(error){
+                console.log( JSON.stringify(error, null, 4));
+                if (error.errors === "Not authenticated"){
+                  $cordovaDialogs.alert(
+                    "Sorry you have been logged out. Please re-login",
+                    "Woops",  // a title
+                    "OK"    // the button text
+                  );
+                  $state.go('login');
+                }
+				var unique_id = store.get("unique_id");
+				var room = {
+					'room_name': unique_id
+				};
+				SocketService.emit('leave:room', room);
+                $state.go('tab.conversations');
+          }).finally(function() {
+               $ionicLoading.hide();
+               $scope.$broadcast('scroll.refreshComplete');
+               $timeout(function() {
+                  viewScroll.resize(true);
+                  viewScroll.scrollBottom(true);
+                }, 1000);
+          });
+      }).catch(function(err) { console.log("GET ITEM ERROR::Messages::getMessages::conversation", JSON.stringify(err));});
   };
 
   $scope.getMessages();
@@ -96,45 +93,43 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
         hideOnStateChange: true,
         duration: 2000
     });
-    localforage.getItem('currentUser').then(function(value){
-      angular.copy(value, currentUserService)
-      localforage.getItem('conversation').then(function(value) {
-        $scope.current_conv = value;
-        $http({ method: 'POST',
-                  url: DEALERSHIP_API.url + "/messages",
-                  data: {
-                    "message":{
-                    "body": body
-                    },
-                    "recipient_id": $scope.current_conv.sender_id
+
+    localforage.getItem('conversation').then(function(value) {
+      $scope.current_conv = value;
+      $http({ method: 'POST',
+                url: DEALERSHIP_API.url + "/messages",
+                data: {
+                  "message":{
+                  "body": body
                   },
-                  headers: {'Authorization' : currentUserService.token}
-        }).success( function( data ){
-				console.log(data);
-				console.log(store);
-				var room = store.get('unique_id');
-				console.log(room);
-				var recipient_id = store.get('recipient_id');
-				console.log(recipient_id);
-				var conversation_id = store.get('conversation_id');
-				console.log(conversation_id);
-				var msg = {
-					'room': room,
-					'user': value.sender_name,
-					'text': body,
-					'recipient_id': recipient_id,
-					'conversation_id': conversation_id
-				}
-				console.log(msg);
-				SocketService.emit('send:message', msg);
-                $ionicLoading.hide();
-                delete $scope.replyMessage.body;
-                $scope.getMessages();
-        }).error( function(error){
-                $ionicLoading.hide();
-                console.log(error);
-        });
-      }).catch(function(err) { console.log("GET ITEM ERROR::Messages::getMessages::", JSON.stringify(err));});
+                  "recipient_id": $scope.current_conv.sender_id
+                },
+                headers: {'Authorization' : $scope.current_user.auth_token}
+      }).success( function( data ){
+			console.log(data);
+			console.log(store);
+			var room = store.get('unique_id');
+			console.log(room);
+			var recipient_id = store.get('recipient_id');
+			console.log(recipient_id);
+			var conversation_id = store.get('conversation_id');
+			console.log(conversation_id);
+			var msg = {
+				'room': room,
+				'user': value.sender_name,
+				'text': body,
+				'recipient_id': recipient_id,
+				'conversation_id': conversation_id
+			}
+			console.log(msg);
+			SocketService.emit('send:message', msg);
+              $ionicLoading.hide();
+              delete $scope.replyMessage.body;
+              $scope.getMessages();
+      }).error( function(error){
+              $ionicLoading.hide();
+              console.log(error);
+      });
     }).catch(function(err) { console.log("GET ITEM ERROR::Messages::getMessages::", JSON.stringify(err));});
   };
 

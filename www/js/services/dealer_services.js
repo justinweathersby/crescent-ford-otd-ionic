@@ -66,7 +66,7 @@ app.service('dealerService', function($http, $ionicLoading, currentUserService, 
 		var currentUser = store.get('localUser');
 		var currentDealer = store.get('localDealership');
 
-		return $http({ 
+		return $http({
 			method: 'GET',
 			url: DEALERSHIP_API.url + "/dealerships/" + currentUser.dealership_id + "/sales_reps",
 			headers: {
@@ -86,7 +86,7 @@ app.service('dealerService', function($http, $ionicLoading, currentUserService, 
 		var currentUser = store.get('localUser');
 		var currentDealer = store.get('localDealership');
 
-		return $http({ 
+		return $http({
 			method: 'GET',
             url: DEALERSHIP_API.url + "/dealerships/" + currentUser.dealership_id + "/service_reps",
             headers: {
@@ -108,7 +108,7 @@ app.service('dealerService', function($http, $ionicLoading, currentUserService, 
 		var currentUser = store.get('localUser');
 		var currentDealer = store.get('localDealership');
 
-		return $http({ 
+		return $http({
 			method: 'GET',
             url: DEALERSHIP_API.url + "/dealerships/" + currentUser.dealership_id + "/service_reps?id=6",
             headers: {
@@ -125,24 +125,15 @@ app.service('dealerService', function($http, $ionicLoading, currentUserService, 
 			console.log("ERROR GET SERVICE REPS:: " + JSON.stringify(error));
         });
 	};
-	
+
 	this.getDealership = function(){
-		var currentUser = store.get('localUser');
+		var dealership_id = store.get('selected_dealership_id');
 
 		return $http({ method: 'GET',
-			url: DEALERSHIP_API.url + "/dealerships/" + currentUser.dealership_id
+			url: DEALERSHIP_API.url + "/dealerships/" + dealership_id
 		});
-		// .success( function( data ){
-
-
-		//     $ionicLoading.hide();
-		//   }).error( function(error){
-		//       console.log("ERROR::services::getDealership::GET::deaelerships::", JSON.stringify(error));
-		//       console.log("ERROR::MORE INFO::currentUserService:", JSON.stringify(currentUser));
-		//       $ionicLoading.hide();
-		//   });
 	};
-	
+
 	this.getDealerships = function(){
 		var currentUser = store.get('localUser');
 

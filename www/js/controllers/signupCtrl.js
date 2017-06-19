@@ -1,5 +1,3 @@
-// NOTE: This is the old SignUp Controller, we are using the SignInUpCtrl instead.
-
 app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
                                       $ionicPlatform, $ionicPush, $ionicPopup, $ionicPopup, $ionicLoading, $ionicHistory,
                                       authService, currentUserService, currentDealerService, dealerService,
@@ -43,7 +41,7 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
           template: '<p>Loading...</p><ion-spinner></ion-spinner>',
           hideOnStateChange: true,
           duration: 5000
-        });       
+        });
 
           //--Try to preload the dealership after click
           dealerService.getDealership().success(function(){
@@ -78,10 +76,11 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
         $ionicPush.register().then(function(t) {
           return $ionicPush.saveToken(t);
         }).then(function(t) {
+          console.log("Return from createUser, ionicPush token: " + JSON.stringify(t));
           currentUserService.device_token = t.token;
           currentUserService.device_type = t.type;
 
-          console.log("DEVICE TOKEN:::::::", t.token);
+          console.log("DEVICE TOKEN:::::::", t.device_token);
 
           $ionicLoading.show({
             template: '<p>Loading...</p><ion-spinner></ion-spinner>'
@@ -90,13 +89,35 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
           $http.post(DEALERSHIP_API.url + "/users", {user: {email: user.email,
                                                              password: user.password,
                                                              name: user.name,
-                                                             device_token: t.device_token,
-                                                             device_type: t.device_type,
+                                                             device_token: t.token,
+                                                             device_type: t.type,
                                                              dealership_id: store.get('selected_dealership_id')}})
           .success( function (data) {
-            console.log("SignUpResponse: " + JSON.stringify(data));
-            $ionicLoading.hide();
-            $state.go('login');
+            console.log("SignUpResponse: " + JSON.stringify(data.user));
+            userSvc.setUser(data.user);
+            $scope.currentUser = userSvc.getUser();
+            console.log("VALUE of currentUser in signupCtrl before store.set: " + $scope.currentUser);
+            store.set('localUser', $scope.currentUser);
+
+            //--Try to preload the dealership after click
+            dealerService.getDealership().success(function(data){
+              console.log(data);
+              //this sets and gets current dealership
+              currentDealerSvc.setDealership(data)
+              $scope.currentDealership = currentDealerSvc.getDealership();
+              console.log($scope.currentDealership);
+              $state.go('tab.dash');
+              $ionicLoading.hide();
+
+            }).error(function(err){
+              console.log(err);
+               $ionicLoading.hide();
+                var alertPopup = $ionicPopup.alert({
+                  title: 'Could Not Get Dealership Profile',
+                  template: "Please Restart Your App. If This problem continues please contact us."
+                });
+                $state.go('login');
+              });
           })
           .error( function(error)
           {
@@ -111,7 +132,7 @@ app.controller('SignupCtrl', function($scope, $state, $http, $stateParams,
               }
             }
             else{
-              errorResponse += "<br>Error: " + error;
+              errorResponse += "<br>Error: " + JSON.stringify(error);
             }
             var alertPopup = $ionicPopup.alert({
               title: 'Well, We Have A Problem...',
