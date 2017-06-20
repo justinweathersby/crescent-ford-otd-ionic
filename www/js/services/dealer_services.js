@@ -104,27 +104,27 @@ app.service('dealerService', function($http, $ionicLoading, currentUserService, 
 		});
 	};
 
-	this.getServiceRep = function(){
-		var currentUser = store.get('localUser');
-		var currentDealer = store.get('localDealership');
-
-		return $http({
-			method: 'GET',
-            url: DEALERSHIP_API.url + "/dealerships/" + currentUser.dealership_id + "/service_reps?id=6",
-            headers: {
-				'Authorization' : currentUser.auth_token
-			}
-        }).success( function(data){
-			currentDealer.service_reps = [];
-			var newData = angular.copy(data);
-			currentDealer.service_reps.push(newData);
-
-			console.log("1_) returned service reps: " + JSON.stringify(data));
-			console.log("2_) currentDealerService.service_reps: " + JSON.stringify(currentDealer.service_reps));
-        }).error( function(error){
-			console.log("ERROR GET SERVICE REPS:: " + JSON.stringify(error));
-        });
-	};
+	// this.getServiceRep = function(){
+	// 	var currentUser = store.get('localUser');
+	// 	var currentDealer = store.get('localDealership');
+	//
+	// 	return $http({
+	// 		method: 'GET',
+  //           url: DEALERSHIP_API.url + "/dealerships/" + currentUser.dealership_id + "/service_reps?id=6",
+  //           headers: {
+	// 			'Authorization' : currentUser.auth_token
+	// 		}
+  //       }).success( function(data){
+	// 		currentDealer.service_reps = [];
+	// 		var newData = angular.copy(data);
+	// 		currentDealer.service_reps.push(newData);
+	//
+	// 		console.log("1_) returned service reps: " + JSON.stringify(data));
+	// 		console.log("2_) currentDealerService.service_reps: " + JSON.stringify(currentDealer.service_reps));
+  //       }).error( function(error){
+	// 		console.log("ERROR GET SERVICE REPS:: " + JSON.stringify(error));
+  //       });
+	// };
 
 	this.getDealership = function(){
 		var dealership_id = store.get('selected_dealership_id');

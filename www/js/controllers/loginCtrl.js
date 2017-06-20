@@ -67,6 +67,8 @@ app.controller('LoginCtrl', function($scope, $http, $state, $ionicLoading, $ioni
           $scope.currentUser = userSvc.getUser();
           console.log($scope.currentUser);
           store.set('localUser', $scope.currentUser);
+          store.set('selected_dealership_id', data.dealership_id);
+
           //--Try to preload the dealership after click
           dealerService.getDealership().success(function(data){
             console.log(data);
