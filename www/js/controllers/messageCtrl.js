@@ -6,7 +6,7 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
 
   var viewScroll = $ionicScrollDelegate.$getByHandle('userMessageScroll');
   $scope.current_user = store.get('localUser');
-
+  $rootScope.message_badge_count = 0;
   function keyboardShowHandler(e){
       console.log('Keyboard height is: ' + e.keyboardHeight);
       $ionicScrollDelegate.scrollBottom(true);
@@ -52,6 +52,7 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
                 console.log("GOT MESSAGES SUCCESS::::");
                 console.log( JSON.stringify(data, null, 4));
                 $scope.messages = data.messages;
+				$ionicScrollDelegate.scrollBottom();
             }).error( function(error){
                 console.log( JSON.stringify(error, null, 4));
                 if (error.errors === "Not authenticated"){
@@ -67,7 +68,7 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
 					'room_name': unique_id
 				};
 				SocketService.emit('leave:room', room);
-                $state.go('tab.conversations');
+                $state.go('tab.conversations');				
           }).finally(function() {
                $ionicLoading.hide();
                $scope.$broadcast('scroll.refreshComplete');
@@ -125,7 +126,7 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
 			SocketService.emit('send:message', msg);
               $ionicLoading.hide();
               delete $scope.replyMessage.body;
-              $scope.getMessages();
+              $scope.getMessages();			  
       }).error( function(error){
               $ionicLoading.hide();
               console.log(error);

@@ -26,33 +26,52 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 
 //--------------------------Handles Push Notifications--------------------------
   // -- Commenting this out bc websockets update conversations / messages now
-	// $scope.$on('cloud:push:notification', function(event, data) {
-	// 	var payload = data.message.raw.additionalData.payload;
-	// 	console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
-	// 	if (payload.user_message == 1){
-	// 		if (payload.conversation_id == currentConversation.id){
-	// 			updateConversations();
-	// 			$rootScope.$apply(function () {
-	// 				$rootScope.message_badge_count=0;
-	// 			});
-	// 		}
-	// 	}
-	// });
+	$scope.$on('cloud:push:notification', function(event, data) {
+		var payload = data.message.raw.additionalData.payload;
+		console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
+		if (payload.user_message == 1){
+			if (payload.conversation_id == currentConversation.id){
+				updateConversations();
+				$rootScope.$apply(function () {
+					$rootScope.message_badge_count=0;
+				});
+			}
+		}
+	});
 //------------------------------------------------------------------------------
 
-
+	SocketService.on('message', function(msg){
+		console.log(msg);
+		$scope.messages.push(msg);		
+		updateConversations();
+		$ionicScrollDelegate.scrollTop();
+	});
+	
 	function updateConversations() {
-		$ionicLoading.show({
+		/**$ionicLoading.show({
 			template: '<p>Loading Conversation...</p><ion-spinner></ion-spinner>',
 			hideOnStateChange: true,
 			duration: 5000
-		});
+		});**/
 
-		console.log("updating convo conversation");
+		console.log("updating convo conversation");		
+
 		ChatService.getMessages().then(function(result) {
 			$ionicLoading.hide();
 			console.log(result, "messages");
 			$scope.conversations = result.data.data.conversations;
+			var unreadMessageCount = 0;
+			var readMessages = 0;
+			angular.forEach($scope.conversations, function(conversation){
+				if(conversation.recipient_read === false) {
+					unreadMessageCount ++;
+				} else {
+					readMessages ++;
+				}
+			})
+			console.log('unreadmessage count', unreadMessageCount);
+			console.log('message count', readMessages);
+	 		$rootScope.message_badge_count = unreadMessageCount;
 			console.log($scope.conversations);
 		}).catch(function(err) {
 			$ionicLoading.hide();
@@ -216,7 +235,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 
       			$scope.messages.push(msg);
 				console.log($scope.messages);
-      			$ionicScrollDelegate.scrollBottom();
+      			$ionicScrollDelegate.scrollTop();
 
       			$scope.text = "";
 
@@ -241,7 +260,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 
 				$scope.messages.push(msg);
 				console.log($scope.messages);
-				$ionicScrollDelegate.scrollBottom();
+				$ionicScrollDelegate.scrollTop();
 				SocketService.emit('send:message', msg);
 			}).catch(function(err) {
 				$ionicLoading.hide();
