@@ -10089,6 +10089,14 @@ a.button {
   border-radius: 5px; }
   .conversation-item h2 {
     font-size: 18px; }
+  .conversation-item img {
+    border-radius: 5px;
+    float: left;
+    margin-right: 10px;
+    width: 100%;
+    height: 100%;
+    max-width: 70px;
+    max-height: 70px; }
 
 .message-item {
   font-family: "Dosis", sans-serif;
@@ -10119,15 +10127,6 @@ a.button {
 .user {
   font-weight: bold; }
 
-/* .current-user {
-  float: left;
-    clear: both;
-}
-
-.not-current-user {
-  float: right;
-  clear: both;
-} */
 .current-user {
   background: #3885ad;
   border-radius: 30px 30px 0px 30px;
@@ -10155,3 +10154,26 @@ a.button {
   overflow: visible;
   overflow-wrap: break-word;
   white-space: normal; }
+
+.item-avatar,
+.item-avatar .item-content,
+.item-avatar-left,
+.item-avatar-left .item-content {
+  padding-left: 72px;
+  min-height: 72px; }
+
+.item-avatar > img:first-child,
+.item-avatar .item-image,
+.item-avatar .item-content > img:first-child,
+.item-avatar .item-content .item-image,
+.item-avatar-left > img:first-child,
+.item-avatar-left .item-image,
+.item-avatar-left .item-content > img:first-child,
+.item-avatar-left .item-content .item-image {
+  float: left;
+  margin-right: 10px;
+  max-width: 70px;
+  max-height: 70px;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%; }
