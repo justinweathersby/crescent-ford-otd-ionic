@@ -32,6 +32,7 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
 	  }
     window.removeEventListener('native.keyboardshow', keyboardShowHandler);
     window.removeEventListener('native.keyboardhide', keyboardHideHandler);
+	SocketService.removeListener('message');
   });
 
   $scope.getMessages = function() {
@@ -52,7 +53,7 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
                 console.log("GOT MESSAGES SUCCESS::::");
                 console.log( JSON.stringify(data, null, 4));
                 $scope.messages = data.messages;
-				$ionicScrollDelegate.scrollBottom();
+				$ionicScrollDelegate.scrollBottom();				
             }).error( function(error){
                 console.log( JSON.stringify(error, null, 4));
                 if (error.errors === "Not authenticated"){
@@ -67,7 +68,7 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
 				var room = {
 					'room_name': unique_id
 				};
-				SocketService.emit('leave:room', room);
+				SocketService.emit('leave:room', room);				
                 $state.go('tab.conversations');				
           }).finally(function() {
                $ionicLoading.hide();
@@ -84,8 +85,10 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
 
   SocketService.on('message', function(msg){
 		console.log(msg);
-		$scope.messages.push(msg);
-		$ionicScrollDelegate.scrollBottom();
+		if($state.current.name =='tab.messages' && msg.receiver =='message'){
+			$scope.messages.push(msg);
+			$ionicScrollDelegate.scrollBottom();
+		}
   });
 
   $scope.reply = function(body){

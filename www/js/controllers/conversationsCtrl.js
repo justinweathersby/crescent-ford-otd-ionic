@@ -42,9 +42,25 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 
 	SocketService.on('message', function(msg){
 		console.log(msg);
-		$scope.messages.push(msg);		
-		updateConversations();
-		$ionicScrollDelegate.scrollTop();
+		//$scope.messages.push(msg);
+		if($state.current.name =='tab.conversations'){
+			updateConversations();
+			var unreadMessageCount = 0;
+			var readMessages = 0;
+			angular.forEach($scope.conversations, function(conversation){
+				if(conversation.recipient_read === false) {
+					unreadMessageCount ++;
+					$rootScope.message_badge_count = $rootScope.message_badge_count + 1;
+				} else {
+					readMessages ++;
+				}
+			})
+			console.log('unreadmessage count', unreadMessageCount);
+			console.log('message count', readMessages);			
+			$rootScope.message_badge_count = $rootScope.message_badge_count;
+			console.log($scope.conversations);
+			$ionicScrollDelegate.scrollTop();
+		}
 	});
 	
 	function updateConversations() {
@@ -60,19 +76,6 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 			$ionicLoading.hide();
 			console.log(result, "messages");
 			$scope.conversations = result.data.data.conversations;
-			var unreadMessageCount = 0;
-			var readMessages = 0;
-			angular.forEach($scope.conversations, function(conversation){
-				if(conversation.recipient_read === false) {
-					unreadMessageCount ++;
-				} else {
-					readMessages ++;
-				}
-			})
-			console.log('unreadmessage count', unreadMessageCount);
-			console.log('message count', readMessages);
-	 		$rootScope.message_badge_count = unreadMessageCount;
-			console.log($scope.conversations);
 		}).catch(function(err) {
 			$ionicLoading.hide();
 			console.log(err, "error");
