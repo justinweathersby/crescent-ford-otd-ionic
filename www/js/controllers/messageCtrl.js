@@ -7,6 +7,7 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
   var viewScroll = $ionicScrollDelegate.$getByHandle('userMessageScroll');
   $scope.current_user = store.get('localUser');
   $rootScope.message_badge_count = 0;
+  
   function keyboardShowHandler(e){
       console.log('Keyboard height is: ' + e.keyboardHeight);
       $ionicScrollDelegate.scrollBottom(true);
@@ -21,8 +22,7 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
 		cordova.plugins.Keyboard.disableScroll(true);
 	}
     window.addEventListener('native.keyboardshow', keyboardShowHandler);
-    window.addEventListener('native.keyboardhide', keyboardHideHandler);
-
+    window.addEventListener('native.keyboardhide', keyboardHideHandler);	
   });
 
 
@@ -31,8 +31,8 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
 		  cordova.plugins.Keyboard.disableScroll(false);
 	  }
     window.removeEventListener('native.keyboardshow', keyboardShowHandler);
-    window.removeEventListener('native.keyboardhide', keyboardHideHandler);
-	SocketService.removeListener('message');
+    window.removeEventListener('native.keyboardhide', keyboardHideHandler);	
+	//SocketService.removeListener('send:message');
   });
 
   $scope.getMessages = function() {
@@ -64,12 +64,12 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
                   );
                   $state.go('login');
                 }
-				var unique_id = store.get("unique_id");
+				/**var unique_id = store.get("unique_id");
 				var room = {
 					'room_name': unique_id
 				};
-				SocketService.emit('leave:room', room);				
-                $state.go('tab.conversations');				
+				SocketService.emit('leave:room', room);**/
+                $state.go('tab.conversations');
           }).finally(function() {
                $ionicLoading.hide();
                $scope.$broadcast('scroll.refreshComplete');
@@ -82,16 +82,24 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
   };
 
   $scope.getMessages();
-
+  
+  SocketService.removeListener('message');
   SocketService.on('message', function(msg){
+	  console.log($scope.current_user.id+'###'+msg.recipient_id);
+	  if($scope.current_user.id == msg.recipient_id){
+		//SocketService.addListener('message',callback);
+		console.log(SocketService);
+		console.log($scope.current_user);
+		//SocketService.removeListener('message');
 		console.log(msg);
-		if($state.current.name =='tab.messages' && msg.receiver =='message'){
+		if($state.current.name =='tab.messages'){
 			$scope.messages.push(msg);
 			$ionicScrollDelegate.scrollBottom();
 		}
+	  }
   });
 
-  $scope.reply = function(body){
+  $scope.reply = function(body){	  
     $ionicLoading.show({
         template: '<p>Sending Message...</p><ion-spinner></ion-spinner>',
         hideOnStateChange: true,
@@ -126,7 +134,7 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
 				'conversation_id': conversation_id
 			}
 			console.log(msg);
-			SocketService.emit('send:message', msg);
+			SocketService.emit('send:message', msg);						
               $ionicLoading.hide();
               delete $scope.replyMessage.body;
               $scope.getMessages();			  
@@ -136,7 +144,10 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
       });
     }).catch(function(err) { console.log("GET ITEM ERROR::Messages::getMessages::", JSON.stringify(err));});
   };
-
+  
+  function callback(){
+	  console.log('listener added');
+  }
   $scope.afterMessagesLoad = function(){
     $timeout(function() {
        viewScroll.resize(true);
