@@ -5,6 +5,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
     $scope.serviceRep = {};
 
 	$ionicPlatform.ready(function() {
+		$rootScope.message_badge_count = 0;
 		$scope.currentUser = userSvc.getUser();
 		console.log($scope.currentUser);
 		$scope.dealership = currentDealerSvc.getDealership();
@@ -17,16 +18,16 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 		console.log($scope.dealership);
 
 		updateConversations();
-		var unique_id = store.get("unique_id");
+		/**var unique_id = store.get("unique_id");
 		var room = {
 			'room_name': unique_id
 		};
-		SocketService.emit('leave:room', room);
+		SocketService.emit('leave:room', room);**/
 	}); //end of platform ready
 
 //--------------------------Handles Push Notifications--------------------------
   // -- Commenting this out bc websockets update conversations / messages now
-	$scope.$on('cloud:push:notification', function(event, data) {
+	/**$scope.$on('cloud:push:notification', function(event, data) {
 		var payload = data.message.raw.additionalData.payload;
 		console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
 		if (payload.user_message == 1){
@@ -37,14 +38,53 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 				});
 			}
 		}
-	});
+	});**/
 //------------------------------------------------------------------------------
-
+	$scope.$on('$ionicView.leave', function() {
+		//SocketService.removeListener('message',function(){
+		//	console.log('listender removed conv');
+		//});
+	});
+	$scope.$on('$ionicView.enter', function() {		
+		//SocketService.addListener('message',function(){
+		//	console.log('listend added conver');
+		//});
+	});
+	SocketService.removeListener('message');
 	SocketService.on('message', function(msg){
-		console.log(msg);
-		$scope.messages.push(msg);		
-		updateConversations();
-		$ionicScrollDelegate.scrollTop();
+		console.log($scope.currentUser);
+		if($scope.currentUser.id == msg.recipient_id){
+			if($state.current.name =='tab.conversations'){
+				console.log('conversationCtrl:: message');
+				//$scope.messages.push(msg);
+				console.log('omsode msesage');
+				console.log(msg);
+				var unreadMessageCount = 0;
+				var readMessages = 0;
+				ChatService.getMessages().then(function(result) {
+					$scope.conversations = result.data.data.conversations;
+					angular.forEach($scope.conversations, function(conversation){
+						//console.log('ConID'+msg.conversation_id+'::'+conversation.conversation_id);
+						if(conversation.recipient_read === false) {
+							unreadMessageCount ++;
+							$rootScope.message_badge_count = $rootScope.message_badge_count + 1;							
+						} else {
+							readMessages ++;
+						}
+						if (msg.conversation_id == conversation.conversation_id){	
+							$rootScope.message_badge_count = $rootScope.message_badge_count;							
+							$ionicScrollDelegate.scrollTop();
+						}
+					})
+				}).catch(function(err) {
+					$ionicLoading.hide();
+					console.log(err, "error");
+				})
+				console.log('unreadmessage count', unreadMessageCount);
+				console.log('message count', readMessages);					
+				console.log($scope.conversations);
+			}
+		}
 	});
 	
 	function updateConversations() {
@@ -60,19 +100,6 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 			$ionicLoading.hide();
 			console.log(result, "messages");
 			$scope.conversations = result.data.data.conversations;
-			var unreadMessageCount = 0;
-			var readMessages = 0;
-			angular.forEach($scope.conversations, function(conversation){
-				if(conversation.recipient_read === false) {
-					unreadMessageCount ++;
-				} else {
-					readMessages ++;
-				}
-			})
-			console.log('unreadmessage count', unreadMessageCount);
-			console.log('message count', readMessages);
-	 		$rootScope.message_badge_count = unreadMessageCount;
-			console.log($scope.conversations);
 		}).catch(function(err) {
 			$ionicLoading.hide();
 			console.log(err, "error");
@@ -80,7 +107,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 	}
 
 
-	$scope.goBack = function() {
+	/**$scope.goBack = function() {
 		var unique_id = store.get("unique_id");
 		var room = {
 			'room_name': unique_id
@@ -122,7 +149,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 				$scope.reps = result.data;
 			});
 		})
-	}
+	}**/
 
 	$scope.isNotCurrentUser = function(user){
         if($scope.currentUser.name != user){
@@ -204,7 +231,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
         });
     }
 
-
+/**
 	$scope.sendTextMessage = function(text) {
 		$ionicLoading.show({
 			template: '<p>Sending Message...</p><ion-spinner></ion-spinner>',
@@ -268,7 +295,7 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 			})
 		}
 	};
-
+**/
 	$scope.isNotCurrentSender = function(sender_id){
 		if($scope.currentUser.id != sender_id){
    				return 'not-current-user';
@@ -287,10 +314,10 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 
 			localforage.setItem('conversation', currentConversation).then(function(value){
 				console.log(x.unique_id);
-				var room = {
+				/**var room = {
 					'room_name': x.unique_id
 				};
-				SocketService.emit('join:room', room);
+				SocketService.emit('join:room', room);**/
 				store.set('unique_id', x.unique_id);
 				store.set('recipient_id', x.sender_id);
 				store.set('conversation_id', x.conversation_id);
@@ -348,11 +375,11 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 			currentConversation.sender_name = result.data.data.partner_name;
 			localforage.setItem('conversation', currentConversation).then(function(value){
 				console.log(send_to);
-				var unique_id = "1911c9b4."+result.data.data.conversation_id;
+				/**var unique_id = "1911c9b4."+result.data.data.conversation_id;
 				var room = {
 					'room_name': unique_id
 				};
-				SocketService.emit('join:room', room);
+				SocketService.emit('join:room', room);**/
 				store.set('unique_id', unique_id);
 				store.set('recipient_id', send_to);
 				store.set('conversation_id', result.data.data.conversation_id);
@@ -365,11 +392,11 @@ app.controller('ConversationsCtrl', function($rootScope, $scope, $state, $http, 
 		});
 	}
 
-    $scope.closeChatModal = function() {
+    /**$scope.closeChatModal = function() {
 		$scope.chatModal.hide();
 		$scope.oldMessages = "";
 		$scope.messages = [];
 		console.log("hello");
 		updateConversations()
-    };
+    };**/
 });

@@ -1,4 +1,4 @@
-app.controller('TabsCtrl', function($scope, $rootScope, $state,
+app.controller('TabsCtrl', function($scope, $rootScope, $state, SocketService,
                                     $ionicActionSheet, $ionicHistory, $ionicPlatform, $ionicLoading, $ionicPopup, $ionicPush,
                                     $cordovaInAppBrowser, $cordovaBadge, $cordovaDialogs,
                                     authService, currentUserService, currentDealerService, dealerService, store, userSvc, currentDealerSvc, ChatService){
@@ -24,6 +24,19 @@ $scope.$on('cloud:push:notification', function(event, data) {
     });
   }
 });
+
+/**$ionicPlatform.ready(function() {
+        //$cordovaBadge.promptForPermission();
+ 
+        $scope.setBadge = function(value) {
+            $cordovaBadge.hasPermission().then(function(result) {
+                $cordovaBadge.set(value);
+            }, function(error) {
+                alert(error);
+            });
+        }
+});**/
+
 //------------------------------------------------------------------------------
 
 if (currentDealerService){
