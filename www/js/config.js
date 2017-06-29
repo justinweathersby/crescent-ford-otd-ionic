@@ -31,6 +31,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
   })
   .state('tab.dash', {
     url: '/dash',
+	cache: false,
     views: {
       'tab-dash': {
         templateUrl: 'templates/tab-dash.html',
