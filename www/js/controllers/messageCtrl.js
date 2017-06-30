@@ -31,8 +31,7 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
 		  cordova.plugins.Keyboard.disableScroll(false);
 	  }
     window.removeEventListener('native.keyboardshow', keyboardShowHandler);
-    window.removeEventListener('native.keyboardhide', keyboardHideHandler);	
-	//SocketService.removeListener('send:message');
+    window.removeEventListener('native.keyboardhide', keyboardHideHandler);		
   });
 
   $scope.getMessages = function() {
@@ -64,11 +63,6 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
                   );
                   $state.go('login');
                 }
-				/**var unique_id = store.get("unique_id");
-				var room = {
-					'room_name': unique_id
-				};
-				SocketService.emit('leave:room', room);**/
                 $state.go('tab.conversations');
           }).finally(function() {
                $ionicLoading.hide();
@@ -85,13 +79,12 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
   
   SocketService.removeListener('message');
   SocketService.on('message', function(msg){
+	  $rootScope.message_badge_count = 0;
 	  console.log($scope.current_user.id+'###'+msg.recipient_id);
-	  if($scope.current_user.id == msg.recipient_id){
-		//SocketService.addListener('message',callback);
+	  if($scope.current_user.id == msg.recipient_id){		
 		console.log(SocketService);
-		console.log($scope.current_user);
-		//SocketService.removeListener('message');
-		console.log(msg);
+		console.log($scope.current_user);		
+		console.log(msg);		
 		if($state.current.name =='tab.messages'){
 			$scope.messages.push(msg);
 			$ionicScrollDelegate.scrollBottom();

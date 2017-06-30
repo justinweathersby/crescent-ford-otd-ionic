@@ -3,8 +3,7 @@ app.controller('DashCtrl', function($rootScope,$scope, $sce, $http, $state, $tim
   currentUserService, currentDealerService, currentDealerSvc, dealerService, userSvc, store,
   DEALERSHIP_API) {
 
-  $ionicPlatform.ready(function() {
-		//$rootScope.message_badge_count = 0;
+  $ionicPlatform.ready(function() {		
 		$scope.currentUser = store.get('localUser');
 		console.log($scope.currentUser);
 		$scope.dealership = store.get('localDealership')
@@ -15,8 +14,7 @@ app.controller('DashCtrl', function($rootScope,$scope, $sce, $http, $state, $tim
     //-- Get Current User Object
     localforage.getItem('currentUser').then(function(value){
       angular.copy(value, currentUserService);
-      console.log("After Get currentUser. currentUserService::" + JSON.stringify(currentUserService));
-      //dealershipInit();
+      console.log("After Get currentUser. currentUserService::" + JSON.stringify(currentUserService));      
     }).catch(function(err) {
       $state.go('login');
       console.log("GET ITEM ERROR::LoginCtrl::currentUser", JSON.stringify(err));
@@ -29,6 +27,9 @@ app.controller('DashCtrl', function($rootScope,$scope, $sce, $http, $state, $tim
 	  if($scope.currentUser.id == msg.recipient_id){
 		console.log(msg);		
 		if($state.current.name =='tab.dash'){
+			if ($rootScope.message_badge_count === undefined) { 
+				$rootScope.message_badge_count = 0;
+			}
 			$rootScope.message_badge_count = $rootScope.message_badge_count + 1;			
 		}
 	  }
