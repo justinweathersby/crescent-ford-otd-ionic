@@ -1,4 +1,4 @@
-app.controller('TabsCtrl', function($scope, $rootScope, $state,
+app.controller('TabsCtrl', function($scope, $rootScope, $state, SocketService,
                                     $ionicActionSheet, $ionicHistory, $ionicPlatform, $ionicLoading, $ionicPopup, $ionicPush,
                                     $cordovaInAppBrowser, $cordovaBadge, $cordovaDialogs,
                                     authService, currentUserService, currentDealerService, dealerService, store, userSvc, currentDealerSvc, ChatService){
@@ -9,8 +9,13 @@ $scope.$on('cloud:push:notification', function(event, data) {
   console.log("PAYLOAD FROM PUSH" + JSON.stringify(payload));
   console.log("MESSAGE BADGE COUNT" + $scope.message_badge_count);
   if (payload.user_message == 1){
-    $rootScope.$apply(function () {
-      $rootScope.message_badge_count++;
+    $rootScope.$apply(function () {		
+		if($state.current.name !='tab.messages'){
+			if(isNAN($rootScope.message_badge_count)){
+				$rootScope.message_badge_count = 0;
+			}
+			$rootScope.message_badge_count++;			
+		}		
     });
   }
   else{
@@ -23,7 +28,19 @@ $scope.$on('cloud:push:notification', function(event, data) {
       $cordovaBadge.clear();
     });
   }
+  $cordovaBadge.promptForPermission();
+	$cordovaBadge.hasPermission().then(function(yes) {
+		$cordovaBadge.set(3).then(function() {
+			// You have permission, badge set.
+		  }, function(err) {
+			// You do not have permission.
+		  });
+		// You have permission
+	}, function(no) {
+		// You do not have permission		
+	});  
 });
+
 //------------------------------------------------------------------------------
 
 if (currentDealerService){

@@ -1,25 +1,38 @@
-app.controller('DashCtrl', function($scope, $sce, $http, $state, $timeout,
+app.controller('DashCtrl', function($rootScope,$scope, $sce, $http, $state, $timeout,SocketService,
   $ionicPlatform, $ionicLoading, $ionicPopup, $ionicActionSheet, $ionicHistory,
   currentUserService, currentDealerService, currentDealerSvc, dealerService, userSvc, store,
   DEALERSHIP_API) {
+
+  $ionicPlatform.ready(function() {		
+		$scope.currentUser = store.get('localUser');
+		console.log($scope.currentUser);
+		$scope.dealership = store.get('localDealership')
+		console.log($scope.dealership);
+  });
 
   if(currentDealerService.id == null){
     //-- Get Current User Object
     localforage.getItem('currentUser').then(function(value){
       angular.copy(value, currentUserService);
-      console.log("After Get currentUser. currentUserService::" + JSON.stringify(currentUserService));
-      dealershipInit();
+      console.log("After Get currentUser. currentUserService::" + JSON.stringify(currentUserService));      
     }).catch(function(err) {
-      $state.go('tab.login');
+      $state.go('login');
       console.log("GET ITEM ERROR::LoginCtrl::currentUser", JSON.stringify(err));
     });
   };
-
-  $ionicPlatform.ready(function() {
-    $scope.currentUser = store.get('localUser');
-    console.log($scope.currentUser);
-    $scope.dealership = store.get('localDealership')
-    console.log($scope.dealership);
+  
+  SocketService.removeListener('message');
+  SocketService.on('message', function(msg){
+	  console.log('dashCtrl:: message');	  	  
+	  if($scope.currentUser.id == msg.recipient_id){
+		console.log(msg);		
+		if($state.current.name =='tab.dash'){
+			if ($rootScope.message_badge_count === undefined) { 
+				$rootScope.message_badge_count = 0;
+			}
+			$rootScope.message_badge_count = $rootScope.message_badge_count + 1;			
+		}
+	  }
   });
 
  $scope.contactSales = function(){
