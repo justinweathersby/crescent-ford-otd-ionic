@@ -78,16 +78,19 @@ app.controller('MessageCtrl', function($rootScope, $scope, $state, $http, $state
   $scope.getMessages();
   
   SocketService.removeListener('message');
-  SocketService.on('message', function(msg){
-	  $rootScope.message_badge_count = 0;
+  SocketService.on('message', function(msg){	  
 	  console.log($scope.current_user.id+'###'+msg.recipient_id);
-	  if($scope.current_user.id == msg.recipient_id){		
-		console.log(SocketService);
-		console.log($scope.current_user);		
-		console.log(msg);		
-		if($state.current.name =='tab.messages'){
-			$scope.messages.push(msg);
-			$ionicScrollDelegate.scrollBottom();
+	  if($scope.current_user.id == msg.recipient_id){	
+		if (msg.conversation_id == store.get('conversation_id')){		  
+			console.log(SocketService);
+			console.log($scope.current_user);		
+			console.log(msg);		
+			if($state.current.name =='tab.messages'){
+				$scope.messages.push(msg);
+				$ionicScrollDelegate.scrollBottom();
+			}
+		}else{
+			$rootScope.message_badge_count = $rootScope.message_badge_count + 1;
 		}
 	  }
   });
