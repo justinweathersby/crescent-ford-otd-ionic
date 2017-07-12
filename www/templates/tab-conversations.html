@@ -7,7 +7,7 @@
       pulling-text="Pull to refresh..."
       on-refresh="getConversations()">
     </ion-refresher>
-	<div ng-hide="conversations.length">
+	<div ng-hide="conversations.length == 0">
 		<div class="no-matches-container">
 			<h4 style="text-align: center; color: white">Loading Conversations..</h4>
 		</div>
@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="list">
-        <a ng-repeat="convo in conversations"class="item item-avatar conversation-item" ng-click="openConversation(convo)" style="box-shadow: 0 0 5px #8b8b8b;">
+        <a ng-repeat="convo in conversations"class="item conversation-item" ng-click="openConversation(convo)" style="box-shadow: 0 0 5px #8b8b8b;">
           <img ng-src="{{convo.sender_image}}">
           <span ng-show="!convo.recipient_read" class="convoImageUnreadOverlay">
           </span>
